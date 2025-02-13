@@ -16,3 +16,5 @@ Installing on Windows using pip:
 Importing and using package within a terminal window:
 
     from odf_toolbox.odfhdr import OdfHeader
+    from odf_toolbox.metadata_report import generate_report
+

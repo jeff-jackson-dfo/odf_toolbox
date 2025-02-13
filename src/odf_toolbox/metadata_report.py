@@ -7,8 +7,8 @@ import openpyxl
 from openpyxl.styles import Alignment
 from openpyxl.utils import get_column_letter
 
-# Import required odfClass libraries
-from odf_toolbox.odfHeader import OdfHeader
+# Import required odf_toolbox libraries
+from odf_toolbox.odfhdr import OdfHeader
 
 
 def generate_report(file_path: str, wildcard: str, outfile: str) -> None:
