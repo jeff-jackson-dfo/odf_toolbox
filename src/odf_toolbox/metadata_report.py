@@ -106,8 +106,10 @@ def generate_report(file_path: str, wildcard: str, outfile: str) -> None:
         meta.append(odf.event_header.get_depth_off_bottom())
         meta.append(odf.event_header.get_station_name().strip("'"))
         meta.append(odf.event_header.get_set_number().strip("'"))
+        the_event_comments = ""
         for ec in odf.event_header.get_event_comments():
-            meta.append(ec.strip("'"))
+            the_event_comments = the_event_comments + " " + ec.strip("'")
+        meta.append(the_event_comments)
         meta.append(odf.instrument_header.get_instrument_type().strip("'"))
         meta.append(odf.instrument_header.get_model().strip("'"))
         meta.append(odf.instrument_header.get_serial_number().strip("'"))
@@ -141,4 +143,4 @@ def generate_report(file_path: str, wildcard: str, outfile: str) -> None:
 
 
 if __name__ == "__main__":
-    generate_report("C:\\DEV\\EdHorne\\CTD\\Backlog\\bdor_2016_aug2017\\ODF\\", "D*.ODF", "BCD2016913_CTD_Metadata.xlsx")
+    generate_report("C:\\DEV\\CTD_Backlog\\ODF\\", "*_dn.odf", "CTD_Metadata.xlsx")
