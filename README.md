@@ -6,3 +6,13 @@ This specification needed to be revised.
 You can find the most recent version of this specification here: [ODF Specification Verion 3.0](./ODF_File_Specification.md)
 
 The goal of this project is to replace structured code that was written in a proprietary language for handling ODF files with opensource object-oriented code written in Python.
+
+### INSTALLATION
+
+Installing on Windows using pip:
+
+    C:\> pip install odf_toolbox-0.3.0-py3-none-any.whl
+
+Importing and using package within a terminal window:
+
+    from odf_toolbox.odfhdr import OdfHeader
