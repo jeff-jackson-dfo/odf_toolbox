@@ -2,24 +2,6 @@
 import datetime
 import pandas
 import shlex
-import logging
-
-
-# Define a custom handler that logs modifications done to an odfHeader instance in a list
-class ListHandler(logging.Handler):
-    def __init__(self):
-        super().__init__()
-        self.log_records = []
-
-    def emit(self, record):
-        self.log_records.append(self.format(record))
-
-
-# Configure logging for the custom handler
-logger = logging.getLogger(__name__)
-list_handler = ListHandler()
-logger.addHandler(list_handler)
-logger.setLevel(logging.INFO)  # Set the logging level as needed
 
 
 def read_file_lines(file_with_path: str):
