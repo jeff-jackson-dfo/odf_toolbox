@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
-from odf_toolbox.listhandler import ListHandler
+from .listhandler import ListHandler
 
-
-class ODFLogger:
+class OdfLogger:
     """
     ODF Logger Class
 
@@ -15,7 +14,7 @@ class ODFLogger:
         """
         Method that initializes an ODFLogger class object.
         """
-        self.logger = logging.getLogger("ODFLogger")
+        self.logger = logging.getLogger("OdfLogger")
 
         # Configure logging for the custom handler
         list_handler = ListHandler()

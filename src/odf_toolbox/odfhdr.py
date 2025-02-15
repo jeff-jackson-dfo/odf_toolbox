@@ -1,3 +1,7 @@
+import datetime
+
+import pandas as pd
+from odf_toolbox import odfutils
 from odf_toolbox.compasshdr import CompassCalHeader
 from odf_toolbox.cruisehdr import CruiseHeader
 from odf_toolbox.eventhdr import EventHeader
@@ -10,10 +14,8 @@ from odf_toolbox.polynomialhdr import PolynomialCalHeader
 from odf_toolbox.qualityhdr import QualityHeader
 from odf_toolbox.recordhdr import RecordHeader
 from odf_toolbox.records import DataRecords
-from odf_toolbox import odfutils
 
-import pandas as pd
-import datetime
+from .odflogger import OdfLogger
 
 
 class OdfHeader:
@@ -30,9 +32,10 @@ class OdfHeader:
         """
         Method that initializes an OdfHeader class object.
         """
+        self.logger = OdfLogger()
         self._file_specification = "''"
         self._odf_specification_version = 3
-        self.cruise_header = CruiseHeader()
+        self.cruise_header = CruiseHeader(self.logger)
         self.event_header = EventHeader()
         self.meteo_header = None
         self.instrument_header = InstrumentHeader()
