@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
-from .listhandler import ListHandler
+
+from odf_toolbox.listhandler import ListHandler
 
 class OdfLogger:
     """

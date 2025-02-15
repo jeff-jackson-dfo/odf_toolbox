@@ -15,7 +15,7 @@ from odf_toolbox.qualityhdr import QualityHeader
 from odf_toolbox.recordhdr import RecordHeader
 from odf_toolbox.records import DataRecords
 
-from .odflogger import OdfLogger
+from odf_toolbox.odflogger import OdfLogger
 
 
 class OdfHeader:
@@ -35,7 +35,7 @@ class OdfHeader:
         self.logger = OdfLogger()
         self._file_specification = "''"
         self._odf_specification_version = 3
-        self.cruise_header = CruiseHeader(self.logger)
+        self.cruise_header = CruiseHeader()
         self.event_header = EventHeader()
         self.meteo_header = None
         self.instrument_header = InstrumentHeader()
@@ -72,7 +72,7 @@ class OdfHeader:
         assert isinstance(value, str), \
                f"Input value is not of type str: {value}"
         if not read_operation:
-            odfutils.logger.info(f'Odf_Header.File_Specification changed from {self._file_specification} to {value}')
+            self.logger.info(f'Odf_Header.File_Specification changed from {self._file_specification} to {value}')
         self._file_specification = value
 
     def get_odf_specification_version(self) -> float:
@@ -105,7 +105,7 @@ class OdfHeader:
         except ValueError:
             f"Input value could not be successfully converted to type float: {value}"
         if not read_operation:
-            odfutils.logger.info(
+            self.logger.info(
                 f'Odf_Header.Odf_Specification_version changed from {self._odf_specification_version} to {value}')
 
         self._odf_specification_version = value
@@ -370,8 +370,8 @@ if __name__ == "__main__":
     odf = OdfHeader()
 
     # my_file_path = '../../tests/MCM_HUD2010014_1771_1039_3600.ODF'
-    # my_file_path = '../../tests/CTD_CAR2023011_017_496844_DN.ODF'
-    my_file_path = '../../tests/IML-Example.ODF'
+    my_file_path = 'D:/DEV/odf_toolbox/tests/CTD_2000037_102_1_DN.ODF'
+    # my_file_path = '../../tests/IML-Example.ODF'
     # my_file_path = '../../tests/MADCP_HUD2016027_1999_3469-31_3600.ODF'
     # my_file_path = '../../tests/MCTD_GRP2019001_2104_11689_1800.ODF'
 
