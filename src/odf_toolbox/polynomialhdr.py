@@ -103,7 +103,7 @@ class PolynomialCalHeader:
                         self.set_calibration_date(value, read_operation=True)
                     case 'APPLICATION_DATE':
                         self.set_application_date(value, read_operation=True)
-                    case 'NUMBER_COEFFICIENTS':
+                    case 'NUMBER_OF_COEFFICIENTS':
                         value = int(value)
                         self.set_number_coefficients(value, read_operation=True)
                     case 'COEFFICIENTS':

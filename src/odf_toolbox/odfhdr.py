@@ -369,8 +369,7 @@ if __name__ == "__main__":
 
     odf = OdfHeader()
 
-    # my_file_path = '../../tests/MCM_HUD2010014_1771_1039_3600.ODF'
-    my_file_path = 'D:/DEV/odf_toolbox/tests/CTD_2000037_102_1_DN.ODF'
+    my_file_path = 'D:\\DEV\odf_toolbox\\tests\\MCM_HUD2010014_1771_1039_3600.ODF'
     # my_file_path = '../../tests/IML-Example.ODF'
     # my_file_path = '../../tests/MADCP_HUD2016027_1999_3469-31_3600.ODF'
     # my_file_path = '../../tests/MCTD_GRP2019001_2104_11689_1800.ODF'
@@ -397,7 +396,7 @@ if __name__ == "__main__":
         print('cspec and spec do not match')
         odf.set_file_specification(spec)
 
-    odf_file_text = odf.print_object(file_version=2)
+    odf_file_text = odf.print_object(file_version=3)
 
     out_file = f"{spec}.ODF"
     file1 = open(out_file, "w")

@@ -156,7 +156,7 @@ class GeneralCalHeader:
                         self.set_calibration_date(value, read_operation=True)
                     case 'APPLICATION_DATE':
                         self.set_application_date(value, read_operation=True)
-                    case 'NUMBER_COEFFICIENTS':
+                    case 'NUMBER_OF_COEFFICIENTS':
                         self.set_number_coefficients(int(value), read_operation=True)
                     case 'COEFFICIENTS':
                         coefficient_list = value.split()
