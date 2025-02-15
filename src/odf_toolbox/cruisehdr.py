@@ -1,6 +1,6 @@
 from odf_toolbox import odfutils
 
-class CruiseHeader:
+class CruiseHeader(object):
     def __init__(self):
         self._country_institute_code = None
         self._cruise_number = "''"
@@ -26,7 +26,7 @@ class CruiseHeader:
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Cruise_Header.Country_Institute_Code changed from {self._country_institute_code} "
+            object.info(f"Cruise_Header.Country_Institute_Code changed from {self._country_institute_code} "
                                  f"to {value}")
         self._country_institute_code = value
 
@@ -38,7 +38,7 @@ class CruiseHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Cruise_Header.Cruise_Number changed from {self._cruise_number} to '{value}'")
+            object.info(f"Cruise_Header.Cruise_Number changed from {self._cruise_number} to '{value}'")
         self._cruise_number = f"'{value}'"
 
     def get_organization(self) -> str:
@@ -49,7 +49,7 @@ class CruiseHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Cruise_Header.Organization changed from {self._organization} to '{value}'")
+            object.info(f"Cruise_Header.Organization changed from {self._organization} to '{value}'")
         self._organization = f"'{value.strip()}'"
 
     def get_chief_scientist(self) -> str:
@@ -60,7 +60,7 @@ class CruiseHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Cruise_Header.Chief_Scientist changed from {self._chief_scientist} to '{value}'")
+            object.info(f"Cruise_Header.Chief_Scientist changed from {self._chief_scientist} to '{value}'")
         self._chief_scientist = f"'{value}'"
 
     def get_start_date(self) -> str:
@@ -71,7 +71,7 @@ class CruiseHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Cruise_Header.Start_Date changed from {self._start_date} to '{value}'")
+            object.info(f"Cruise_Header.Start_Date changed from {self._start_date} to '{value}'")
         self._start_date = f"'{value}'"
 
     def get_end_date(self) -> str:
@@ -82,7 +82,7 @@ class CruiseHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Cruise_Header.End_Date changed from {self._end_date} to '{value}'")
+            object.info(f"Cruise_Header.End_Date changed from {self._end_date} to '{value}'")
         self._end_date = f"'{value}'"
 
     def get_platform(self) -> str:
@@ -93,7 +93,7 @@ class CruiseHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Cruise_Header.Platform changed from {self._platform} to '{value}'")
+            object.info(f"Cruise_Header.Platform changed from {self._platform} to '{value}'")
         self._platform = f"'{value}'"
 
     def get_area_of_operation(self) -> str:
@@ -104,7 +104,7 @@ class CruiseHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Cruise_Header.Area_of_Operation changed from {self._area_of_operation} to '{value}'")
+            object.info(f"Cruise_Header.Area_of_Operation changed from {self._area_of_operation} to '{value}'")
         self._area_of_operation = f"'{value}'"
 
     def get_cruise_name(self) -> str:
@@ -115,7 +115,7 @@ class CruiseHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Cruise_Header.Cruise_Name changed from {self._cruise_name} to '{value}'")
+            object.info(f"Cruise_Header.Cruise_Name changed from {self._cruise_name} to '{value}'")
         self._cruise_name = f"'{value}'"
 
     def get_cruise_description(self) -> str:
@@ -126,7 +126,7 @@ class CruiseHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Cruise_Header.Cruise_Description changed from {self._cruise_description} "
+            object.info(f"Cruise_Header.Cruise_Description changed from {self._cruise_description} "
                                  f"to '{value}'")
         self._cruise_description = f"'{value}'"
 
