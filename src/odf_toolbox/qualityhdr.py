@@ -1,6 +1,7 @@
+from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox import odfutils
 
-class QualityHeader:
+class QualityHeader(BaseHeader):
     """
     A class to represent a Quality Header in an ODF object.
 
@@ -29,6 +30,7 @@ class QualityHeader:
     """
 
     def __init__(self):
+        super().__init__()
         self._quality_date = None
         self._quality_tests = []
         self._quality_comments = []
@@ -40,7 +42,7 @@ class QualityHeader:
         assert isinstance(value, str), \
                f"Input value is not of type str: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.Quality_Date changed from {self._quality_date} to '{value}'")
+            self.logger.info(f"Event_Header.Quality_Date changed from {self._quality_date} to '{value}'")
         self._quality_date = value
 
     def get_quality_tests(self):
@@ -54,12 +56,12 @@ class QualityHeader:
         number_of_tests = len(self.get_quality_tests())
         if test_number == 0 and number_of_tests >= 0:
             if not read_operation:
-                odfutils.logger.info(f"The following quality test was added to Quality_Header.Quality_Tests: "
+                self.logger.info(f"The following quality test was added to Quality_Header.Quality_Tests: "
                                      f"'{quality_test}'")
             self._quality_tests.append(quality_test)
         elif test_number <= number_of_tests and number_of_tests > 0:
             if not read_operation:
-                odfutils.logger.info(f"Quality Test {test_number} in Quality_Header.Quality_Tests was changed from "
+                self.logger.info(f"Quality Test {test_number} in Quality_Header.Quality_Tests was changed from "
                                      f"{self._quality_tests[test_number-1]} to '{quality_test}'")
             self._quality_tests[test_number] = quality_test
         else:
@@ -76,12 +78,12 @@ class QualityHeader:
         number_of_comments = len(self.get_quality_comments())
         if comment_number == 0 and number_of_comments >= 0:
             if not read_operation:
-                odfutils.logger.info(f"The following quality test was added to Quality_Header.Quality_Comments: "
+                self.logger.info(f"The following quality test was added to Quality_Header.Quality_Comments: "
                                      f"'{quality_comment}'")
             self._quality_comments.append(quality_comment)
         elif comment_number <= number_of_comments and number_of_comments > 0:
             if not read_operation:
-                odfutils.logger.info(f"Quality Comment {comment_number} in Quality_Header.Quality_Comments was "
+                self.logger.info(f"Quality Comment {comment_number} in Quality_Header.Quality_Comments was "
                                      f"changed from {self._quality_comments[comment_number-1]} to '{quality_comment}'")
             self._quality_comments[comment_number] = quality_comment
         else:

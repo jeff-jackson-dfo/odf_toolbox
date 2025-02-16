@@ -1,6 +1,7 @@
+from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox import odfutils
 
-class InstrumentHeader:
+class InstrumentHeader(BaseHeader):
     """
     A class to represent an Instrument Header in an ODF object.
 
@@ -29,7 +30,9 @@ class InstrumentHeader:
     set_description: None
 
     """
+
     def __init__(self):
+        super().__init__()
         self._instrument_type = ""
         self._model = ""
         self._serial_number = ""
@@ -43,7 +46,7 @@ class InstrumentHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Instrument_Header.Instrument_Type changed from {self._instrument_type} to '{value}'")
+            self.logger.info(f"Instrument_Header.Instrument_Type changed from {self._instrument_type} to '{value}'")
         self._instrument_type = f"'{value}'"
 
     def get_model(self) -> str:
@@ -54,7 +57,7 @@ class InstrumentHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Instrument_Header.Model changed from {self._model} to '{value}'")
+            self.logger.info(f"Instrument_Header.Model changed from {self._model} to '{value}'")
         self._model = f"'{value}'"
 
     def get_serial_number(self) -> str:
@@ -65,7 +68,7 @@ class InstrumentHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Instrument_Header.Serial_Number changed from {self._serial_number} to '{value}'")
+            self.logger.info(f"Instrument_Header.Serial_Number changed from {self._serial_number} to '{value}'")
         self._serial_number = f"'{value}'"
 
     def get_description(self) -> str:
@@ -76,7 +79,7 @@ class InstrumentHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Instrument_Header.Description changed from {self._description} to '{value}'")
+            self.logger.info(f"Instrument_Header.Description changed from {self._description} to '{value}'")
         self._description = f"'{value}'"
 
     def populate_object(self, instrument_fields: list):

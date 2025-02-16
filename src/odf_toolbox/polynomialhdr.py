@@ -1,7 +1,10 @@
+from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox import odfutils
 
-class PolynomialCalHeader:
+class PolynomialCalHeader(BaseHeader):
+    
     def __init__(self):
+        super().__init__()
         self._parameter_code = None
         self._calibration_date = None
         self._application_date = None
@@ -16,7 +19,7 @@ class PolynomialCalHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Polynomial_Cal_Header.Parameter_Code changed from "
+            self.logger.info(f"Polynomial_Cal_Header.Parameter_Code changed from "
                                  f"{self._parameter_code} to '{value}'")
         self._parameter_code = f"'{value}'"
 
@@ -28,7 +31,7 @@ class PolynomialCalHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Polynomial_Cal_Header.Calibration_Date changed from "
+            self.logger.info(f"Polynomial_Cal_Header.Calibration_Date changed from "
                                  f"{self._calibration_date} to '{value}'")
         self._calibration_date = f"'{value}'"
 
@@ -40,7 +43,7 @@ class PolynomialCalHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Polynomial_Cal_Header.Application_Date changed from "
+            self.logger.info(f"Polynomial_Cal_Header.Application_Date changed from "
                                  f"{self._application_date} to '{value}'")
         self._application_date = f"'{value}'"
 
@@ -51,7 +54,7 @@ class PolynomialCalHeader:
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Polynomial_Cal_Header.Number_Coefficients changed from "
+            self.logger.info(f"Polynomial_Cal_Header.Number_Coefficients changed from "
                                  f"{self._number_coefficients} to {value}")
         self._number_coefficients = value
 
@@ -66,18 +69,18 @@ class PolynomialCalHeader:
         number_coefficients = self.get_number_coefficients()
         if coefficient_number == 0 and number_coefficients == 0:
             if not read_operation:
-                odfutils.logger.info(f"The following set of coefficients was added to "
+                self.logger.info(f"The following set of coefficients was added to "
                                      f"Polynomial_Cal_Header.Coefficients: {coefficient_list}")
             self._coefficients = coefficient_list
         elif coefficient_number == 0 and number_coefficients > 0:
             if not read_operation:
-                odfutils.logger.info(f"The following set of coefficients was added to "
+                self.logger.info(f"The following set of coefficients was added to "
                                      f"Polynomial_Cal_Header.Coefficients: {coefficient_list}")
             self._coefficients.extend(coefficient_list)
         elif coefficient_number <= number_coefficients and number_coefficients > 0:
             if len(coefficient_list) == 1:
                 if not read_operation:
-                    odfutils.logger.info(f"Coefficient {coefficient_list.pop()} in "
+                    self.logger.info(f"Coefficient {coefficient_list.pop()} in "
                                          f"Polynomial_Cal_Header.Coefficients was "
                                          f"changed from {self._coefficients[coefficient_number - 1]} "
                                          f"to {coefficient_list.pop()}")

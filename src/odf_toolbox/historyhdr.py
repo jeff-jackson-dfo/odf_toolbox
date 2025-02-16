@@ -1,7 +1,10 @@
+from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox import odfutils
 
-class HistoryHeader:
+class HistoryHeader(BaseHeader):
+    
     def __init__(self):
+        super().__init__()
         self._creation_date = "''"
         self._processes = []
 
@@ -13,7 +16,7 @@ class HistoryHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"History_Header.Creation_Date changed from {self._creation_date} to '{value}'")
+            self.logger.info(f"History_Header.Creation_Date changed from {self._creation_date} to '{value}'")
         self._creation_date = f"'{value}'"
 
     def get_process(self):
@@ -28,10 +31,10 @@ class HistoryHeader:
         number_of_processes = len(self._processes)
         if process_number == 0 and number_of_processes >= 0:
             if not read_operation:
-                odfutils.logger.info(f"The following Process line was added to the History_Header: '{process}'")
+                self.logger.info(f"The following Process line was added to the History_Header: '{process}'")
             self._processes.append(f"'{process}'")
         elif process_number <= number_of_processes and number_of_processes > 0:
-            odfutils.logger.info(f"Process {process_number} in History_Header.Processes was changed from "
+            self.logger.info(f"Process {process_number} in History_Header.Processes was changed from "
                                  f"{self._processes[process_number - 1]} to '{process}'")
             self._processes[process_number-1] = f"'{process}'"
         else:

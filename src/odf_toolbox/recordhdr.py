@@ -1,7 +1,10 @@
+from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox import odfutils
 
-class RecordHeader:
+class RecordHeader(BaseHeader):
+
     def __init__(self):
+        super().__init__()
         self._num_calibration = 0
         self._num_swing = 0
         self._num_history = 0
@@ -21,7 +24,7 @@ class RecordHeader:
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Record_Header.Num_Calibration changed from {self._num_calibration} to {value}")
+            self.logger.info(f"Record_Header.Num_Calibration changed from {self._num_calibration} to {value}")
         self._num_calibration = value
 
     def get_num_swing(self) -> int:
@@ -37,7 +40,7 @@ class RecordHeader:
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Record_Header.Num_Swing changed from {self._num_swing} to {value}")
+            self.logger.info(f"Record_Header.Num_Swing changed from {self._num_swing} to {value}")
         self._num_swing = value
 
     def get_num_history(self) -> int:
@@ -53,7 +56,7 @@ class RecordHeader:
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Record_Header.Num_History changed from {self._num_history} to {value}")
+            self.logger.info(f"Record_Header.Num_History changed from {self._num_history} to {value}")
         self._num_history = value
 
     def get_num_cycle(self) -> int:
@@ -69,7 +72,7 @@ class RecordHeader:
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Record_Header.Num_Cycle changed from {self._num_cycle} to {value}")
+            self.logger.info(f"Record_Header.Num_Cycle changed from {self._num_cycle} to {value}")
         self._num_cycle = value
 
     def get_num_param(self) -> int:
@@ -85,7 +88,7 @@ class RecordHeader:
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Record_Header.Num_Param changed from {self._num_param} to {value}")
+            self.logger.info(f"Record_Header.Num_Param changed from {self._num_param} to {value}")
         self._num_param = value
 
     def populate_object(self, record_fields: list) -> None:

@@ -1,6 +1,7 @@
+from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox import odfutils
 
-class ParameterHeader:
+class ParameterHeader(BaseHeader):
     """
     A class to represent a Parameter Header in an ODF object.
 
@@ -48,6 +49,7 @@ class ParameterHeader:
     """
 
     def __init__(self):
+        super().__init__()
         self._type = "''"
         self._name = "''"
         self._units = "''"
@@ -77,7 +79,7 @@ class ParameterHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"The Type changed from {self.get_type()} to '{value}' for "
+            self.logger.info(f"The Type changed from {self.get_type()} to '{value}' for "
                                  f"parameter {self.get_code()}.")
         self._type = f"'{value}'"
 
@@ -89,7 +91,7 @@ class ParameterHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"The Name changed from {self.get_name()} to '{value}' for "
+            self.logger.info(f"The Name changed from {self.get_name()} to '{value}' for "
                                  f"parameter {self.get_code()}.")
         self._name = f"'{value}'"
 
@@ -101,7 +103,7 @@ class ParameterHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"The Units changed from {self.get_units()} to '{value}' "
+            self.logger.info(f"The Units changed from {self.get_units()} to '{value}' "
                                  f"for parameter {self.get_code()}")
         self._units = f"'{value}'"
 
@@ -117,7 +119,7 @@ class ParameterHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"The Code changed from {self.get_code()} to '{value}' for "
+            self.logger.info(f"The Code changed from {self.get_code()} to '{value}' for "
                                  f"parameter {self.get_code()}.")
         self._code = f"'{value}'"
 
@@ -129,7 +131,7 @@ class ParameterHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"The Wmo_Code changed from {self.get_wmo_code()} to '{value}' for "
+            self.logger.info(f"The Wmo_Code changed from {self.get_wmo_code()} to '{value}' for "
                                  f"parameter {self.get_code()}.")
         self._wmo_code = f"'{value}'"
 
@@ -152,7 +154,7 @@ class ParameterHeader:
         except ValueError:
             f"Input value could not be successfully converted to type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"The Null_Value changed from {self.get_null_value()} to {value} for "
+            self.logger.info(f"The Null_Value changed from {self.get_null_value()} to {value} for "
                                  f"parameter {self.get_code()}.")
         self._null_value = value
 
@@ -169,7 +171,7 @@ class ParameterHeader:
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Parameter_Header.Print_Field_Order changed from {self.get_print_field_order()} "
+            self.logger.info(f"Parameter_Header.Print_Field_Order changed from {self.get_print_field_order()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._print_field_order = value
 
@@ -186,7 +188,7 @@ class ParameterHeader:
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            odfutils.logger.info(f"The Print_Field_Width changed from {self.get_print_field_width()} "
+            self.logger.info(f"The Print_Field_Width changed from {self.get_print_field_width()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._print_field_width = value
 
@@ -203,7 +205,7 @@ class ParameterHeader:
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            odfutils.logger.info(f"The Print_Decimal_Places changed from {self.get_print_decimal_places()} "
+            self.logger.info(f"The Print_Decimal_Places changed from {self.get_print_decimal_places()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._print_decimal_places = value
 
@@ -220,7 +222,7 @@ class ParameterHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"The Angle_of_Section changed from {self.get_angle_of_section()} "
+            self.logger.info(f"The Angle_of_Section changed from {self.get_angle_of_section()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._angle_of_section = value
 
@@ -237,7 +239,7 @@ class ParameterHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"The Magnetic_Variation changed from {self.get_magnetic_variation()} "
+            self.logger.info(f"The Magnetic_Variation changed from {self.get_magnetic_variation()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._magnetic_variation = value
 
@@ -254,7 +256,7 @@ class ParameterHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"The Depth changed from {self.get_depth()} "
+            self.logger.info(f"The Depth changed from {self.get_depth()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._depth = value
 
@@ -270,7 +272,7 @@ class ParameterHeader:
             assert isinstance(value, str), \
                 f"Input value is not of type str: {value}"
         if not read_operation:
-            odfutils.logger.info(f"The Minimum_Value changed from {self.get_minimum_value()} "
+            self.logger.info(f"The Minimum_Value changed from {self.get_minimum_value()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._minimum_value = value
 
@@ -286,7 +288,7 @@ class ParameterHeader:
             assert isinstance(value, str), \
                 f"Input value is not of type str: {value}"
         if not read_operation:
-            odfutils.logger.info(f"The Maximum_Value changed from {self.get_maximum_value()} "
+            self.logger.info(f"The Maximum_Value changed from {self.get_maximum_value()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._maximum_value = value
 
@@ -303,7 +305,7 @@ class ParameterHeader:
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            odfutils.logger.info(f"The Number_Valid changed from {self.get_number_valid()} "
+            self.logger.info(f"The Number_Valid changed from {self.get_number_valid()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._number_valid = value
 
@@ -320,7 +322,7 @@ class ParameterHeader:
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            odfutils.logger.info(f"The Number_Null changed from {self.get_number_null()} "
+            self.logger.info(f"The Number_Null changed from {self.get_number_null()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._number_null = value
 

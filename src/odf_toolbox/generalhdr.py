@@ -1,7 +1,10 @@
+from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox import odfutils
 
-class GeneralCalHeader:
+class GeneralCalHeader(BaseHeader):
+    
     def __init__(self):
+        super().__init__()
         self._parameter_code = "''"
         self._calibration_type = "''"
         self._calibration_date = "''"
@@ -19,7 +22,7 @@ class GeneralCalHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"General_Cal_Header.Parameter_Code changed from "
+            self.logger.info(f"General_Cal_Header.Parameter_Code changed from "
                                  f"{self._parameter_code} to '{value}'")
         self._parameter_code = f"'{value}'"
 
@@ -31,7 +34,7 @@ class GeneralCalHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"General_Cal_Header.Calibration_Type changed from "
+            self.logger.info(f"General_Cal_Header.Calibration_Type changed from "
                                  f"{self._calibration_type} to '{value}'")
         self._calibration_type = f"'{value}'"
 
@@ -43,7 +46,7 @@ class GeneralCalHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"General_Cal_Header.Calibration_Date changed from "
+            self.logger.info(f"General_Cal_Header.Calibration_Date changed from "
                                  f"{self._calibration_date} to '{value}'")
         self._calibration_date = f"'{value}'"
 
@@ -55,7 +58,7 @@ class GeneralCalHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"General_Cal_Header.Application_Date changed from "
+            self.logger.info(f"General_Cal_Header.Application_Date changed from "
                                  f"{self._application_date} to '{value}'")
         self._application_date = f"'{value}'"
 
@@ -66,7 +69,7 @@ class GeneralCalHeader:
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            odfutils.logger.info(f"General_Cal_Header.Number_Coefficients changed from "
+            self.logger.info(f"General_Cal_Header.Number_Coefficients changed from "
                                  f"{self._number_coefficients} to '{value}'")
         self._number_coefficients = value
 
@@ -83,18 +86,18 @@ class GeneralCalHeader:
         if general_coefficient_number == 0:
             if number_of_general_coefficients == 0:
                 if not read_operation:
-                    odfutils.logger.info(f"The following set of coefficients was added to "
+                    self.logger.info(f"The following set of coefficients was added to "
                                          f"General_Cal_Header.Coefficients: {general_coefficient_list}")
                 self._coefficients = general_coefficient_list
             elif number_of_general_coefficients > 0:
                 if not read_operation:
-                    odfutils.logger.info(f"The following set of coefficients was added to "
+                    self.logger.info(f"The following set of coefficients was added to "
                                          f"General_Cal_Header.Coefficients: {general_coefficient_list}")
                 self._coefficients.extend(general_coefficient_list)
             elif general_coefficient_number <= number_of_general_coefficients and number_of_general_coefficients > 0:
                 if len(general_coefficient_list) == 1:
                     if not read_operation:
-                        odfutils.logger.info(f"Coefficient {general_coefficient_list.pop()} in "
+                        self.logger.info(f"Coefficient {general_coefficient_list.pop()} in "
                                              f"General_Cal_Header.Coefficients was "
                                              f"changed from {self._coefficients[general_coefficient_number - 1]} "
                                              f"to {general_coefficient_list.pop()}")
@@ -110,7 +113,7 @@ class GeneralCalHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"General_Cal_Header.Parameter_Code changed from "
+            self.logger.info(f"General_Cal_Header.Parameter_Code changed from "
                                  f"{self._parameter_code} to '{value}'")
         self._calibration_equation = f"'{value}'"
 
@@ -127,12 +130,12 @@ class GeneralCalHeader:
         number_of_comments = len(self.get_calibration_comments())
         if comment_number == 0 and number_of_comments >= 0:
             if not read_operation:
-                odfutils.logger.info(f"The following comment was added to General_Cal_Header.Calibration_Comments: "
+                self.logger.info(f"The following comment was added to General_Cal_Header.Calibration_Comments: "
                                      f"'{calibration_comment}'")
             self._calibration_comments.append(f"'{calibration_comment}'")
         elif comment_number <= number_of_comments and number_of_comments > 0:
             if not read_operation:
-                odfutils.logger.info(f"Comment {comment_number} in General_Cal_Header.Calibration_Comments was "
+                self.logger.info(f"Comment {comment_number} in General_Cal_Header.Calibration_Comments was "
                                      f"changed from {self._calibration_comments[comment_number-1]} to "
                                      f"'{calibration_comment}'")
             self._calibration_comments[comment_number] = f"'{calibration_comment}'"
