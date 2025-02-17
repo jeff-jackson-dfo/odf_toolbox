@@ -1,13 +1,12 @@
 import glob
 import os
-
-# Add path to project 'c:/dev/pythonProjects/odfClass/src/odf_toolbox' to Windows variable PYTHONPATH.
-import odfHeader
-import odfUtils
+from odf_toolbox.basehdr import BaseHeader
+from odf_toolbox.odfhdr import OdfHeader
+from odf_toolbox import odfutils
 
 cwd = os.getcwd()
-path_to_orig = cwd + '/Step_2_Apply_Calibrations/ODF/'
-path_to_revised = cwd + '/Step_3_Update_Metadata/'
+path_to_orig = cwd + '\\tests\\Step_2_Apply_Calibrations\\ODF\\'
+path_to_revised = cwd + '\\tests\\Step_3_Update_Metadata\\'
 
 # Change to folder containing files to be modified
 os.chdir(path_to_orig)
@@ -32,16 +31,14 @@ for file_name in files:
     print('#######################################################################')
     print()
 
-    odf = odfHeader.OdfHeader()
+    odf = OdfHeader()
 
     # Read the ODF file
     odf.read_odf(file_name)
 
     # Add a new History Header to record the modifications that are made.
     odf.add_history()
-    odf.history_headers[-1].set_creation_date(f"'{odfUtils.get_current_date_time()}'")
-    history_comment = f'{user} made the following modifications to this file:'
-    odf.add_to_history(history_comment)
+    odf.add_to_log(f'{user} made the following modifications to this file:')
 
     # Update Cruise_Header
     odf.cruise_header.set_organization('DFO BIO')
@@ -61,7 +58,6 @@ for file_name in files:
     odf.update_parameter('SYTM_01', 'print_field_width', 45)
 
     # Make sure that the event numbers are 3-digit strings.
-    odf.event_header.set_event_number('8')
     event_str = odf.event_header.get_event_number()
     event_str = event_str.strip("\' ")
     event_int = int(event_str)
@@ -70,39 +66,39 @@ for file_name in files:
 
     # Add history comments to document that the Slope and Offset values for the primary and secondary conductivity
     # channels were updated from their original acquisition values prior to reprocessing the CTD data files.
-    odf.add_to_history(
+    odf.add_to_log(
         'The primary conductivity (3561) and temperature (5081) sensors (pair 1) were replaced with sensors'
         ' (1874) and (2303) (pair 2) after the CTD collided with the bottom prior to event 136.')
-    odf.add_to_history('The primary conductivity [3561] calibration coefficient "Offset" was changed from its original '
+    odf.add_to_log('The primary conductivity [3561] calibration coefficient "Offset" was changed from its original '
                        'value [0.0] to [-0.00066] for sensor pair 1.')
-    odf.add_to_history('The primary conductivity [3561] calibration coefficient "Slope" was changed from its original '
+    odf.add_to_log('The primary conductivity [3561] calibration coefficient "Slope" was changed from its original '
                        'value [1.0] to [1.000039] for sensor pair 1.')
-    odf.add_to_history('The primary conductivity [1874] calibration coefficient "Offset" remained unchanged from its '
+    odf.add_to_log('The primary conductivity [1874] calibration coefficient "Offset" remained unchanged from its '
                        'original value [0.0] to [0.00048] for sensor pair 2.')
-    odf.add_to_history('The primary conductivity [1874] calibration coefficient "Slope" remained unchanged from its '
+    odf.add_to_log('The primary conductivity [1874] calibration coefficient "Slope" remained unchanged from its '
                        'original value [1.0] to [1.000016] for sensor pair 2.')
-    odf.add_to_history('The secondary conductivity [3562] calibration coefficient "Offset" was changed from its '
+    odf.add_to_log('The secondary conductivity [3562] calibration coefficient "Offset" was changed from its '
                        'original value [0.0] to [-0.00132].')
-    odf.add_to_history('The secondary conductivity [3562] calibration coefficient "Slope" was changed from its '
+    odf.add_to_log('The secondary conductivity [3562] calibration coefficient "Slope" was changed from its '
                        'original value [1.0] to [1.000272].')
 
     # Add history comments to document that the Soc values for the primary and secondary oxygen channels were updated
     # from their original acquisition values prior to reprocessing the CTD data files.
-    odf.add_to_history('The primary oxygen [0133] calibration coefficient "Soc" was changed from its original value '
+    odf.add_to_log('The primary oxygen [0133] calibration coefficient "Soc" was changed from its original value '
                        'of [0.3903] to [0.4054].')
-    odf.add_to_history('The secondary oxygen [1588] calibration coefficient "Soc" was changed from its original value '
+    odf.add_to_log('The secondary oxygen [1588] calibration coefficient "Soc" was changed from its original value '
                        'of [0.5347] to [0.4523].')
 
     # Access the log records stored in the custom handler and add the logged changes to the History_Header.
-    log_records = odfUtils.list_handler.log_records
-    for record in log_records:
-        odf.add_to_history(record)
+    # log_records = odfutils.list_handler.log_records
+    # for record in log_records:
+    #     odf.add_to_log(record)
 
     # Update the Record_Header and other headers to revise the metadata after modifications have been performed.
     odf.update_odf()
 
     odf_file_text = odf.print_object(file_version=2)
-    print(odf_file_text)
+    # print(odf_file_text)
 
     os.chdir(path_to_revised)
 
@@ -112,6 +108,9 @@ for file_name in files:
     file1 = open(out_file, "w")
     file1.write(odf_file_text)
     file1.close()
+
+    # Reset the shared log list
+    BaseHeader.reset_log_list()
 
     os.chdir(path_to_orig)
 
