@@ -70,3 +70,4 @@ if __name__ == "__main__":
     print("Shared log messages after new entries:")
     for log_entry in BaseHeader.shared_log_list:
         print(log_entry)
+
