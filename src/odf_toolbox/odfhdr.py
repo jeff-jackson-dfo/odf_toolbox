@@ -311,11 +311,16 @@ class OdfHeader(BaseHeader):
         return self
 
     def update_odf(self):
-        self.record_header.set_num_calibration(len(self.polynomial_cal_headers))
-        self.record_header.set_num_history(len(self.history_headers))
-        self.record_header.set_num_swing(len(self.compass_cal_headers))
-        self.record_header.set_num_param(len(self.parameter_headers))
-        self.record_header.set_num_cycle(len(self.data))
+        if self.record_header.get_num_calibration() != len(self.polynomial_cal_headers):
+            self.record_header.set_num_calibration(len(self.polynomial_cal_headers))
+        if self.record_header.get_num_history() != len(self.history_headers):
+            self.record_header.set_num_history(len(self.history_headers))
+        if self.record_header.get_num_swing() != len(self.compass_cal_headers):
+            self.record_header.set_num_swing(len(self.compass_cal_headers))
+        if self.record_header.get_num_param() != len(self.parameter_headers):
+            self.record_header.set_num_param(len(self.parameter_headers))
+        if self.record_header.get_num_cycle() != len(self.data):
+            self.record_header.set_num_cycle(len(self.data))
 
     def add_history(self):
         nhh = HistoryHeader()
