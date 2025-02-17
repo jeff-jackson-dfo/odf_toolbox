@@ -11,6 +11,9 @@ class RecordHeader(BaseHeader):
         self._num_cycle = 0
         self._num_param = 0
 
+    def log_message(self, message):
+        super().log_message(f"RECORD_HEADER: {message}")
+
     def get_num_calibration(self) -> int:
         return self._num_calibration
 
@@ -24,7 +27,7 @@ class RecordHeader(BaseHeader):
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            self.logger.info(f"Record_Header.Num_Calibration changed from {self._num_calibration} to {value}")
+            self.log_message(f"NUM_CALIBRATION was changed from {self._num_calibration} to {value}")
         self._num_calibration = value
 
     def get_num_swing(self) -> int:
@@ -40,7 +43,7 @@ class RecordHeader(BaseHeader):
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            self.logger.info(f"Record_Header.Num_Swing changed from {self._num_swing} to {value}")
+            self.log_message(f"NUM_SWING was changed from {self._num_swing} to {value}")
         self._num_swing = value
 
     def get_num_history(self) -> int:
@@ -56,7 +59,7 @@ class RecordHeader(BaseHeader):
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            self.logger.info(f"Record_Header.Num_History changed from {self._num_history} to {value}")
+            self.log_message(f"NUM_HISTORY was changed from {self._num_history} to {value}")
         self._num_history = value
 
     def get_num_cycle(self) -> int:
@@ -72,7 +75,7 @@ class RecordHeader(BaseHeader):
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            self.logger.info(f"Record_Header.Num_Cycle changed from {self._num_cycle} to {value}")
+            self.log_message(f"NUM_CYCLE was changed from {self._num_cycle} to {value}")
         self._num_cycle = value
 
     def get_num_param(self) -> int:
@@ -88,7 +91,7 @@ class RecordHeader(BaseHeader):
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            self.logger.info(f"Record_Header.Num_Param changed from {self._num_param} to {value}")
+            self.log_message(f"NUM_PARAM was changed from {self._num_param} to {value}")
         self._num_param = value
 
     def populate_object(self, record_fields: list) -> None:

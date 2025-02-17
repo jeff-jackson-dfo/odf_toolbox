@@ -16,6 +16,9 @@ class CruiseHeader(BaseHeader):
         self._cruise_name = "''"
         self._cruise_description = "''"
 
+    def log_message(self, message):
+        super().log_message(f"CRUISE_HEADER: {message}")
+
     def get_country_institute_code(self) -> int:
         return self._country_institute_code
 
@@ -29,7 +32,7 @@ class CruiseHeader(BaseHeader):
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            self.logger.info(f"Cruise_Header.Country_Institute_Code changed from {self._country_institute_code} "
+            self.log_message(f"COUNTRY_INSTITUTE_CODE was changed from {self._country_institute_code} "
                                  f"to {value}")
         self._country_institute_code = value
 
@@ -41,7 +44,7 @@ class CruiseHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.logger.info(f"Cruise_Header.Cruise_Number changed from {self._cruise_number} to '{value}'")
+            self.log_message(f"CRUISE_NUMBER was changed from {self._cruise_number} to '{value}'")
         self._cruise_number = f"'{value}'"
 
     def get_organization(self) -> str:
@@ -52,7 +55,7 @@ class CruiseHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.logger.info(f"Cruise_Header.Organization changed from {self._organization} to '{value}'")
+            self.log_message(f"ORGANIZATION was changed from {self._organization} to '{value}'")
         self._organization = f"'{value.strip()}'"
 
     def get_chief_scientist(self) -> str:
@@ -63,7 +66,7 @@ class CruiseHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.logger.info(f"Cruise_Header.Chief_Scientist changed from {self._chief_scientist} to '{value}'")
+            self.log_message(f"CHIEF_SCIENTIST was changed from {self._chief_scientist} to '{value}'")
         self._chief_scientist = f"'{value}'"
 
     def get_start_date(self) -> str:
@@ -74,7 +77,7 @@ class CruiseHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.logger.info(f"Cruise_Header.Start_Date changed from {self._start_date} to '{value}'")
+            self.log_message(f"START_DATE was changed from {self._start_date} to '{value}'")
         self._start_date = f"'{value}'"
 
     def get_end_date(self) -> str:
@@ -85,7 +88,7 @@ class CruiseHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.logger.info(f"Cruise_Header.End_Date changed from {self._end_date} to '{value}'")
+            self.log_message(f"END_DATE was changed from {self._end_date} to '{value}'")
         self._end_date = f"'{value}'"
 
     def get_platform(self) -> str:
@@ -96,7 +99,7 @@ class CruiseHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.logger.info(f"Cruise_Header.Platform changed from {self._platform} to '{value}'")
+            self.log_message(f"PLATFORM was changed from {self._platform} to '{value}'")
         self._platform = f"'{value}'"
 
     def get_area_of_operation(self) -> str:
@@ -107,7 +110,7 @@ class CruiseHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.logger.info(f"Cruise_Header.Area_of_Operation changed from {self._area_of_operation} to '{value}'")
+            self.log_message(f"AREA_OF_OPERATION was changed from {self._area_of_operation} to '{value}'")
         self._area_of_operation = f"'{value}'"
 
     def get_cruise_name(self) -> str:
@@ -118,7 +121,7 @@ class CruiseHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.logger.info(f"Cruise_Header.Cruise_Name changed from {self._cruise_name} to '{value}'")
+            self.log_message(f"CRUISE_NAME was changed from {self._cruise_name} to '{value}'")
         self._cruise_name = f"'{value}'"
 
     def get_cruise_description(self) -> str:
@@ -129,7 +132,7 @@ class CruiseHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.logger.info(f"Cruise_Header.Cruise_Description changed from {self._cruise_description} "
+            self.log_message(f"CRUISE_DESCRIPTION was changed from {self._cruise_description} "
                                  f"to '{value}'")
         self._cruise_description = f"'{value}'"
 

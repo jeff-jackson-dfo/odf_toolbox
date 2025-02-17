@@ -35,6 +35,9 @@ class QualityHeader(BaseHeader):
         self._quality_tests = []
         self._quality_comments = []
 
+    def log_message(self, message):
+        super().log_message(f"QUALITY_HEADER: {message}")
+
     def get_quality_date(self):
         return self._quality_date
 
@@ -42,7 +45,7 @@ class QualityHeader(BaseHeader):
         assert isinstance(value, str), \
                f"Input value is not of type str: {value}"
         if not read_operation:
-            self.logger.info(f"Event_Header.Quality_Date changed from {self._quality_date} to '{value}'")
+            self.log_message(f"QUALITY_DATE was changed from {self._quality_date} to '{value}'")
         self._quality_date = value
 
     def get_quality_tests(self):
@@ -56,12 +59,12 @@ class QualityHeader(BaseHeader):
         number_of_tests = len(self.get_quality_tests())
         if test_number == 0 and number_of_tests >= 0:
             if not read_operation:
-                self.logger.info(f"The following quality test was added to Quality_Header.Quality_Tests: "
+                self.log_message(f"The following quality test was added to QUALITY_TESTS: "
                                      f"'{quality_test}'")
             self._quality_tests.append(quality_test)
         elif test_number <= number_of_tests and number_of_tests > 0:
             if not read_operation:
-                self.logger.info(f"Quality Test {test_number} in Quality_Header.Quality_Tests was changed from "
+                self.log_message(f"Quality Test {test_number} in QUALITY_TESTS was changed from "
                                      f"{self._quality_tests[test_number-1]} to '{quality_test}'")
             self._quality_tests[test_number] = quality_test
         else:
@@ -78,12 +81,12 @@ class QualityHeader(BaseHeader):
         number_of_comments = len(self.get_quality_comments())
         if comment_number == 0 and number_of_comments >= 0:
             if not read_operation:
-                self.logger.info(f"The following quality test was added to Quality_Header.Quality_Comments: "
+                self.log_message(f"The following quality comment was added to QUALITY_COMMENTS: "
                                      f"'{quality_comment}'")
             self._quality_comments.append(quality_comment)
         elif comment_number <= number_of_comments and number_of_comments > 0:
             if not read_operation:
-                self.logger.info(f"Quality Comment {comment_number} in Quality_Header.Quality_Comments was "
+                self.log_message(f"Quality Comment {comment_number} in QUALITY_COMMENTS was "
                                      f"changed from {self._quality_comments[comment_number-1]} to '{quality_comment}'")
             self._quality_comments[comment_number] = quality_comment
         else:

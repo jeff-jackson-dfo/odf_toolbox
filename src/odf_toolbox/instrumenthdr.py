@@ -38,6 +38,9 @@ class InstrumentHeader(BaseHeader):
         self._serial_number = ""
         self._description = ""
 
+    def log_message(self, message):
+        super().log_message(f"INSTRUMENT_HEADER: {message}")
+
     def get_instrument_type(self) -> str:
         return self._instrument_type
 
@@ -46,7 +49,7 @@ class InstrumentHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.logger.info(f"Instrument_Header.Instrument_Type changed from {self._instrument_type} to '{value}'")
+            self.log_message(f"INSTRUMENT_TYPE was changed from {self._instrument_type} to '{value}'")
         self._instrument_type = f"'{value}'"
 
     def get_model(self) -> str:
@@ -57,7 +60,7 @@ class InstrumentHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.logger.info(f"Instrument_Header.Model changed from {self._model} to '{value}'")
+            self.log_message(f"MODEL was changed from {self._model} to '{value}'")
         self._model = f"'{value}'"
 
     def get_serial_number(self) -> str:
@@ -68,7 +71,7 @@ class InstrumentHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.logger.info(f"Instrument_Header.Serial_Number changed from {self._serial_number} to '{value}'")
+            self.log_message(f"SERIAL_NUMBER was changed from {self._serial_number} to '{value}'")
         self._serial_number = f"'{value}'"
 
     def get_description(self) -> str:
@@ -79,7 +82,7 @@ class InstrumentHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.logger.info(f"Instrument_Header.Description changed from {self._description} to '{value}'")
+            self.log_message(f"DESCRIPTION was changed from {self._description} to '{value}'")
         self._description = f"'{value}'"
 
     def populate_object(self, instrument_fields: list):

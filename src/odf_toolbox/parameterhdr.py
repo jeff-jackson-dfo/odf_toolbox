@@ -67,6 +67,9 @@ class ParameterHeader(BaseHeader):
         self._number_valid = None
         self._number_null = None
 
+    def log_message(self, message):
+        super().log_message(f"PARAMETER_HEADER: {message}")
+
     def __str__(self):
         return (f'Parameter named "{self.get_name()}" has code "{self.get_code()}", type "{self.get_type()}'
                 f'", and units "{self.get_units()}".')
@@ -79,7 +82,7 @@ class ParameterHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.logger.info(f"The Type changed from {self.get_type()} to '{value}' for "
+            self.log_message(f"TYPE was changed from {self.get_type()} to '{value}' for "
                                  f"parameter {self.get_code()}.")
         self._type = f"'{value}'"
 
@@ -91,7 +94,7 @@ class ParameterHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.logger.info(f"The Name changed from {self.get_name()} to '{value}' for "
+            self.log_message(f"NAME was changed from {self.get_name()} to '{value}' for "
                                  f"parameter {self.get_code()}.")
         self._name = f"'{value}'"
 
@@ -103,7 +106,7 @@ class ParameterHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.logger.info(f"The Units changed from {self.get_units()} to '{value}' "
+            self.log_message(f"UNITS was changed from {self.get_units()} to '{value}' "
                                  f"for parameter {self.get_code()}")
         self._units = f"'{value}'"
 
@@ -119,7 +122,7 @@ class ParameterHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.logger.info(f"The Code changed from {self.get_code()} to '{value}' for "
+            self.log_message(f"CODE was changed from {self.get_code()} to '{value}' for "
                                  f"parameter {self.get_code()}.")
         self._code = f"'{value}'"
 
@@ -131,7 +134,7 @@ class ParameterHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.logger.info(f"The Wmo_Code changed from {self.get_wmo_code()} to '{value}' for "
+            self.log_message(f"WMO_CODE was changed from {self.get_wmo_code()} to '{value}' for "
                                  f"parameter {self.get_code()}.")
         self._wmo_code = f"'{value}'"
 
@@ -154,7 +157,7 @@ class ParameterHeader(BaseHeader):
         except ValueError:
             f"Input value could not be successfully converted to type float: {value}"
         if not read_operation:
-            self.logger.info(f"The Null_Value changed from {self.get_null_value()} to {value} for "
+            self.log_message(f"NULL_VALUE was changed from {self.get_null_value()} to {value} for "
                                  f"parameter {self.get_code()}.")
         self._null_value = value
 
@@ -171,7 +174,7 @@ class ParameterHeader(BaseHeader):
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            self.logger.info(f"Parameter_Header.Print_Field_Order changed from {self.get_print_field_order()} "
+            self.log_message(f"PRINT_FIELD_ORDER was changed from {self.get_print_field_order()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._print_field_order = value
 
@@ -188,7 +191,7 @@ class ParameterHeader(BaseHeader):
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            self.logger.info(f"The Print_Field_Width changed from {self.get_print_field_width()} "
+            self.log_message(f"PRINT_FIELD_WIDTH was changed from {self.get_print_field_width()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._print_field_width = value
 
@@ -205,7 +208,7 @@ class ParameterHeader(BaseHeader):
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            self.logger.info(f"The Print_Decimal_Places changed from {self.get_print_decimal_places()} "
+            self.log_message(f"PRINT_DECIMAL_PLACES was changed from {self.get_print_decimal_places()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._print_decimal_places = value
 
@@ -222,7 +225,7 @@ class ParameterHeader(BaseHeader):
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            self.logger.info(f"The Angle_of_Section changed from {self.get_angle_of_section()} "
+            self.log_message(f"ANGLE_OF_SECTION was changed from {self.get_angle_of_section()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._angle_of_section = value
 
@@ -239,7 +242,7 @@ class ParameterHeader(BaseHeader):
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            self.logger.info(f"The Magnetic_Variation changed from {self.get_magnetic_variation()} "
+            self.log_message(f"MAGNETIC_VARIATION was changed from {self.get_magnetic_variation()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._magnetic_variation = value
 
@@ -256,7 +259,7 @@ class ParameterHeader(BaseHeader):
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            self.logger.info(f"The Depth changed from {self.get_depth()} "
+            self.log_message(f"DEPTH was changed from {self.get_depth()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._depth = value
 
@@ -272,7 +275,7 @@ class ParameterHeader(BaseHeader):
             assert isinstance(value, str), \
                 f"Input value is not of type str: {value}"
         if not read_operation:
-            self.logger.info(f"The Minimum_Value changed from {self.get_minimum_value()} "
+            self.log_message(f"MINIMUM_VALUE was changed from {self.get_minimum_value()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._minimum_value = value
 
@@ -288,7 +291,7 @@ class ParameterHeader(BaseHeader):
             assert isinstance(value, str), \
                 f"Input value is not of type str: {value}"
         if not read_operation:
-            self.logger.info(f"The Maximum_Value changed from {self.get_maximum_value()} "
+            self.log_message(f"MAXIMUM_VALUE was changed from {self.get_maximum_value()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._maximum_value = value
 
@@ -305,7 +308,7 @@ class ParameterHeader(BaseHeader):
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            self.logger.info(f"The Number_Valid changed from {self.get_number_valid()} "
+            self.log_message(f"NUMBER_VALID was changed from {self.get_number_valid()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._number_valid = value
 
@@ -322,7 +325,7 @@ class ParameterHeader(BaseHeader):
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            self.logger.info(f"The Number_Null changed from {self.get_number_null()} "
+            self.log_message(f"NUMBER_NULL was changed from {self.get_number_null()} "
                                  f"to {value} for parameter {self.get_code()}")
         self._number_null = value
 

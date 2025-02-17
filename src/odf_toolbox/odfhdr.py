@@ -47,6 +47,9 @@ class OdfHeader(BaseHeader):
         self.record_header = RecordHeader()
         self.data = DataRecords()
 
+    def log_message(self, message):
+        super().log_message(f"ODF_HEADER: {message}")
+
     def get_file_specification(self) -> str:
         """
         Returns the file specification from the ODF_HEADER of an OdfHeader class object.
@@ -71,7 +74,7 @@ class OdfHeader(BaseHeader):
         assert isinstance(value, str), \
                f"Input value is not of type str: {value}"
         if not read_operation:
-            self.logger.info(f'Odf_Header.File_Specification changed from {self._file_specification} to {value}')
+            self.log_message(f'FILE_SPECIFICATION changed from {self._file_specification} to {value}')
         self._file_specification = value
 
     def get_odf_specification_version(self) -> float:
@@ -104,7 +107,7 @@ class OdfHeader(BaseHeader):
         except ValueError:
             f"Input value could not be successfully converted to type float: {value}"
         if not read_operation:
-            self.logger.info(f'Odf_Header.Odf_Specification_version changed from {self._odf_specification_version} to {value}')
+            self.log_message(f'ODF_SPECIFICATION_VERSION changed from {self._odf_specification_version} to {value}')
 
         self._odf_specification_version = value
 
@@ -329,9 +332,12 @@ class OdfHeader(BaseHeader):
 
     def add_log_to_history(self):
         # Access the log records stored in the custom handler
-        log_records = BaseHeader.shared_log_list
-        for record in log_records:
-            self.add_to_history(record)
+        for log_entry in self.shared_log_list:
+            self.add_to_history(log_entry)
+
+    def add_to_log(self, message):
+        # Access the log records stored in the custom handler
+        self.shared_log_list.append(message)
 
     def update_parameter(self, parameter_code: str, attribute: str, value):
         assert isinstance(parameter_code, str), \
