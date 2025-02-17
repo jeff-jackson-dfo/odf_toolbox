@@ -2,9 +2,10 @@ import glob
 import os
 from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox.odfhdr import OdfHeader
-from odf_toolbox import odfutils
+
 
 cwd = os.getcwd()
+print(cwd)
 path_to_orig = cwd + '\\tests\\Step_2_Apply_Calibrations\\ODF\\'
 path_to_revised = cwd + '\\tests\\Step_3_Update_Metadata\\'
 

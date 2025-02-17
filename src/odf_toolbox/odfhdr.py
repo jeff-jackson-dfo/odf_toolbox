@@ -1,6 +1,7 @@
 import datetime
-
 import pandas as pd
+
+# ods_toolbox modules to import
 from odf_toolbox import odfutils
 from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox.compasshdr import CompassCalHeader
@@ -378,12 +379,10 @@ if __name__ == "__main__":
 
     odf = OdfHeader()
 
-    my_file_path = 'D:\\DEV\odf_toolbox\\tests\\MCM_HUD2010014_1771_1039_3600.ODF'
-    # my_file_path = '../../tests/IML-Example.ODF'
-    # my_file_path = '../../tests/MADCP_HUD2016027_1999_3469-31_3600.ODF'
-    # my_file_path = '../../tests/MCTD_GRP2019001_2104_11689_1800.ODF'
+    my_path = 'C:\\DEV\\GitHub\\odf_toolbox\\tests\\'
+    my_file = 'MCM_HUD2010014_1771_1039_3600.ODF'
 
-    odf.read_odf(my_file_path)
+    odf.read_odf(my_path + my_file)
 
     # Modify some of the odf metadata
     odf.add_history()
