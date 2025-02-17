@@ -1,3 +1,8 @@
+import datetime
+
+import pandas as pd
+from odf_toolbox import odfutils
+from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox.compasshdr import CompassCalHeader
 from odf_toolbox.cruisehdr import CruiseHeader
 from odf_toolbox.eventhdr import EventHeader
@@ -10,13 +15,9 @@ from odf_toolbox.polynomialhdr import PolynomialCalHeader
 from odf_toolbox.qualityhdr import QualityHeader
 from odf_toolbox.recordhdr import RecordHeader
 from odf_toolbox.records import DataRecords
-from odf_toolbox import odfutils
-
-import pandas as pd
-import datetime
 
 
-class OdfHeader:
+class OdfHeader(BaseHeader):
     """
     Odf Header Class
 
@@ -30,6 +31,7 @@ class OdfHeader:
         """
         Method that initializes an OdfHeader class object.
         """
+        super().__init__()
         self._file_specification = "''"
         self._odf_specification_version = 3
         self.cruise_header = CruiseHeader()
@@ -44,6 +46,9 @@ class OdfHeader:
         self.parameter_headers = []
         self.record_header = RecordHeader()
         self.data = DataRecords()
+
+    def log_message(self, message):
+        super().log_message(f"ODF_HEADER: {message}")
 
     def get_file_specification(self) -> str:
         """
@@ -69,7 +74,7 @@ class OdfHeader:
         assert isinstance(value, str), \
                f"Input value is not of type str: {value}"
         if not read_operation:
-            odfutils.logger.info(f'Odf_Header.File_Specification changed from {self._file_specification} to {value}')
+            self.log_message(f'FILE_SPECIFICATION changed from {self._file_specification} to {value}')
         self._file_specification = value
 
     def get_odf_specification_version(self) -> float:
@@ -102,8 +107,7 @@ class OdfHeader:
         except ValueError:
             f"Input value could not be successfully converted to type float: {value}"
         if not read_operation:
-            odfutils.logger.info(
-                f'Odf_Header.Odf_Specification_version changed from {self._odf_specification_version} to {value}')
+            self.log_message(f'ODF_SPECIFICATION_VERSION changed from {self._odf_specification_version} to {value}')
 
         self._odf_specification_version = value
 
@@ -328,9 +332,12 @@ class OdfHeader:
 
     def add_log_to_history(self):
         # Access the log records stored in the custom handler
-        log_records = odfutils.list_handler.log_records
-        for record in log_records:
-            self.add_to_history(record)
+        for log_entry in self.shared_log_list:
+            self.add_to_history(log_entry)
+
+    def add_to_log(self, message):
+        # Access the log records stored in the custom handler
+        self.shared_log_list.append(message)
 
     def update_parameter(self, parameter_code: str, attribute: str, value):
         assert isinstance(parameter_code, str), \
@@ -366,9 +373,8 @@ if __name__ == "__main__":
 
     odf = OdfHeader()
 
-    # my_file_path = '../../tests/MCM_HUD2010014_1771_1039_3600.ODF'
-    # my_file_path = '../../tests/CTD_CAR2023011_017_496844_DN.ODF'
-    my_file_path = '../../tests/IML-Example.ODF'
+    my_file_path = 'D:\\DEV\odf_toolbox\\tests\\MCM_HUD2010014_1771_1039_3600.ODF'
+    # my_file_path = '../../tests/IML-Example.ODF'
     # my_file_path = '../../tests/MADCP_HUD2016027_1999_3469-31_3600.ODF'
     # my_file_path = '../../tests/MCTD_GRP2019001_2104_11689_1800.ODF'
 
@@ -394,7 +400,10 @@ if __name__ == "__main__":
         print('cspec and spec do not match')
         odf.set_file_specification(spec)
 
-    odf_file_text = odf.print_object(file_version=2)
+    odf.cruise_header.set_chief_scientist('Jeff Jackson')
+    odf.event_header.set_data_type('MELONS')
+
+    odf_file_text = odf.print_object(file_version=3)
 
     out_file = f"{spec}.ODF"
     file1 = open(out_file, "w")

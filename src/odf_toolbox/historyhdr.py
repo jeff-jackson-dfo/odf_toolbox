@@ -1,9 +1,15 @@
+from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox import odfutils
 
-class HistoryHeader:
+class HistoryHeader(BaseHeader):
+    
     def __init__(self):
+        super().__init__()
         self._creation_date = "''"
         self._processes = []
+
+    def log_message(self, message):
+        super().log_message(f"HISTORY_HEADER: {message}")
 
     def get_creation_date(self):
         return self._creation_date
@@ -13,7 +19,7 @@ class HistoryHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"History_Header.Creation_Date changed from {self._creation_date} to '{value}'")
+            self.log_message(f"CREATION_DATE changed from {self._creation_date} to '{value}'")
         self._creation_date = f"'{value}'"
 
     def get_process(self):
@@ -28,14 +34,14 @@ class HistoryHeader:
         number_of_processes = len(self._processes)
         if process_number == 0 and number_of_processes >= 0:
             if not read_operation:
-                odfutils.logger.info(f"The following Process line was added to the History_Header: '{process}'")
+                self.log_message(f"The following PROCESS line was added to the History_Header: '{process}'")
             self._processes.append(f"'{process}'")
         elif process_number <= number_of_processes and number_of_processes > 0:
-            odfutils.logger.info(f"Process {process_number} in History_Header.Processes was changed from "
+            self.log_message(f"PROCESS {process_number} was changed from "
                                  f"{self._processes[process_number - 1]} to '{process}'")
             self._processes[process_number-1] = f"'{process}'"
         else:
-            raise ValueError("The Process number does not match the number of Process lines.")
+            raise ValueError("The 'process' number does not match the number of PROCESS lines.")
 
     def add_process(self, process: str) -> None:
         assert isinstance(process, str), \

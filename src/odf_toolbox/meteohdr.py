@@ -1,8 +1,10 @@
+from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox import odfutils
 
-class MeteoHeader:
+class MeteoHeader(BaseHeader):
 
     def __init__(self):
+        super().__init__()
         self._air_temperature = None
         self._atmospheric_pressure = None
         self._wind_speed = None
@@ -12,6 +14,9 @@ class MeteoHeader:
         self._ice_thickness = None
         self._meteo_comments = []
 
+    def log_message(self, message):
+        self.logger.info(message)
+
     def get_air_temperature(self) -> float:
         return self._air_temperature
 
@@ -20,7 +25,7 @@ class MeteoHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Meteo_Header.Air_Temperature changed from {self._air_temperature} to '{value}'")
+            self.log_message(f"AIR_TEMPERATURE was changed from {self._air_temperature} to '{value}'")
         self._air_temperature = value
 
     def get_atmospheric_pressure(self):
@@ -31,7 +36,7 @@ class MeteoHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Meteo_Header.Atmospheric_Pressure changed from {self._atmospheric_pressure} "
+            self.log_message(f"ATMOSPHERIC_PRESSURE was changed from {self._atmospheric_pressure} "
                                  f"to '{value}'")
         self._atmospheric_pressure = value
 
@@ -43,7 +48,7 @@ class MeteoHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Meteo_Header.Wind_Speed changed from {self._wind_speed} to '{value}'")
+            self.log_message(f"WIND_SPEED was changed from {self._wind_speed} to '{value}'")
         self._wind_speed = value
 
     def get_wind_direction(self) -> float:
@@ -54,7 +59,7 @@ class MeteoHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Meteo_Header.Wind_Direction changed from {self._wind_direction} to '{value}'")
+            self.log_message(f"WIND_DIRECTION was changed from {self._wind_direction} to '{value}'")
         self._wind_direction = value
 
     def get_sea_state(self) -> float:
@@ -65,7 +70,7 @@ class MeteoHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Meteo_Header.Sea_State changed from {self._sea_state} to '{value}'")
+            self.log_message(f"SEA_STATE was changed from {self._sea_state} to '{value}'")
         self._sea_state = value
 
     def get_cloud_cover(self) -> float:
@@ -76,7 +81,7 @@ class MeteoHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Meteo_Header.Cloud_Cover changed from {self._cloud_cover} to '{value}'")
+            self.log_message(f"CLOUD_COVER was changed from {self._cloud_cover} to '{value}'")
         self._cloud_cover = value
 
     def get_ice_thickness(self) -> float:
@@ -87,7 +92,7 @@ class MeteoHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Meteo_Header.Ice_Thickness changed from {self._ice_thickness} to '{value}'")
+            self.log_message(f"ICE_THICKNESS was changed from {self._ice_thickness} to '{value}'")
         self._ice_thickness = value
 
     def get_meteo_comments(self) -> list:
@@ -101,12 +106,12 @@ class MeteoHeader:
         number_of_comments = len(self.get_meteo_comments())
         if comment_number == 0 and number_of_comments >= 0:
             if not read_operation:
-                odfutils.logger.info(f"The following comment was added to Meteo_Header.Meteo_Comments: "
+                self.log_message(f"The following comment was added to METEO_COMMENTS: "
                                      f"'{meteo_comment}'")
                 self._meteo_comments.append(meteo_comment)
         elif comment_number <= number_of_comments and number_of_comments > 0:
             if not read_operation:
-                odfutils.logger.info(f"Comment {comment_number} in Meteo_Header.Meteo_Comments was changed from "
+                self.log_message(f"Comment {comment_number} in METEO_COMMENTS was changed from "
                                      f"{self._meteo_comments[comment_number-1]} to '{meteo_comment}'")
             self._meteo_comments[comment_number] = meteo_comment
         else:

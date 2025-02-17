@@ -1,6 +1,7 @@
 from odf_toolbox import odfutils
+from odf_toolbox.basehdr import BaseHeader
 
-class CompassCalHeader:
+class CompassCalHeader(BaseHeader):
     def __init__(self):
         self._parameter_code = "''"
         self._calibration_date = "''"
@@ -8,13 +9,16 @@ class CompassCalHeader:
         self._directions = []
         self._corrections = []
 
+    def log_message(self, message):
+        super().log_message(f"COMPASS_CAL_HEADER: {message}")
+
     def get_parameter_code(self) -> str:
         return self._parameter_code
 
     def set_parameter_code(self, value: str, read_operation: bool = False) -> None:
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Compass_Cal_Header.Parameter_Code changed from {self._parameter_code} to '{value}'")
+            self.log_message(f"PARAMETER_CODE was changed from {self._parameter_code} to '{value}'")
         self._parameter_code = f"'{value}'"
 
     def get_calibration_date(self) -> str:
@@ -25,7 +29,7 @@ class CompassCalHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Compass_Cal_Header.Calibration_Date changed from {self._calibration_date}"
+            self.log_message(f"CALIBRATION_DATE was changed from {self._calibration_date}"
                                  f" to '{value}'")
         self._calibration_date = f"'{value}'"
 
@@ -37,7 +41,7 @@ class CompassCalHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Compass_Cal_Header.Application_Date changed from {self._application_date}"
+            self.log_message(f"APPLICATION_DATE was changed from {self._application_date}"
                                  f" to '{value}'")
         self._application_date = f"'{value}'"
 
@@ -52,18 +56,18 @@ class CompassCalHeader:
         number_of_directions = len(self.get_directions())
         if direction_number == 0 and number_of_directions == 0:
             if not read_operation:
-                odfutils.logger.info(f"The following set of directions was added to Compass_Cal_Header.Directions: "
+                self.log_message(f"The following set of directions was added to Compass_Cal_Header.Directions: "
                                      f"{direction_list}")
             self._directions = direction_list
         elif direction_number == 0 and number_of_directions > 0:
             if not read_operation:
-                odfutils.logger.info(f"The following set of directions was added to Compass_Cal_Header.Directions: "
+                self.log_message(f"The following set of directions was added to Compass_Cal_Header.Directions: "
                                      f"{direction_list}")
             self._directions.extend(direction_list)
         elif direction_number <= number_of_directions and number_of_directions > 0:
             if len(direction_list) == 1:
                 if not read_operation:
-                    odfutils.logger.info(f"Direction {direction_list.pop()} in Compass_Cal_Header.Directions was "
+                    self.log_message(f"DIRECTION {direction_list.pop()} in Compass_Cal_Header.Directions was "
                                          f"changed from {self._directions[direction_number - 1]} "
                                          f"to {direction_list.pop()}")
                 self._directions[direction_number] = direction_list.pop()
@@ -81,18 +85,18 @@ class CompassCalHeader:
         number_of_corrections = len(self.get_corrections())
         if correction_number == 0 and number_of_corrections == 0:
             if not read_operation:
-                odfutils.logger.info(f"The following set of corrections was added to Compass_Cal_Header.Corrections: "
+                self.log_message(f"The following set of corrections was added to Compass_Cal_Header.Corrections: "
                                      f"{correction_list}")
             self._corrections = correction_list
         elif correction_number == 0 and number_of_corrections > 0:
             if not read_operation:
-                odfutils.logger.info(f"The following set of corrections was added to Compass_Cal_Header.Corrections: "
+                self.log_message(f"The following set of corrections was added to Corrections: "
                                      f"{correction_list}")
             self._corrections.extend(correction_list)
         elif correction_number <= number_of_corrections and number_of_corrections > 0:
             if len(correction_list) == 1:
                 if not read_operation:
-                    odfutils.logger.info(f"Correction {correction_list.pop()} in Compass_Cal_Header.Corrections was "
+                    self.log_message(f"CORRECTION {correction_list.pop()} in Compass_Cal_Header.Corrections was "
                                          f"changed from {self._corrections[correction_number - 1]} "
                                          f"to '{correction_list.pop()}'")
                 self._corrections[correction_number] = correction_list.pop()

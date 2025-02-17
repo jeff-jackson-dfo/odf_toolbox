@@ -1,7 +1,10 @@
+from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox import odfutils
 
-class EventHeader:
+class EventHeader(BaseHeader):
+    
     def __init__(self):
+        super().__init__()
         self._data_type = "''"
         self._event_number = "''"
         self._event_qualifier1 = "''"
@@ -23,6 +26,9 @@ class EventHeader:
         self._set_number = "''"
         self._event_comments = []
 
+    def log_message(self, message):
+        super().log_message(f"EVENT_HEADER: {message}")
+
     def get_data_type(self) -> str:
         return self._data_type
 
@@ -31,7 +37,7 @@ class EventHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.Data_Type changed from {self._data_type} to '{value}'")
+            self.log_message(f"DATA_TYPE was changed from {self._data_type} to '{value}'")
         self._data_type = f"'{value}'"
 
     def get_event_number(self) -> str:
@@ -42,7 +48,7 @@ class EventHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.Event_Number changed from {self._event_number} to '{value}'")
+            self.log_message(f"EVENT_NUMBER was changed from {self._event_number} to '{value}'")
         self._event_number = f"'{value}'"
 
     def get_event_qualifier1(self) -> str:
@@ -53,7 +59,7 @@ class EventHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.Event_Qualifier1 changed from {self._event_qualifier1} to '{value}'")
+            self.log_message(f"EVENT_QUALIFIER1 was changed from {self._event_qualifier1} to '{value}'")
         self._event_qualifier1 = f"'{value}'"
 
     def get_event_qualifier2(self) -> str:
@@ -64,7 +70,7 @@ class EventHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.Event_Qualifier2 changed from {self._event_qualifier2} to '{value}'")
+            self.log_message(f"EVENT_QUALIFIER2 was changed from {self._event_qualifier2} to '{value}'")
         self._event_qualifier2 = f"'{value}'"
 
     def get_creation_date(self) -> str:
@@ -75,7 +81,7 @@ class EventHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.Creation_Date changed from {self._creation_date} to '{value}'")
+            self.log_message(f"CREATION_DATE was changed from {self._creation_date} to '{value}'")
         self._creation_date = f"'{value}'"
 
     def get_original_creation_date(self) -> str:
@@ -86,7 +92,7 @@ class EventHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.Original_Creation_Date changed from {self._original_creation_date} "
+            self.log_message(f"ORIGINAL_CREATION_DATE was changed from {self._original_creation_date} "
                                  f"to '{value}'")
         self._original_creation_date = f"'{value}'"
 
@@ -98,7 +104,7 @@ class EventHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.Start_Date_Time changed from {self._start_date_time} to '{value}'")
+            self.log_message(f"START_DATE_TIME was changed from {self._start_date_time} to '{value}'")
         self._start_date_time = f"'{value}'"
 
     def get_end_date_time(self) -> str:
@@ -109,7 +115,7 @@ class EventHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.End_Date_Time changed from {self._end_date_time} to '{value}'")
+            self.log_message(f"END_DATE_TIME was changed from {self._end_date_time} to '{value}'")
         self._end_date_time = f"'{value}'"
 
     def get_initial_latitude(self) -> float:
@@ -125,7 +131,7 @@ class EventHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.Initial_Latitude changed from {self._initial_latitude} to {value}")
+            self.log_message(f"INITIAL_LATITUDE was changed from {self._initial_latitude} to {value}")
         self._initial_latitude = value
 
     def get_initial_longitude(self) -> float:
@@ -141,7 +147,7 @@ class EventHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.Initial_Longitude changed from {self._initial_longitude} to {value}")
+            self.log_message(f"INITIAL_LONGITUDE was changed from {self._initial_longitude} to {value}")
         self._initial_longitude = value
 
     def get_end_latitude(self) -> float:
@@ -157,7 +163,7 @@ class EventHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.End_Latitude changed from {self._end_latitude} to {value}")
+            self.log_message(f"END_LATITUDE was changed from {self._end_latitude} to {value}")
         self._end_latitude = value
 
     def get_end_longitude(self) -> float:
@@ -173,7 +179,7 @@ class EventHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.End_Longitude changed from {self._end_longitude} to {value}")
+            self.log_message(f"END_LONGITUDE was changed from {self._end_longitude} to {value}")
         self._end_longitude = value
 
     def get_min_depth(self) -> float:
@@ -189,7 +195,7 @@ class EventHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.Min_Depth changed from {self._min_depth} to {value}")
+            self.log_message(f"MIN_DEPTH was changed from {self._min_depth} to {value}")
         self._min_depth = value
 
     def get_max_depth(self) -> float:
@@ -205,7 +211,7 @@ class EventHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.Max_Depth changed from {self._max_depth} to {value}")
+            self.log_message(f"MAX_DEPTH was changed from {self._max_depth} to {value}")
         self._max_depth = value
 
     def get_sampling_interval(self) -> float:
@@ -221,7 +227,7 @@ class EventHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.Sampling_Interval changed from {self._sampling_interval} to {value}")
+            self.log_message(f"SAMPLING_INTERVAL was changed from {self._sampling_interval} to {value}")
         self._sampling_interval = value
 
     def get_sounding(self) -> float:
@@ -237,7 +243,7 @@ class EventHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.Sounding changed from {self._sounding} to {value}")
+            self.log_message(f"SOUNDING was changed from {self._sounding} to {value}")
         self._sounding = value
 
     def get_depth_off_bottom(self) -> float:
@@ -253,7 +259,7 @@ class EventHeader:
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.Depth_Off_Bottom changed from {self._depth_off_bottom} to {value}")
+            self.log_message(f"DEPTH_OFF_BOTTOM was changed from {self._depth_off_bottom} to {value}")
         self._depth_off_bottom = value
 
     def get_station_name(self) -> str:
@@ -264,7 +270,7 @@ class EventHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.Station_Name changed from {self._station_name} to '{value}'")
+            self.log_message(f"STATION_NAME was changed from {self._station_name} to '{value}'")
         self._station_name = f"'{value}'"
 
     def get_set_number(self) -> str:
@@ -275,7 +281,7 @@ class EventHeader:
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            odfutils.logger.info(f"Event_Header.Set_Number changed from {self._set_number} to '{value}'")
+            self.log_message(f"SET_NUMBER was changed from {self._set_number} to '{value}'")
         self._set_number = f"'{value}'"
 
     def get_event_comments(self) -> list:
@@ -290,16 +296,16 @@ class EventHeader:
         number_of_comments = len(self.get_event_comments())
         if comment_number == 0 and number_of_comments >= 0:
             if not read_operation:
-                odfutils.logger.info(f"The following comment was added to Event_Header.Event_Comments: "
+                self.log_message(f"The following comment was added to EVENT_COMMENTS: "
                                      f"'{event_comment}'")
             self._event_comments.append(f"'{event_comment}'")
         elif comment_number <= number_of_comments and number_of_comments > 0:
             if not read_operation:
-                odfutils.logger.info(f"Comment {comment_number} in Event_Header.Event_Comments was changed from "
+                self.log_message(f"Comment {comment_number} in EVENT_COMMENTS was changed from "
                                      f"{self._event_comments[comment_number-1]} to '{event_comment}'")
             self._event_comments[comment_number-1] = f"'{event_comment}'"
         else:
-            raise ValueError("The 'Event_Comment' number does not match the number of Event_Comments lines.")
+            raise ValueError("The 'event_comment' number does not match the number of EVENT_COMMENTS lines.")
 
     def populate_object(self, event_fields: list):
         assert isinstance(event_fields, list), \
