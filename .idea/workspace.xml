@@ -4,41 +4,58 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="71a25a35-c369-4acb-8399-e39f5af6efd4" name="Changes" comment="" />
+    <list default="true" id="bd4dd1e0-0269-4688-883a-eaabcce1beaf" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "jeff-jackson-dfo"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;jeff-jackson-dfo&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/jeff-jackson-dfo/odf_toolbox.git",
-    "accountId": "c3ba4d26-a9e2-4989-b4b5-1b51da97c558"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/jeff-jackson-dfo/odf_toolbox.git&quot;,
+    &quot;accountId&quot;: &quot;3ef2e852-d33a-4ae4-8781-1d54a9a9030b&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 2
-}]]></component>
-  <component name="ProjectId" id="2t52IeZIMBlPmQzpiGOQCcaOpOh" />
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2szxJsmdHRQSkSDmuD4OJE7VLpV" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Python.listhandler.executor": "Run",
+    "Python.metadata_report.executor": "Run",
+    "Python.odflogger.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "separate-logging",
+    "last_opened_file_path": "C:/DEV/GitHub/odf_toolbox/src/odf_toolbox",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -47,6 +64,11 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\DEV\GitHub\odf_toolbox\src\odf_toolbox" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -58,16 +80,24 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="71a25a35-c369-4acb-8399-e39f5af6efd4" name="Changes" comment="" />
-      <created>1739627539184</created>
+      <changelist id="bd4dd1e0-0269-4688-883a-eaabcce1beaf" name="Changes" comment="" />
+      <created>1739472135869</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1739627539184</updated>
-      <workItem from="1739627542461" duration="826000" />
+      <updated>1739472135869</updated>
+      <workItem from="1739472136976" duration="1805000" />
+      <workItem from="1739534726120" duration="3871000" />
+      <workItem from="1739540143125" duration="4099000" />
+      <workItem from="1739627319877" duration="5176000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/odf_toolbox$odflogger.coverage" NAME="odflogger Coverage Results" MODIFIED="1739541104118" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/odf_toolbox" />
+    <SUITE FILE_PATH="coverage/odf_toolbox$metadata_report.coverage" NAME="metadata_report Coverage Results" MODIFIED="1739473104939" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/odf_toolbox" />
+    <SUITE FILE_PATH="coverage/odf_toolbox$listhandler.coverage" NAME="listhandler Coverage Results" MODIFIED="1739540992381" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/odf_toolbox" />
   </component>
 </project>
