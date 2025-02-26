@@ -10,7 +10,7 @@ class EventHeader(BaseHeader):
         self._event_qualifier1 = "''"
         self._event_qualifier2 = "''"
         self._creation_date = "''"
-        self._original_creation_date = "''"
+        self._orig_creation_date = "''"
         self._start_date_time = "''"
         self._end_date_time = "''"
         self._initial_latitude = None
@@ -84,17 +84,17 @@ class EventHeader(BaseHeader):
             self.log_message(f"CREATION_DATE was changed from {self._creation_date} to '{value}'")
         self._creation_date = f"'{value}'"
 
-    def get_original_creation_date(self) -> str:
-        return self._original_creation_date
+    def get_orig_creation_date(self) -> str:
+        return self._orig_creation_date
 
-    def set_original_creation_date(self, value: str, read_operation: bool = False) -> None:
+    def set_orig_creation_date(self, value: str, read_operation: bool = False) -> None:
         assert isinstance(value, str), \
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"ORIGINAL_CREATION_DATE was changed from {self._original_creation_date} "
-                                 f"to '{value}'")
-        self._original_creation_date = f"'{value}'"
+            self.log_message(f"ORIG_CREATION_DATE was changed from {self._orig_creation_date} "
+                                f"to '{value}'")
+        self._orig_creation_date = f"'{value}'"
 
     def get_start_date_time(self) -> str:
         return self._start_date_time
@@ -327,8 +327,8 @@ class EventHeader(BaseHeader):
                         self.set_event_qualifier2(value, read_operation=True)
                     case 'CREATION_DATE':
                         self.set_creation_date(value, read_operation=True)
-                    case 'ORIGINAL_CREATION_DATE':
-                        self.set_original_creation_date(value, read_operation=True)
+                    case 'ORIG_CREATION_DATE':
+                        self.set_orig_creation_date(value, read_operation=True)
                     case 'START_DATE_TIME':
                         self.set_start_date_time(value, read_operation=True)
                     case 'END_DATE_TIME':
@@ -365,8 +365,8 @@ class EventHeader(BaseHeader):
         event_header_output += f"  EVENT_NUMBER = {self.get_event_number()}\n"
         event_header_output += f"  EVENT_QUALIFIER1 = {self.get_event_qualifier1()}\n"
         event_header_output += f"  EVENT_QUALIFIER2 = {self.get_event_qualifier2()}\n"
-        event_header_output += f"  CREATION_DATE = {odfutils.check_datetime(odfutils.get_current_date_time())}\n"
-        event_header_output += f"  ORIG_CREATION_DATE = {odfutils.check_datetime(self.get_creation_date())}\n"
+        event_header_output += f"  CREATION_DATE = {odfutils.check_datetime(self.get_creation_date())}\n"
+        event_header_output += f"  ORIG_CREATION_DATE = {odfutils.check_datetime(self.get_orig_creation_date())}\n"
         event_header_output += f"  START_DATE_TIME = {odfutils.check_datetime(self.get_start_date_time())}\n"
         event_header_output += f"  END_DATE_TIME = {odfutils.check_datetime(self.get_end_date_time())}\n"
         event_header_output += (f"  INITIAL_LATITUDE = "
@@ -389,3 +389,8 @@ class EventHeader(BaseHeader):
         else:
             event_header_output += "  EVENT_COMMENTS = ''\n"
         return event_header_output
+
+if __name__ == "__main__":
+
+    ehdr = EventHeader()
+    print(ehdr.print_object())

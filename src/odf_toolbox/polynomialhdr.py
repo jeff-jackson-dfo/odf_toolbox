@@ -1,5 +1,6 @@
 from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox import odfutils
+import re
 
 class PolynomialCalHeader(BaseHeader):
     
@@ -70,6 +71,12 @@ class PolynomialCalHeader(BaseHeader):
         assert isinstance(coefficient_number, int), \
                f"Input value is not of type int: {coefficient_number}"
         number_coefficients = self.get_number_coefficients()
+        # For old files that expressed exponential notation using the letter D instead of E.
+        # Replace all exponents using D with E.
+        for idx, coefficient in enumerate(coefficient_list):
+            if re.search('D', coefficient):
+                revised_coefficient = re.sub('D', 'E', coefficient)
+                coefficient_list[idx] = float(revised_coefficient)
         if coefficient_number == 0 and number_coefficients == 0:
             if not read_operation:
                 self.log_message(f"The following set of COEFFICIENTS was added : {coefficient_list}")
@@ -131,3 +138,16 @@ class PolynomialCalHeader(BaseHeader):
             coefficients_print = coefficients_print + "{:.8e}".format(coefficient) + " "
         polynomial_header_output += f"  COEFFICIENTS = {coefficients_print}\n"
         return polynomial_header_output
+
+
+if __name__ == "__main__":
+
+    poly = PolynomialCalHeader()
+
+    poly.set_parameter_code('PRES_01')
+    poly.set_calibration_date('11-JUN-1995 05:35:46.82')
+    poly.set_application_date('11-JUN-1995 05:35:46.82')
+    poly.set_number_coefficients(2)
+    poly.set_coefficients(['0.60000000D+01',  '0.15000001D+00'])
+
+    print(poly.print_object())

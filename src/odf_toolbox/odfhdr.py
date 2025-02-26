@@ -380,7 +380,7 @@ if __name__ == "__main__":
     odf = OdfHeader()
 
     my_path = 'C:\\DEV\\GitHub\\odf_toolbox\\tests\\'
-    my_file = 'MCM_HUD2010014_1771_1039_3600.ODF'
+    my_file = 'CTD_91001_1_1_DN.ODF'
 
     odf.read_odf(my_path + my_file)
 
@@ -392,6 +392,12 @@ if __name__ == "__main__":
     odf.cruise_header.set_end_date('22-OCT-2010 00:00:00')
     odf.cruise_header.set_platform('HUDSON')
     odf.event_header.set_station_name('AR7W_15')
+
+    # from datetime import datetime
+    # now: datetime = datetime.now()
+    # current_date_time = f'{now:%d-%b-%Y %H:%M:%S.%f}'.upper()
+    # odf.event_header.set_original_creation_date(current_date_time)
+    # print(odf.event_header.get_original_creation_date())
 
     codes = odf.get_parameters()
     if 'SYTM_01' in codes:
@@ -413,3 +419,10 @@ if __name__ == "__main__":
     file1 = open(out_file, "w")
     file1.write(odf_file_text)
     file1.close()
+
+    test_file = 'CTD_88N112_006_1_DN.ODF'
+    odf = OdfHeader()
+    odf.read_odf(my_path + test_file)
+    print(odf.event_header.print_object())
+    print(odf.event_header.get_creation_date())
+    print(odf.event_header.get_orig_creation_date())

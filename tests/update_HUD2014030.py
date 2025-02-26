@@ -18,9 +18,7 @@ files = glob.glob('*.ODF')
 # Query the user for his/her name so he/she may be identified in the
 # history header as the responsible data quality control person.
 # print()
-# user = input('Please enter the name of the analyst performing this data processing: ')
-user = 'Jeff Jackson'
-# print()
+user = input('Please enter the name of the analyst performing this data processing: ')
 
 # Loop through the list of ODF files and process both the DN and UP files.
 # Iterate through the list of input files.
