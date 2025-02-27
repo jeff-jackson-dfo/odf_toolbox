@@ -1,6 +1,5 @@
 from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox import odfutils
-
 class ParameterHeader(BaseHeader):
     """
     A class to represent a Parameter Header in an ODF object.
@@ -50,11 +49,11 @@ class ParameterHeader(BaseHeader):
 
     def __init__(self):
         super().__init__()
-        self._type = "''"
-        self._name = "''"
-        self._units = "''"
-        self._code = "''"
-        self._wmo_code = "''"
+        self._type = ''
+        self._name = ''
+        self._units = ''
+        self._code = ''
+        self._wmo_code = ''
         self._null_value = None
         self._print_field_order = None
         self._print_field_width = None
@@ -82,9 +81,8 @@ class ParameterHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"TYPE was changed from {self.get_type()} to '{value}' for "
-                                 f"parameter {self.get_code()}.")
-        self._type = f"'{value}'"
+            self.log_message(f'TYPE was changed from "{self.get_type()}" to "{value}" for parameter "{self.get_code()}".')
+        self._type = f'{value}'
 
     def get_name(self) -> str:
         return self._name
@@ -94,9 +92,8 @@ class ParameterHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"NAME was changed from {self.get_name()} to '{value}' for "
-                                 f"parameter {self.get_code()}.")
-        self._name = f"'{value}'"
+            self.log_message(f'NAME was changed from "{self.get_name()}" to "{value}" for parameter "{self.get_code()}".')
+        self._name = f'{value}'
 
     def get_units(self) -> str:
         return self._units
@@ -106,9 +103,8 @@ class ParameterHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"UNITS was changed from {self.get_units()} to '{value}' "
-                                 f"for parameter {self.get_code()}")
-        self._units = f"'{value}'"
+            self.log_message(f'UNITS was changed from "{self.get_units()}" to "{value}" for parameter "{self.get_code()}".')
+        self._units = f'{value}'
 
     def get_code(self) -> str:
         return self._code
@@ -122,9 +118,8 @@ class ParameterHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"CODE was changed from {self.get_code()} to '{value}' for "
-                                 f"parameter {self.get_code()}.")
-        self._code = f"'{value}'"
+            self.log_message(f'CODE was changed from "{self.get_code()}" to "{value}" for parameter "{self.get_code()}".')
+        self._code = f'{value}'
 
     def get_wmo_code(self) -> str:
         return self._wmo_code
@@ -134,9 +129,8 @@ class ParameterHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"WMO_CODE was changed from {self.get_wmo_code()} to '{value}' for "
-                                 f"parameter {self.get_code()}.")
-        self._wmo_code = f"'{value}'"
+            self.log_message(f'WMO_CODE was changed from "{self.get_wmo_code()}" to "{value}" for parameter "{self.get_code()}".')
+        self._wmo_code = f'{value}'
 
     def get_null_value(self):
         # print(self._null_value)
@@ -347,6 +341,8 @@ class ParameterHeader(BaseHeader):
                         self.set_units(value, read_operation=True)
                     case 'CODE':
                         self.set_code(value, read_operation=True)
+                    case 'WMO_CODE':
+                        self.set_wmo_code(value, read_operation=True)
                     case 'NULL_VALUE':
                         if type(self._null_value) == 'string':
                             self.set_null_value(value, 'string', read_operation=True)
@@ -363,6 +359,8 @@ class ParameterHeader(BaseHeader):
                     case 'MAGNETIC_VARIATION':
                         self.set_magnetic_variation(value, read_operation=True)
                     case 'DEPTH':
+                        new_value = odfutils.check_string(value)
+                        value = odfutils.check_float(float(new_value))
                         self.set_depth(value, read_operation=True)
                     case 'MINIMUM_VALUE':
                         self.set_minimum_value(value, read_operation=True)
@@ -380,36 +378,56 @@ class ParameterHeader(BaseHeader):
         assert file_version >= 2, \
                f"File version must be >= 2.0 but is: {file_version}"
         parameter_header_output = "PARAMETER_HEADER\n"
-        parameter_header_output += f"  TYPE = {self.get_type()}\n"
-        parameter_header_output += f"  NAME = {self.get_name()}\n"
-        parameter_header_output += f"  UNITS = {self.get_units()}\n"
-        parameter_header_output += f"  CODE = {self.get_code()}\n"
-        # print(self.get_name())
-        # print(print(type(self.get_null_value())))
-        # print(print(self.get_null_value()))
+        parameter_header_output += f"  TYPE = '{self.get_type()}'\n"
+        parameter_header_output += f"  NAME = '{self.get_name()}'\n"
+        parameter_header_output += f"  UNITS =' {self.get_units()}'\n"
+        parameter_header_output += f"  CODE = '{self.get_code()}'\n"
+        parameter_header_output += f"  WMO_CODE = '{self.get_wmo_code()}'\n"
         if type(self.get_null_value()) == float:
-            parameter_header_output += f"  NULL_VALUE = {odfutils.check_float_value(self.get_null_value()):.2f}\n"
+            parameter_header_output += f"  NULL_VALUE = {odfutils.check_float(self.get_null_value()):.2f}\n"
         elif type(self.get_null_value()) == str:
             parameter_header_output += f"  NULL_VALUE = {odfutils.check_value(self.get_null_value())}\n"
         if file_version == 3:
             parameter_header_output += (f"  PRINT_FIELD_ORDER = "
-                                        f"{odfutils.check_int_value(self.get_print_field_order())}\n")
-        parameter_header_output += f"  PRINT_FIELD_WIDTH = {odfutils.check_int_value(self.get_print_field_width())}\n"
+                                        f"{odfutils.check_int(self.get_print_field_order())}\n")
+        parameter_header_output += f"  PRINT_FIELD_WIDTH = {odfutils.check_int(self.get_print_field_width())}\n"
         parameter_header_output += (f"  PRINT_DECIMAL_PLACES = "
-                                    f"{odfutils.check_int_value(self.get_print_decimal_places())}\n")
+                                    f"{odfutils.check_int(self.get_print_decimal_places())}\n")
         parameter_header_output += (f"  ANGLE_OF_SECTION = "
-                                    f"{odfutils.check_float_value(self.get_angle_of_section()):.6f}\n")
+                                    f"{odfutils.check_float(self.get_angle_of_section()):.6f}\n")
         parameter_header_output += (f"  MAGNETIC_VARIATION = "
-                                    f"{odfutils.check_float_value(self.get_magnetic_variation()):.6f}\n")
-        parameter_header_output += f"  DEPTH = {odfutils.check_float_value(self.get_depth()):.6f}\n"
+                                    f"{odfutils.check_float(self.get_magnetic_variation()):.6f}\n")
+        parameter_header_output += f"  DEPTH = {odfutils.check_float(self.get_depth()):.6f}\n"
         if self.get_units() == "'GMT'" or self.get_units() == "'UTC'" or self.get_type() == "'SYTM'":
             parameter_header_output += f"  MINIMUM_VALUE = {odfutils.check_value(self.get_minimum_value())}\n"
             parameter_header_output += f"  MAXIMUM_VALUE = {odfutils.check_value(self.get_maximum_value())}\n"
         else:
             parameter_header_output += (f"  MINIMUM_VALUE = "
-                                        f"{odfutils.check_float_value(self.get_minimum_value()):.1f}\n")
+                                        f"{odfutils.check_float(self.get_minimum_value()):.1f}\n")
             parameter_header_output += (f"  MAXIMUM_VALUE = "
-                                        f"{odfutils.check_float_value(self.get_maximum_value()):.1f}\n")
-        parameter_header_output += f"  NUMBER_VALID = {odfutils.check_int_value(self.get_number_valid())}\n"
-        parameter_header_output += f"  NUMBER_NULL = {odfutils.check_int_value(self.get_number_null())}\n"
+                                        f"{odfutils.check_float(self.get_maximum_value()):.1f}\n")
+        parameter_header_output += f"  NUMBER_VALID = {odfutils.check_int(self.get_number_valid())}\n"
+        parameter_header_output += f"  NUMBER_NULL = {odfutils.check_int(self.get_number_null())}\n"
         return parameter_header_output
+
+
+if __name__ == "__main__":
+
+    param = ParameterHeader()
+    param.set_type('DOUB')
+    param.set_name('Pressure')
+    param.set_units('decibars')
+    param.set_code('PRES_01')
+    param.set_wmo_code('PRES')
+    param.set_null_value('-99.0', 'str')
+    param.set_print_field_width(10)
+    param.set_print_decimal_places(3)
+    param.set_angle_of_section(0.0)
+    param.set_magnetic_variation(0.0)
+    depth = odfutils.check_string('0.00000000D+00')
+    param.set_depth(float(depth))
+    param.set_minimum_value(2.177)
+    param.set_maximum_value(176.5)
+    param.set_number_valid(1064)
+    param.set_number_null(643)
+    print(param.print_object())

@@ -117,9 +117,9 @@ class RecordHeader(BaseHeader):
 
     def print_object(self) -> str:
         record_header_output = "RECORD_HEADER\n"
-        record_header_output += f"  NUM_CALIBRATION = {odfutils.check_int_value(self.get_num_calibration())}\n"
-        record_header_output += f"  NUM_HISTORY = {odfutils.check_int_value(self.get_num_history())}\n"
-        record_header_output += f"  NUM_SWING = {odfutils.check_int_value(self.get_num_swing())}\n"
-        record_header_output += f"  NUM_PARAM = {odfutils.check_int_value(self.get_num_param())}\n"
-        record_header_output += f"  NUM_CYCLE = {odfutils.check_int_value(self.get_num_cycle())}\n"
+        record_header_output += f"  NUM_CALIBRATION = {odfutils.check_int(self.get_num_calibration())}\n"
+        record_header_output += f"  NUM_HISTORY = {odfutils.check_int(self.get_num_history())}\n"
+        record_header_output += f"  NUM_SWING = {odfutils.check_int(self.get_num_swing())}\n"
+        record_header_output += f"  NUM_PARAM = {odfutils.check_int(self.get_num_param())}\n"
+        record_header_output += f"  NUM_CYCLE = {odfutils.check_int(self.get_num_cycle())}\n"
         return record_header_output

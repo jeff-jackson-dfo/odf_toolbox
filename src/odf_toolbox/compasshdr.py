@@ -3,9 +3,9 @@ from odf_toolbox.basehdr import BaseHeader
 
 class CompassCalHeader(BaseHeader):
     def __init__(self):
-        self._parameter_code = "''"
-        self._calibration_date = "''"
-        self._application_date = "''"
+        self._parameter_code = ''
+        self._calibration_date = ''
+        self._application_date = ''
         self._directions = []
         self._corrections = []
 
@@ -18,8 +18,8 @@ class CompassCalHeader(BaseHeader):
     def set_parameter_code(self, value: str, read_operation: bool = False) -> None:
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"PARAMETER_CODE was changed from {self._parameter_code} to '{value}'")
-        self._parameter_code = f"'{value}'"
+            self.log_message(f'PARAMETER_CODE was changed from "{self._parameter_code}" to "{value}"')
+        self._parameter_code = f'{value}'
 
     def get_calibration_date(self) -> str:
         return self._calibration_date
@@ -29,9 +29,8 @@ class CompassCalHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"CALIBRATION_DATE was changed from {self._calibration_date}"
-                                 f" to '{value}'")
-        self._calibration_date = f"'{value}'"
+            self.log_message(f'CALIBRATION_DATE was changed from "{self._calibration_date}" to "{value}"')
+        self._calibration_date = f'{value}'
 
     def get_application_date(self) -> str:
         return self._application_date
@@ -41,9 +40,8 @@ class CompassCalHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"APPLICATION_DATE was changed from {self._application_date}"
-                                 f" to '{value}'")
-        self._application_date = f"'{value}'"
+            self.log_message(f'APPLICATION_DATE was changed from "{self._application_date}" to "{value}"')
+        self._application_date = f'{value}'
 
     def get_directions(self) -> list:
         return self._directions
@@ -56,13 +54,11 @@ class CompassCalHeader(BaseHeader):
         number_of_directions = len(self.get_directions())
         if direction_number == 0 and number_of_directions == 0:
             if not read_operation:
-                self.log_message(f"The following set of directions was added to Compass_Cal_Header.Directions: "
-                                     f"{direction_list}")
+                self.log_message(f'The following set of directions was added to Compass_Cal_Header.Directions: {direction_list}')
             self._directions = direction_list
         elif direction_number == 0 and number_of_directions > 0:
             if not read_operation:
-                self.log_message(f"The following set of directions was added to Compass_Cal_Header.Directions: "
-                                     f"{direction_list}")
+                self.log_message(f"The following set of directions was added to Compass_Cal_Header.Directions: {direction_list}")
             self._directions.extend(direction_list)
         elif direction_number <= number_of_directions and number_of_directions > 0:
             if len(direction_list) == 1:
@@ -85,13 +81,11 @@ class CompassCalHeader(BaseHeader):
         number_of_corrections = len(self.get_corrections())
         if correction_number == 0 and number_of_corrections == 0:
             if not read_operation:
-                self.log_message(f"The following set of corrections was added to Compass_Cal_Header.Corrections: "
-                                     f"{correction_list}")
+                self.log_message(f"The following set of corrections was added to Compass_Cal_Header.Corrections: {correction_list}")
             self._corrections = correction_list
         elif correction_number == 0 and number_of_corrections > 0:
             if not read_operation:
-                self.log_message(f"The following set of corrections was added to Corrections: "
-                                     f"{correction_list}")
+                self.log_message(f"The following set of corrections was added to Corrections: {correction_list}")
             self._corrections.extend(correction_list)
         elif correction_number <= number_of_corrections and number_of_corrections > 0:
             if len(correction_list) == 1:
@@ -131,9 +125,9 @@ class CompassCalHeader(BaseHeader):
 
     def print_object(self) -> str:
         compass_cal_header_output = "COMPASS_CAL_HEADER\n"
-        compass_cal_header_output += f"  PARAMETER_CODE = {odfutils.check_string(self.get_parameter_code())}\n"
-        compass_cal_header_output += f"  CALIBRATION_DATE = {odfutils.check_datetime(self.get_calibration_date())}\n"
-        compass_cal_header_output += f"  APPLICATION_DATE = {odfutils.check_datetime(self.get_application_date())}\n"
+        compass_cal_header_output += f"  PARAMETER_CODE = '{odfutils.check_string(self.get_parameter_code())}'\n"
+        compass_cal_header_output += f"  CALIBRATION_DATE = '{odfutils.check_datetime(self.get_calibration_date())}'\n"
+        compass_cal_header_output += f"  APPLICATION_DATE = '{odfutils.check_datetime(self.get_application_date())}'\n"
         directions_list = self.get_directions()
         directions_print = ""
         for direction in directions_list:

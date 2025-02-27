@@ -5,13 +5,13 @@ class GeneralCalHeader(BaseHeader):
     
     def __init__(self):
         super().__init__()
-        self._parameter_code = "''"
-        self._calibration_type = "''"
-        self._calibration_date = "''"
-        self._application_date = "''"
+        self._parameter_code = ''
+        self._calibration_type = ''
+        self._calibration_date = ''
+        self._application_date = ''
         self._number_coefficients = None
         self._coefficients = []
-        self._calibration_equation = "''"
+        self._calibration_equation = ''
         self._calibration_comments = []
 
     def log_message(self, message):
@@ -25,9 +25,8 @@ class GeneralCalHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"PARAMETER_CODE was changed from "
-                                 f"{self._parameter_code} to '{value}'")
-        self._parameter_code = f"'{value}'"
+            self.log_message(f'PARAMETER_CODE was changed from "{self._parameter_code}" to "{value}"')
+        self._parameter_code = f'{value}'
 
     def get_calibration_type(self) -> str:
         return self._calibration_type
@@ -37,9 +36,8 @@ class GeneralCalHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"CALIBRATION_TYPE was changed from "
-                                 f"{self._calibration_type} to '{value}'")
-        self._calibration_type = f"'{value}'"
+            self.log_message(f'CALIBRATION_TYPE was changed from "{self._calibration_type}" to "{value}"')
+        self._calibration_type = f'{value}'
 
     def get_calibration_date(self) -> str:
         return self._calibration_date
@@ -49,9 +47,8 @@ class GeneralCalHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"CALIBRATION_DATE was changed from "
-                                 f"{self._calibration_date} to '{value}'")
-        self._calibration_date = f"'{value}'"
+            self.log_message(f'CALIBRATION_DATE was changed from "{self._calibration_date}" to "{value}"')
+        self._calibration_date = f'{value}'
 
     def get_application_date(self) -> str:
         return self._application_date
@@ -61,9 +58,8 @@ class GeneralCalHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"APPLICATION_DATE was changed from "
-                                 f"{self._application_date} to '{value}'")
-        self._application_date = f"'{value}'"
+            self.log_message(f'APPLICATION_DATE was changed from "{self._application_date}" to "{value}"')
+        self._application_date = f'{value}'
 
     def get_number_coefficients(self) -> int:
         return self._number_coefficients
@@ -72,8 +68,7 @@ class GeneralCalHeader(BaseHeader):
         assert isinstance(value, int), \
                f"Input value is not of type int: {value}"
         if not read_operation:
-            self.log_message(f"NUMBER_COEFFICIENTS was changed from "
-                                 f"{self._number_coefficients} to '{value}'")
+            self.log_message(f'NUMBER_COEFFICIENTS was changed from "{self._number_coefficients}" to "{value}"')
         self._number_coefficients = value
 
     def get_coefficients(self) -> list:
@@ -115,9 +110,8 @@ class GeneralCalHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"PARAMETER_CODE changed from "
-                                 f"{self._parameter_code} to '{value}'")
-        self._calibration_equation = f"'{value}'"
+            self.log_message(f'CALIBRATION_EQUATION changed from "{self._calibration_equation}" to "{value}"')
+        self._calibration_equation = f'{value}'
 
     def get_calibration_comments(self) -> list:
         return self._calibration_comments
@@ -176,22 +170,17 @@ class GeneralCalHeader(BaseHeader):
     # noinspection DuplicatedCode
     def print_object(self) -> str:
         general_header_output = "GENERAL_CAL_HEADER\n"
-        general_header_output += f"  PARAMETER_CODE = {odfutils.check_string(self.get_parameter_code())}\n"
-        general_header_output += (f"  CALIBRATION_TYPE = "
-                                  f"{odfutils.check_string(self.get_calibration_type())}\n")
-        general_header_output += (f"  CALIBRATION_DATE = "
-                                  f"{odfutils.check_datetime(self.get_calibration_date())}\n")
-        general_header_output += (f"  APPLICATION_DATE = "
-                                  f"{odfutils.check_datetime(self.get_application_date())}\n")
-        general_header_output += (f"  NUMBER_OF_COEFFICIENTS = "
-                                  f"{odfutils.check_int_value(self.get_number_coefficients())}\n")
+        general_header_output += f"  PARAMETER_CODE = '{odfutils.check_string(self.get_parameter_code())}'\n"
+        general_header_output += (f"  CALIBRATION_TYPE = '{odfutils.check_string(self.get_calibration_type())}'\n")
+        general_header_output += (f"  CALIBRATION_DATE = '{odfutils.check_datetime(self.get_calibration_date())}'\n")
+        general_header_output += (f"  APPLICATION_DATE = '{odfutils.check_datetime(self.get_application_date())}'\n")
+        general_header_output += (f"  NUMBER_OF_COEFFICIENTS = '{odfutils.check_int(self.get_number_coefficients())}'\n")
         coefficients_list = self.get_coefficients()
         coefficients_print = ""
         for coefficient in coefficients_list:
             coefficients_print = coefficients_print + "{:.8e}".format(coefficient) + " "
         general_header_output += f"  COEFFICIENTS = {coefficients_print}\n"
-        general_header_output += (f"  CALIBRATION_EQUATION = "
-                                  f"{odfutils.check_string(self.get_calibration_equation())}\n")
+        general_header_output += (f"  CALIBRATION_EQUATION = '{odfutils.check_string(self.get_calibration_equation())}'\n")
         for general_comment in self.get_calibration_comments():
             general_header_output += f"  CALIBRATION_COMMENTS = {general_comment}\n"
         return general_header_output

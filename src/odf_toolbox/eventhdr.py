@@ -5,14 +5,14 @@ class EventHeader(BaseHeader):
     
     def __init__(self):
         super().__init__()
-        self._data_type = "''"
-        self._event_number = "''"
-        self._event_qualifier1 = "''"
-        self._event_qualifier2 = "''"
-        self._creation_date = "''"
-        self._orig_creation_date = "''"
-        self._start_date_time = "''"
-        self._end_date_time = "''"
+        self._data_type = ''
+        self._event_number = ''
+        self._event_qualifier1 = ''
+        self._event_qualifier2 = ''
+        self._creation_date = ''
+        self._orig_creation_date = ''
+        self._start_date_time = ''
+        self._end_date_time = ''
         self._initial_latitude = None
         self._initial_longitude = None
         self._end_latitude = None
@@ -22,8 +22,8 @@ class EventHeader(BaseHeader):
         self._sampling_interval = None
         self._sounding = None
         self._depth_off_bottom = None
-        self._station_name = "''"
-        self._set_number = "''"
+        self._station_name = ''
+        self._set_number = ''
         self._event_comments = []
 
     def log_message(self, message):
@@ -37,8 +37,8 @@ class EventHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"DATA_TYPE was changed from {self._data_type} to '{value}'")
-        self._data_type = f"'{value}'"
+            self.log_message(f'DATA_TYPE was changed from "{self._data_type}" to "{value}"')
+        self._data_type = f'{value}'
 
     def get_event_number(self) -> str:
         return self._event_number
@@ -48,8 +48,8 @@ class EventHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"EVENT_NUMBER was changed from {self._event_number} to '{value}'")
-        self._event_number = f"'{value}'"
+            self.log_message(f'EVENT_NUMBER was changed from "{self._event_number}" to "{value}"')
+        self._event_number = f'{value}'
 
     def get_event_qualifier1(self) -> str:
         return self._event_qualifier1
@@ -59,8 +59,8 @@ class EventHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"EVENT_QUALIFIER1 was changed from {self._event_qualifier1} to '{value}'")
-        self._event_qualifier1 = f"'{value}'"
+            self.log_message(f'EVENT_QUALIFIER1 was changed from "{self._event_qualifier1}" to "{value}"')
+        self._event_qualifier1 = f'{value}'
 
     def get_event_qualifier2(self) -> str:
         return self._event_qualifier2
@@ -70,8 +70,8 @@ class EventHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"EVENT_QUALIFIER2 was changed from {self._event_qualifier2} to '{value}'")
-        self._event_qualifier2 = f"'{value}'"
+            self.log_message(f'EVENT_QUALIFIER2 was changed from "{self._event_qualifier2}" to "{value}"')
+        self._event_qualifier2 = f'{value}'
 
     def get_creation_date(self) -> str:
         return self._creation_date
@@ -81,8 +81,8 @@ class EventHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"CREATION_DATE was changed from {self._creation_date} to '{value}'")
-        self._creation_date = f"'{value}'"
+            self.log_message(f'CREATION_DATE was changed from "{self._creation_date}" to "{value}"')
+        self._creation_date = f'{value}'
 
     def get_orig_creation_date(self) -> str:
         return self._orig_creation_date
@@ -92,9 +92,8 @@ class EventHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"ORIG_CREATION_DATE was changed from {self._orig_creation_date} "
-                                f"to '{value}'")
-        self._orig_creation_date = f"'{value}'"
+            self.log_message(f'ORIG_CREATION_DATE was changed from "{self._orig_creation_date}" to "{value}"')
+        self._orig_creation_date = f'{value}'
 
     def get_start_date_time(self) -> str:
         return self._start_date_time
@@ -104,8 +103,8 @@ class EventHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"START_DATE_TIME was changed from {self._start_date_time} to '{value}'")
-        self._start_date_time = f"'{value}'"
+            self.log_message(f'START_DATE_TIME was changed from "{self._start_date_time}" to "{value}"')
+        self._start_date_time = f'{value}'
 
     def get_end_date_time(self) -> str:
         return self._end_date_time
@@ -115,8 +114,8 @@ class EventHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"END_DATE_TIME was changed from {self._end_date_time} to '{value}'")
-        self._end_date_time = f"'{value}'"
+            self.log_message(f'END_DATE_TIME was changed from "{self._end_date_time}" to "{value}"')
+        self._end_date_time = f'{value}'
 
     def get_initial_latitude(self) -> float:
         return self._initial_latitude
@@ -270,8 +269,8 @@ class EventHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"STATION_NAME was changed from {self._station_name} to '{value}'")
-        self._station_name = f"'{value}'"
+            self.log_message(f'STATION_NAME was changed from "{self._station_name}" to "{value}"')
+        self._station_name = f'{value}'
 
     def get_set_number(self) -> str:
         return self._set_number
@@ -281,8 +280,8 @@ class EventHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f"SET_NUMBER was changed from {self._set_number} to '{value}'")
-        self._set_number = f"'{value}'"
+            self.log_message(f'SET_NUMBER was changed from "{self._set_number}" to "{value}"')
+        self._set_number = f'{value}'
 
     def get_event_comments(self) -> list:
         return self._event_comments
@@ -296,14 +295,14 @@ class EventHeader(BaseHeader):
         number_of_comments = len(self.get_event_comments())
         if comment_number == 0 and number_of_comments >= 0:
             if not read_operation:
-                self.log_message(f"The following comment was added to EVENT_COMMENTS: "
-                                     f"'{event_comment}'")
-            self._event_comments.append(f"'{event_comment}'")
+                self.log_message(f'The following comment was added to EVENT_COMMENTS: '
+                                     f'"{event_comment}"')
+            self._event_comments.append(f'{event_comment}')
         elif comment_number <= number_of_comments and number_of_comments > 0:
             if not read_operation:
-                self.log_message(f"Comment {comment_number} in EVENT_COMMENTS was changed from "
-                                     f"{self._event_comments[comment_number-1]} to '{event_comment}'")
-            self._event_comments[comment_number-1] = f"'{event_comment}'"
+                self.log_message(f'Comment {comment_number} in EVENT_COMMENTS was changed from '
+                                     f'"{self._event_comments[comment_number-1]}" to "{event_comment}"')
+            self._event_comments[comment_number-1] = f'{event_comment}'
         else:
             raise ValueError("The 'event_comment' number does not match the number of EVENT_COMMENTS lines.")
 
@@ -361,31 +360,31 @@ class EventHeader(BaseHeader):
 
     def print_object(self) -> str:
         event_header_output = "EVENT_HEADER\n"
-        event_header_output += f"  DATA_TYPE = {self.get_data_type()}\n"
-        event_header_output += f"  EVENT_NUMBER = {self.get_event_number()}\n"
-        event_header_output += f"  EVENT_QUALIFIER1 = {self.get_event_qualifier1()}\n"
-        event_header_output += f"  EVENT_QUALIFIER2 = {self.get_event_qualifier2()}\n"
-        event_header_output += f"  CREATION_DATE = {odfutils.check_datetime(self.get_creation_date())}\n"
-        event_header_output += f"  ORIG_CREATION_DATE = {odfutils.check_datetime(self.get_orig_creation_date())}\n"
-        event_header_output += f"  START_DATE_TIME = {odfutils.check_datetime(self.get_start_date_time())}\n"
-        event_header_output += f"  END_DATE_TIME = {odfutils.check_datetime(self.get_end_date_time())}\n"
+        event_header_output += f"  DATA_TYPE = '{self.get_data_type()}'\n"
+        event_header_output += f"  EVENT_NUMBER = '{self.get_event_number()}'\n"
+        event_header_output += f"  EVENT_QUALIFIER1 = '{self.get_event_qualifier1()}'\n"
+        event_header_output += f"  EVENT_QUALIFIER2 = '{self.get_event_qualifier2()}'\n"
+        event_header_output += f"  CREATION_DATE = '{odfutils.check_datetime(self.get_creation_date())}'\n"
+        event_header_output += f"  ORIG_CREATION_DATE = '{odfutils.check_datetime(self.get_orig_creation_date())}'\n"
+        event_header_output += f"  START_DATE_TIME = '{odfutils.check_datetime(self.get_start_date_time())}'\n"
+        event_header_output += f"  END_DATE_TIME = '{odfutils.check_datetime(self.get_end_date_time())}'\n"
         event_header_output += (f"  INITIAL_LATITUDE = "
-                                f"{odfutils.check_long_value(self.get_initial_latitude()):.6f}\n")
+                                f"{odfutils.check_long(self.get_initial_latitude()):.6f}\n")
         event_header_output += (f"  INITIAL_LONGITUDE = "
-                                f"{odfutils.check_long_value(self.get_initial_longitude()):.6f}\n")
-        event_header_output += f"  END_LATITUDE = {odfutils.check_float_value(self.get_end_latitude()):.6f}\n"
-        event_header_output += f"  END_LONGITUDE = {odfutils.check_long_value(self.get_end_longitude()):.6f}\n"
-        event_header_output += f"  MIN_DEPTH = {odfutils.check_float_value(self.get_min_depth()):.2f}\n"
-        event_header_output += f"  MAX_DEPTH = {odfutils.check_float_value(self.get_max_depth()):.2f}\n"
+                                f"{odfutils.check_long(self.get_initial_longitude()):.6f}\n")
+        event_header_output += f"  END_LATITUDE = {odfutils.check_float(self.get_end_latitude()):.6f}\n"
+        event_header_output += f"  END_LONGITUDE = {odfutils.check_long(self.get_end_longitude()):.6f}\n"
+        event_header_output += f"  MIN_DEPTH = {odfutils.check_float(self.get_min_depth()):.2f}\n"
+        event_header_output += f"  MAX_DEPTH = {odfutils.check_float(self.get_max_depth()):.2f}\n"
         event_header_output += (f"  SAMPLING_INTERVAL = "
-                                f"{odfutils.check_float_value(self.get_sampling_interval()):.2f}\n")
-        event_header_output += f"  SOUNDING = {odfutils.check_float_value(self.get_sounding()):.2f}\n"
-        event_header_output += f"  DEPTH_OFF_BOTTOM = {odfutils.check_float_value(self.get_depth_off_bottom()):.2f}\n"
-        event_header_output += f"  STATION_NAME = {self.get_station_name()}\n"
-        event_header_output += f"  SET_NUMBER = {self.get_set_number()}\n"
+                                f"{odfutils.check_float(self.get_sampling_interval()):.2f}\n")
+        event_header_output += f"  SOUNDING = {odfutils.check_float(self.get_sounding()):.2f}\n"
+        event_header_output += f"  DEPTH_OFF_BOTTOM = {odfutils.check_float(self.get_depth_off_bottom()):.2f}\n"
+        event_header_output += f"  STATION_NAME = '{self.get_station_name()}'\n"
+        event_header_output += f"  SET_NUMBER = '{self.get_set_number()}'\n"
         if self.get_event_comments():
             for event_comment in self.get_event_comments():
-                event_header_output += f"  EVENT_COMMENTS = {event_comment}\n"
+                event_header_output += f"  EVENT_COMMENTS = '{event_comment}'\n"
         else:
             event_header_output += "  EVENT_COMMENTS = ''\n"
         return event_header_output

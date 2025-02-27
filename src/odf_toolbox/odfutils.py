@@ -2,6 +2,8 @@
 import datetime
 import pandas
 import shlex
+import re
+from icecream import ic
 
 
 def read_file_lines(file_with_path: str):
@@ -69,15 +71,15 @@ def get_current_date_time() -> str:
 
 def check_value(value):
     value_type = type(value)
-    if value_type == str:
+    if value_type == str:  
         check_string(value)
     elif value_type == int:
-        check_int_value(value)
+        check_int(value)
     elif value_type == float:
-        check_float_value(value)
+        check_float(value)
 
 
-def check_float_value(value: float) -> float:
+def check_float(value: float) -> float:
     if value is None:
         value = -99.0
     assert isinstance(value, float), \
@@ -85,7 +87,7 @@ def check_float_value(value: float) -> float:
     return value
 
 
-def check_int_value(value: int) -> int:
+def check_int(value: int) -> int:
     if value is None:
         value = -99
     assert isinstance(value, int), \
@@ -93,7 +95,7 @@ def check_int_value(value: int) -> int:
     return value
 
 
-def check_long_value(value: float) -> float:
+def check_long(value: float) -> float:
     if value is None:
         value = -999.0
     return value
@@ -123,6 +125,10 @@ def check_string(value: str) -> str:
     assert isinstance(value, str), \
         f"Input value is not of type str: {value}"
     value = check_datetime(value)
+    # Check if this string value is actually an exponential number that uses the old unsupported exponent "D".
+    # If it does then replace it with an "E".
+    if re.search(r'[0-9]*.[0-9]*D[+-][0-9]*', value):
+        value = re.sub('D', 'E', value)
     if value is None:
         value = ''
     if not value:
@@ -152,7 +158,6 @@ def split_string_with_quotes(input_string: str):
     # Using shlex.split to split the string by whitespace except when between double quotes
     result_list = shlex.split(input_string)
     return result_list
-
 
 def convert_to_float(item):
     try:
@@ -190,38 +195,43 @@ def add_commas(lines: str) -> str:
 
 if __name__ == "__main__":
 
-    ret = check_datetime('23-MAY-2010 16:00:02.88')
-    print(ret)
+    # ret = check_datetime('23-MAY-2010 16:00:02.88')
+    # print(ret)
 
-    check_value(None)
-    check_value(57.5)
-    check_value(100)
-    check_value('Nice melons!')
+    # check_value(None)
+    # check_value(57.5)
+    # check_value(100)
+    # check_value('Nice melons!')
 
-    text_lines = "This is line 1\nThis is line\nThis is the last line\n"
-    print(text_lines)
-    print(type(text_lines))
-    formatted_text = add_commas_except_last(text_lines)
-    print(formatted_text)
-    print(type(formatted_text))
+    coef = '0.60000000D+01'
+    coef = check_string(coef)
+    new_coef = check_float(float(coef))
+    ic(new_coef)
+    
+    # text_lines = "This is line 1\nThis is line\nThis is the last line\n"
+    # print(text_lines)
+    # print(type(text_lines))
+    # formatted_text = add_commas_except_last(text_lines)
+    # print(formatted_text)
+    # print(type(formatted_text))
 
     # file_path = input("Enter the file path: ")
     # file_path = 'C:/DEV/pythonProjects/odfClass/test-files/XBT_HUD2005016_58_1_016.ODF'
-    file_path = '../../test-files/MADCP_HUD2016027_1999_3469-31_3600.ODF'
-    file_lines = read_file_lines(file_path)
+    # file_path = '../../test-files/MADCP_HUD2016027_1999_3469-31_3600.ODF'
+    # file_lines = read_file_lines(file_path)
 
     # text_to_find = "_HEADER"
-    text_to_find = "-- DATA --"
-    header_lines_with_indices = find_lines_with_text(file_lines, text_to_find)
-    data_line_start = None
-    for index, line in header_lines_with_indices:
-        data_line_start = index + 1
+    # text_to_find = "-- DATA --"
+    # header_lines_with_indices = find_lines_with_text(file_lines, text_to_find)
+    # data_line_start = None
+    # for index, line in header_lines_with_indices:
+    #     data_line_start = index + 1
 
     # Separate the header and data lines
-    header_lines = file_lines[:data_line_start - 1]
-    data_lines = file_lines[data_line_start:]
+    # header_lines = file_lines[:data_line_start - 1]
+    # data_lines = file_lines[data_line_start:]
 
-    lines_after_data_df = split_lines_after_data(data_lines)
+    # lines_after_data_df = split_lines_after_data(data_lines)
 
-    print("\nDataFrame with lines after '--DATA--' split by whitespace:")
-    print(lines_after_data_df)
+    # print("\nDataFrame with lines after '--DATA--' split by whitespace:")
+    # print(lines_after_data_df)

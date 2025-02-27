@@ -1,7 +1,7 @@
 import io
-import pandas
+import pandas as pd
 from odf_toolbox import odfutils
-
+from icecream import ic
 
 class DataRecords:
     """
@@ -20,7 +20,7 @@ class DataRecords:
     -------
     __init__ :
         initialize a QualityHeader class object
-    get_data_frame : pandas.DataFrame
+    get_data_frame : pd.DataFrame
     set_data_frame : None
     get_data_record_count : int
     get_parameter_list : list
@@ -34,16 +34,16 @@ class DataRecords:
     """
 
     def __init__(self):
-        self._data_frame = pandas.DataFrame()
+        self._data_frame = pd.DataFrame()
         self._parameter_list = []
         self._print_formats = {}
 
-    def get_data_frame(self) -> pandas.DataFrame:
+    def get_data_frame(self) -> pd.DataFrame:
         return self._data_frame
 
-    def set_data_frame(self, data_frame: pandas.DataFrame) -> None:
-        assert isinstance(data_frame, pandas.DataFrame), \
-               f"Input value is not of type pandas.DataFrame: {data_frame}"
+    def set_data_frame(self, data_frame: pd.DataFrame) -> None:
+        assert isinstance(data_frame, pd.DataFrame), \
+               f"Input value is not of type pd.DataFrame: {data_frame}"
         self._data_frame = data_frame
 
     def get_parameter_list(self) -> list:
@@ -73,7 +73,7 @@ class DataRecords:
         assert isinstance(data_lines_list, list), \
                f"Input value is not of type list: {data_lines_list}"
         data_record_list = [odfutils.split_string_with_quotes(s) for s in data_lines_list]
-        df = pandas.DataFrame(columns=parameter_list, data=data_record_list)
+        df = pd.DataFrame(columns=parameter_list, data=data_record_list)
         df = odfutils.convert_dataframe(df)
         if 'SYTM_01' in df.columns:
             df['SYTM_01'] = df['SYTM_01'].apply(lambda x: f"'{x}'")
@@ -112,3 +112,12 @@ class DataRecords:
         formatter = formatter + "})"
         output_data_records_v2 = eval(formatter)
         return output_data_records_v2
+
+
+if __name__ == "__main__":
+    
+    records = DataRecords()
+    df = pd.DataFrame({"PRES_01":[1,4,7], "TEMP_01":[8,5,2], "PSAL_01":[31.5,32.0,32.5]})
+    records.set_data_frame(df)
+    print(records.print_object())
+    print(records.print_object_old_style())

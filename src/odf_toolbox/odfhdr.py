@@ -33,7 +33,7 @@ class OdfHeader(BaseHeader):
         Method that initializes an OdfHeader class object.
         """
         super().__init__()
-        self._file_specification = "''"
+        self._file_specification = ''
         self._odf_specification_version = 3
         self.cruise_header = CruiseHeader()
         self.event_header = EventHeader()
@@ -74,8 +74,9 @@ class OdfHeader(BaseHeader):
         """
         assert isinstance(value, str), \
                f"Input value is not of type str: {value}"
+        value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f'FILE_SPECIFICATION changed from {self._file_specification} to {value}')
+            self.log_message(f'FILE_SPECIFICATION changed from "{self._file_specification}" to "{value}"')
         self._file_specification = value
 
     def get_odf_specification_version(self) -> float:
@@ -171,7 +172,7 @@ class OdfHeader(BaseHeader):
             odf_output = "ODF_HEADER\n"
             odf_output += f"  FILE_SPECIFICATION = '{odfutils.check_string(self.get_file_specification())}'\n"
             odf_output += (f"  ODF_SPECIFICATION_VERSION = "
-                           f"{odfutils.check_float_value(self.get_odf_specification_version())}\n")
+                           f"{odfutils.check_float(self.get_odf_specification_version())}\n")
             odf_output += self.cruise_header.print_object()
             odf_output += self.event_header.print_object()
             if self.meteo_header is not None:
@@ -413,7 +414,7 @@ if __name__ == "__main__":
     odf.cruise_header.set_chief_scientist('Jeff Jackson')
     odf.event_header.set_data_type('MELONS')
 
-    odf_file_text = odf.print_object(file_version=3)
+    odf_file_text = odf.print_object(file_version=2)
 
     out_file = f"{spec}.ODF"
     file1 = open(out_file, "w")

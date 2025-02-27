@@ -25,7 +25,7 @@ class MeteoHeader(BaseHeader):
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            self.log_message(f"AIR_TEMPERATURE was changed from {self._air_temperature} to '{value}'")
+            self.log_message(f'AIR_TEMPERATURE was changed from "{self._air_temperature}" to "{value}"')
         self._air_temperature = value
 
     def get_atmospheric_pressure(self):
@@ -36,8 +36,7 @@ class MeteoHeader(BaseHeader):
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            self.log_message(f"ATMOSPHERIC_PRESSURE was changed from {self._atmospheric_pressure} "
-                                 f"to '{value}'")
+            self.log_message(f'ATMOSPHERIC_PRESSURE was changed from "{self._atmospheric_pressure}" to "{value}"')
         self._atmospheric_pressure = value
 
     def get_wind_speed(self) -> float:
@@ -48,7 +47,7 @@ class MeteoHeader(BaseHeader):
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            self.log_message(f"WIND_SPEED was changed from {self._wind_speed} to '{value}'")
+            self.log_message(f'WIND_SPEED was changed from "{self._wind_speed}" to "{value}"')
         self._wind_speed = value
 
     def get_wind_direction(self) -> float:
@@ -59,7 +58,7 @@ class MeteoHeader(BaseHeader):
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            self.log_message(f"WIND_DIRECTION was changed from {self._wind_direction} to '{value}'")
+            self.log_message(f'WIND_DIRECTION was changed from "{self._wind_direction}" to "{value}"')
         self._wind_direction = value
 
     def get_sea_state(self) -> float:
@@ -70,7 +69,7 @@ class MeteoHeader(BaseHeader):
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            self.log_message(f"SEA_STATE was changed from {self._sea_state} to '{value}'")
+            self.log_message(f'SEA_STATE was changed from "{self._sea_state}" to "{value}"')
         self._sea_state = value
 
     def get_cloud_cover(self) -> float:
@@ -81,7 +80,7 @@ class MeteoHeader(BaseHeader):
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            self.log_message(f"CLOUD_COVER was changed from {self._cloud_cover} to '{value}'")
+            self.log_message(f'CLOUD_COVER was changed from "{self._cloud_cover}" to "{value}"')
         self._cloud_cover = value
 
     def get_ice_thickness(self) -> float:
@@ -92,7 +91,7 @@ class MeteoHeader(BaseHeader):
         assert isinstance(value, float), \
                f"Input value is not of type float: {value}"
         if not read_operation:
-            self.log_message(f"ICE_THICKNESS was changed from {self._ice_thickness} to '{value}'")
+            self.log_message(f'ICE_THICKNESS was changed from "{self._ice_thickness}" to "{value}"')
         self._ice_thickness = value
 
     def get_meteo_comments(self) -> list:
@@ -111,8 +110,8 @@ class MeteoHeader(BaseHeader):
                 self._meteo_comments.append(meteo_comment)
         elif comment_number <= number_of_comments and number_of_comments > 0:
             if not read_operation:
-                self.log_message(f"Comment {comment_number} in METEO_COMMENTS was changed from "
-                                     f"{self._meteo_comments[comment_number-1]} to '{meteo_comment}'")
+                self.log_message(f'Comment {comment_number} in METEO_COMMENTS was changed from '
+                                     f'"{self._meteo_comments[comment_number-1]}" to "{meteo_comment}"')
             self._meteo_comments[comment_number] = meteo_comment
         else:
             raise ValueError("The 'meteo_comment' number does not match the number of METEO_COMMENTS lines.")
@@ -147,19 +146,19 @@ class MeteoHeader(BaseHeader):
     def print_object(self) -> str:
         meteo_header_output = "METEO_HEADER\n"
         meteo_header_output += ("  AIR_TEMPERATURE = " +
-                                "{:.2f}".format(odfutils.check_float_value(self.get_air_temperature())) + "\n")
+                                "{:.2f}".format(odfutils.check_float(self.get_air_temperature())) + "\n")
         meteo_header_output += ("  ATMOSPHERIC_PRESSURE = " +
-                                "{:.2f}".format(odfutils.check_float_value(self.get_atmospheric_pressure())) + "\n")
+                                "{:.2f}".format(odfutils.check_float(self.get_atmospheric_pressure())) + "\n")
         meteo_header_output += ("  WIND_SPEED = " +
-                                "{:.2f}".format(odfutils.check_float_value(self.get_wind_speed())) + "\n")
+                                "{:.2f}".format(odfutils.check_float(self.get_wind_speed())) + "\n")
         meteo_header_output += ("  WIND_DIRECTION = " +
-                                "{:.2f}".format(odfutils.check_float_value(self.get_wind_direction())) + "\n")
+                                "{:.2f}".format(odfutils.check_float(self.get_wind_direction())) + "\n")
         meteo_header_output += ("  SEA_STATE = " +
-                                "{:.0f}".format(odfutils.check_float_value(self.get_sea_state())) + "\n")
+                                "{:.0f}".format(odfutils.check_float(self.get_sea_state())) + "\n")
         meteo_header_output += ("  CLOUD_COVER = " +
-                                "{:.0f}".format(odfutils.check_float_value(self.get_cloud_cover())) + "\n")
+                                "{:.0f}".format(odfutils.check_float(self.get_cloud_cover())) + "\n")
         meteo_header_output += (
-                    "  ICE_THICKNESS = " + "{:.3f}".format(odfutils.check_float_value(self.get_ice_thickness()))
+                    "  ICE_THICKNESS = " + "{:.3f}".format(odfutils.check_float(self.get_ice_thickness()))
                     + "\n")
         for meteo_comment in self.get_meteo_comments():
             meteo_header_output += f"  METEO_COMMENTS =  {meteo_comment}\n"
