@@ -11,7 +11,7 @@ The goal of this project is to replace structured code that was written in a pro
 
 Installing on Windows using pip:
 
-    C:\> pip install odf_toolbox-0.4.0-py3-none-any.whl
+    C:\> pip install odf_toolbox-<insert version e.g. 0.6.0>-py3-none-any.whl
 
 Importing and using package within a terminal window:
 
