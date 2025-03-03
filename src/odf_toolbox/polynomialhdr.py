@@ -22,8 +22,8 @@ class PolynomialCalHeader(BaseHeader):
         value = value.strip("\' ")
         if not read_operation:
             self.log_message(f"PARAMETER_CODE was changed from "
-                                 f"{self._parameter_code} to '{value}'")
-        self._parameter_code = f"'{value}'"
+                                 f"'{self._parameter_code}' to '{value}'")
+        self._parameter_code = f"{value}"
 
     def get_calibration_date(self) -> str:
         return self._calibration_date
@@ -34,8 +34,8 @@ class PolynomialCalHeader(BaseHeader):
         value = value.strip("\' ")
         if not read_operation:
             self.log_message(f"CALIBRATION_DATE was changed from "
-                                 f"{self._calibration_date} to '{value}'")
-        self._calibration_date = f"'{value}'"
+                                 f"'{self._calibration_date}' to '{value}'")
+        self._calibration_date = f"{value}"
 
     def get_application_date(self) -> str:
         return self._application_date
@@ -47,7 +47,7 @@ class PolynomialCalHeader(BaseHeader):
         if not read_operation:
             self.log_message(f"APPLICATION_DATE was changed from "
                                  f"{self._application_date} to '{value}'")
-        self._application_date = f"'{value}'"
+        self._application_date = f"{value}"
 
     def get_number_coefficients(self) -> int:
         return self._number_coefficients
@@ -120,11 +120,11 @@ class PolynomialCalHeader(BaseHeader):
 
     def print_object(self) -> str:
         polynomial_header_output = "POLYNOMIAL_CAL_HEADER\n"
-        polynomial_header_output += f"  PARAMETER_CODE = {odfutils.check_string(self.get_parameter_code())}\n"
-        polynomial_header_output += (f"  CALIBRATION_DATE ="
-                                     f"{odfutils.check_datetime(self.get_calibration_date())}\n")
+        polynomial_header_output += f"  PARAMETER_CODE = '{odfutils.check_string(self.get_parameter_code())}'\n"
+        polynomial_header_output += (f"  CALIBRATION_DATE = "
+                                     f"'{odfutils.check_datetime(self.get_calibration_date())}'\n")
         polynomial_header_output += (f"  APPLICATION_DATE = "
-                                     f"{odfutils.check_datetime(self.get_application_date())}\n")
+                                     f"'{odfutils.check_datetime(self.get_application_date())}'\n")
         polynomial_header_output += (f"  NUMBER_COEFFICIENTS = "
                                      f"{odfutils.check_int(self.get_number_coefficients())}\n")
         coefficients_list = self.get_coefficients()

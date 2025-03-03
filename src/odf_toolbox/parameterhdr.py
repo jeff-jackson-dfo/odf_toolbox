@@ -81,7 +81,7 @@ class ParameterHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f'TYPE was changed from "{self.get_type()}" to "{value}" for parameter "{self.get_code()}".')
+            self.log_message(f'TYPE was changed from "{self.get_type()}" to "{value}" for parameter "{self.get_name()}"')
         self._type = f'{value}'
 
     def get_name(self) -> str:
@@ -92,7 +92,7 @@ class ParameterHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f'NAME was changed from "{self.get_name()}" to "{value}" for parameter "{self.get_code()}".')
+            self.log_message(f'NAME was changed from "{self.get_name()}" to "{value}" for parameter "{self.get_name()}"')
         self._name = f'{value}'
 
     def get_units(self) -> str:
@@ -103,7 +103,7 @@ class ParameterHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f'UNITS was changed from "{self.get_units()}" to "{value}" for parameter "{self.get_code()}".')
+            self.log_message(f'UNITS was changed from "{self.get_units()}" to "{value}" for parameter "{self.get_name()}"')
         self._units = f'{value}'
 
     def get_code(self) -> str:
@@ -118,7 +118,7 @@ class ParameterHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f'CODE was changed from "{self.get_code()}" to "{value}" for parameter "{self.get_code()}".')
+            self.log_message(f'CODE was changed from "{self.get_code()}" to "{value}" for parameter "{self.get_name()}"')
         self._code = f'{value}'
 
     def get_wmo_code(self) -> str:
@@ -129,7 +129,7 @@ class ParameterHeader(BaseHeader):
                f"Input value is not of type str: {value}"
         value = value.strip("\' ")
         if not read_operation:
-            self.log_message(f'WMO_CODE was changed from "{self.get_wmo_code()}" to "{value}" for parameter "{self.get_code()}".')
+            self.log_message(f'WMO_CODE was changed from "{self.get_wmo_code()}" to "{value}" for parameter "{self.get_name()}"')
         self._wmo_code = f'{value}'
 
     def get_null_value(self):
@@ -343,6 +343,9 @@ class ParameterHeader(BaseHeader):
                         self.set_code(value, read_operation=True)
                     case 'WMO_CODE':
                         self.set_wmo_code(value, read_operation=True)
+                        # If there was no code field in the ODF file being read then assign it the same value as WMO_CODE.
+                        if self.get_code() == "":
+                            self.set_code(value, read_operation=True)
                     case 'NULL_VALUE':
                         if type(self._null_value) == 'string':
                             self.set_null_value(value, 'string', read_operation=True)
@@ -380,7 +383,7 @@ class ParameterHeader(BaseHeader):
         parameter_header_output = "PARAMETER_HEADER\n"
         parameter_header_output += f"  TYPE = '{self.get_type()}'\n"
         parameter_header_output += f"  NAME = '{self.get_name()}'\n"
-        parameter_header_output += f"  UNITS =' {self.get_units()}'\n"
+        parameter_header_output += f"  UNITS = ' {self.get_units()}'\n"
         parameter_header_output += f"  CODE = '{self.get_code()}'\n"
         parameter_header_output += f"  WMO_CODE = '{self.get_wmo_code()}'\n"
         if type(self.get_null_value()) == float:

@@ -1,5 +1,7 @@
 import datetime
 import pandas as pd
+from icecream import ic
+import re
 
 # ods_toolbox modules to import
 from odf_toolbox import odfutils
@@ -359,11 +361,18 @@ class OdfHeader(BaseHeader):
         else:
             eval(f"self.parameter_headers[codes.index(parameter_code)].set_{attribute}({value})")
 
-    def get_parameters(self):
-        params = list()
-        for ph in self.parameter_headers:
-            params.append(ph.get_code())
-        return params
+    def get_parameter_codes(self) -> list:
+        parameter_codes = list()
+        for ph1 in self.parameter_headers:
+            parameter_codes.append(ph1.get_code())
+        return parameter_codes
+
+    def get_parameter_names(self) -> list:
+        parameter_names = list()
+        for ph2 in self.parameter_headers:
+            # ic(ph2.get_name())
+            parameter_names.append(ph2.get_name())
+        return parameter_names
 
     def generate_file_spec(self):
         dt = self.event_header.get_data_type().strip("'")
@@ -375,15 +384,80 @@ class OdfHeader(BaseHeader):
         file_spec = file_spec
         return file_spec
 
+    def fix_parameter_codes(self, new_codes: list = []):
+
+        # Get the list of parameter names and the data frame in case names need to be fixed.
+        df = self.data.get_data_frame()
+        if new_codes == []:
+
+            # Check if the parameter codes are in the correct format. If they are not then fix them.
+            codes = self.data.get_parameter_list()
+
+            # Loop through the list of parameter codes and fix any that require it.
+            for p, pcode in enumerate(codes):
+                ic(pcode)
+                expected_format = '[A-Z]{4}[_]{1}[0-9]{2}'
+                expected_match = re.compile(expected_format)
+                if expected_match.findall(pcode) == []:
+                    new_pcode = input(f"Please enter the correct code name (e.g. TEMP_01) for {pcode} : ")
+                    new_codes.append(new_pcode)
+                    df.rename(columns={pcode: new_pcode})
+                    self.parameter_headers[p].set_code(new_pcode)
+
+            # Fix the Polynomial_Cal_Headers if required.
+            if self.polynomial_cal_headers:
+                self.fix_polynomial_codes(codes, new_codes)
+
+            # Assign the revised data frame back to the odf object.
+            self.data.set_data_frame(df)
+        
+        else:
+
+            old_codes = df.columns.to_list()
+            df.columns = new_codes
+            self.data.set_data_frame(df)
+            self.data.set_parameter_list(new_codes)
+            nparams = len(self.get_parameter_codes())
+            for j in range(nparams):
+                self.parameter_headers[j].set_code(new_codes[j])
+
+            # Fix the Polynomial_Cal_Headers if required.
+            if self.polynomial_cal_headers:
+                self.fix_polynomial_codes(old_codes, new_codes)
+        
+        return self
+    
+    def fix_polynomial_codes(self, old_codes: list, new_codes: list):
+        for i, pch in enumerate(self.polynomial_cal_headers):
+
+            # Find the Polynomial_Cal_Header Code in old_codes and replace it with the corresponding code from new_codes.
+            poly_code = pch.get_parameter_code()
+            try:
+                # This poly_code may have actually been a parameter_name instead of a parameter_code.
+                # Check the parameter names and if there is a match then assign the parameter code as the polynomial code.
+                pnames = self.get_parameter_names()
+                pnames = [x.replace('"', '') for x in pnames]
+                if poly_code in pnames:
+                    self.polynomial_cal_headers[i].set_parameter_code(new_codes[i])
+            except Exception as e:
+                print(f"Item {poly_code} not found in old_codes list.")
+        return self
+
+                
 
 if __name__ == "__main__":
 
     odf = OdfHeader()
 
     my_path = 'C:\\DEV\\GitHub\\odf_toolbox\\tests\\'
+    # my_file = 'CTD_2000037_102_1_DN.ODF'
     my_file = 'CTD_91001_1_1_DN.ODF'
-
     odf.read_odf(my_path + my_file)
+
+    # Add a new History Header to record the modifications that are made.
+    odf.add_history()
+    user = 'Jeff Jackson'
+    odf.add_to_log(f'{user} made the following modifications to this file:')
 
     # Modify some of the odf metadata
     odf.add_history()
@@ -394,13 +468,19 @@ if __name__ == "__main__":
     odf.cruise_header.set_platform('HUDSON')
     odf.event_header.set_station_name('AR7W_15')
 
+    new_param_list = ['PRES_01', 'TEMP_01', 'CRAT_01', 'PSAL_01', 'NETR_01', 'FLOR_01', 'OTMP_01', 'OPPR_01', 'DOXY_01']
+    odf.fix_parameter_codes(new_param_list)
+    # odf.fix_parameter_codes()
+
+    # old_codes = odf.get_parameter_codes()
+
     # from datetime import datetime
     # now: datetime = datetime.now()
     # current_date_time = f'{now:%d-%b-%Y %H:%M:%S.%f}'.upper()
     # odf.event_header.set_original_creation_date(current_date_time)
     # print(odf.event_header.get_original_creation_date())
 
-    codes = odf.get_parameters()
+    codes = odf.get_parameter_codes()
     if 'SYTM_01' in codes:
         odf.update_parameter('SYTM_01', 'units', 'GMT')
 
@@ -411,8 +491,8 @@ if __name__ == "__main__":
         print('cspec and spec do not match')
         odf.set_file_specification(spec)
 
-    odf.cruise_header.set_chief_scientist('Jeff Jackson')
-    odf.event_header.set_data_type('MELONS')
+    odf.cruise_header.set_chief_scientist('W GLEN HARRISON')
+    odf.event_header.set_event_comments("The wind was very strong during this operation.")
 
     odf_file_text = odf.print_object(file_version=2)
 
@@ -420,10 +500,3 @@ if __name__ == "__main__":
     file1 = open(out_file, "w")
     file1.write(odf_file_text)
     file1.close()
-
-    test_file = 'CTD_88N112_006_1_DN.ODF'
-    odf = OdfHeader()
-    odf.read_odf(my_path + test_file)
-    print(odf.event_header.print_object())
-    print(odf.event_header.get_creation_date())
-    print(odf.event_header.get_orig_creation_date())

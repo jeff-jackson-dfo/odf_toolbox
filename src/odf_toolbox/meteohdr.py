@@ -161,5 +161,5 @@ class MeteoHeader(BaseHeader):
                     "  ICE_THICKNESS = " + "{:.3f}".format(odfutils.check_float(self.get_ice_thickness()))
                     + "\n")
         for meteo_comment in self.get_meteo_comments():
-            meteo_header_output += f"  METEO_COMMENTS =  {meteo_comment}\n"
+            meteo_header_output += f"  METEO_COMMENTS =  '{meteo_comment}'\n"
         return meteo_header_output

@@ -44,7 +44,7 @@ class HistoryHeader(BaseHeader):
     def add_process(self, process: str) -> None:
         assert isinstance(process, str), "Input value is not of type str: {process}"
         process = process.strip("\'")
-        self._processes.append(f"'{process}'")
+        self._processes.append(f"{process}")
 
     def populate_object(self, history_fields: list):
         assert isinstance(history_fields, list), f"Input value is not of type list: {history_fields}"
@@ -65,7 +65,7 @@ class HistoryHeader(BaseHeader):
         history_header_output += f"  CREATION_DATE = '{odfutils.check_datetime(self.get_creation_date())}'\n"
         if self.get_process():
             for process in self.get_process():
-                history_header_output += f"  PROCESS = {process}\n"
+                history_header_output += f"  PROCESS = '{process}'\n"
         else:
             history_header_output += "  PROCESS = ''\n"
         return history_header_output

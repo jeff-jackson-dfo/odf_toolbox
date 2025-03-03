@@ -107,8 +107,8 @@ class InstrumentHeader(BaseHeader):
     
     def print_object(self) -> str:
         instrument_header_output = "INSTRUMENT_HEADER\n"
-        instrument_header_output += f"  INST_TYPE = {odfutils.check_string(self.get_instrument_type())}\n"
-        instrument_header_output += f"  MODEL = {odfutils.check_string(self.get_model())}\n"
-        instrument_header_output += f"  SERIAL_NUMBER = {odfutils.check_string(self.get_serial_number())}\n"
-        instrument_header_output += f"  DESCRIPTION = {odfutils.check_string(self.get_description())}\n"
+        instrument_header_output += f"  INST_TYPE = '{odfutils.check_string(self.get_instrument_type())}'\n"
+        instrument_header_output += f"  MODEL = '{odfutils.check_string(self.get_model())}'\n"
+        instrument_header_output += f"  SERIAL_NUMBER = '{odfutils.check_string(self.get_serial_number())}'\n"
+        instrument_header_output += f"  DESCRIPTION = '{odfutils.check_string(self.get_description())}'\n"
         return instrument_header_output

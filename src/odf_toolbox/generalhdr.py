@@ -174,7 +174,7 @@ class GeneralCalHeader(BaseHeader):
         general_header_output += (f"  CALIBRATION_TYPE = '{odfutils.check_string(self.get_calibration_type())}'\n")
         general_header_output += (f"  CALIBRATION_DATE = '{odfutils.check_datetime(self.get_calibration_date())}'\n")
         general_header_output += (f"  APPLICATION_DATE = '{odfutils.check_datetime(self.get_application_date())}'\n")
-        general_header_output += (f"  NUMBER_OF_COEFFICIENTS = '{odfutils.check_int(self.get_number_coefficients())}'\n")
+        general_header_output += (f"  NUMBER_OF_COEFFICIENTS = {odfutils.check_int(self.get_number_coefficients())}\n")
         coefficients_list = self.get_coefficients()
         coefficients_print = ""
         for coefficient in coefficients_list:
@@ -182,5 +182,5 @@ class GeneralCalHeader(BaseHeader):
         general_header_output += f"  COEFFICIENTS = {coefficients_print}\n"
         general_header_output += (f"  CALIBRATION_EQUATION = '{odfutils.check_string(self.get_calibration_equation())}'\n")
         for general_comment in self.get_calibration_comments():
-            general_header_output += f"  CALIBRATION_COMMENTS = {general_comment}\n"
+            general_header_output += f"  CALIBRATION_COMMENTS = '{general_comment}'\n"
         return general_header_output
