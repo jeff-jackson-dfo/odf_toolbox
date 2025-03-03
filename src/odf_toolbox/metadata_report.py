@@ -94,7 +94,7 @@ def generate_report(file_path: str, wildcard: str, outfile: str) -> None:
         meta.append(odf.event_header.get_event_qualifier1().strip("'"))
         meta.append(odf.event_header.get_event_qualifier2().strip("'"))
         meta.append(odf.event_header.get_creation_date().strip("'"))
-        meta.append(odf.event_header.get_original_creation_date().strip("'"))
+        meta.append(odf.event_header.get_orig_creation_date().strip("'"))
         meta.append(odf.event_header.get_start_date_time().strip("'"))
         meta.append(odf.event_header.get_end_date_time().strip("'"))
         meta.append(odf.event_header.get_initial_latitude())
