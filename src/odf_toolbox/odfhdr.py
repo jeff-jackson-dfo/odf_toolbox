@@ -461,7 +461,6 @@ if __name__ == "__main__":
     odf.add_to_log(f'{user} made the following modifications to this file:')
 
     # Modify some of the odf metadata
-    odf.add_history()
     odf.cruise_header.set_organization('DFO BIO')
     odf.cruise_header.set_chief_scientist('GLEN HARRISON')
     odf.cruise_header.set_start_date('05-OCT-2010 00:00:00')

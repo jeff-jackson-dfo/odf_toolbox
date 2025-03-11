@@ -383,7 +383,7 @@ class ParameterHeader(BaseHeader):
         parameter_header_output = "PARAMETER_HEADER\n"
         parameter_header_output += f"  TYPE = '{self.get_type()}'\n"
         parameter_header_output += f"  NAME = '{self.get_name()}'\n"
-        parameter_header_output += f"  UNITS = ' {self.get_units()}'\n"
+        parameter_header_output += f"  UNITS = '{self.get_units()}'\n"
         parameter_header_output += f"  CODE = '{self.get_code()}'\n"
         parameter_header_output += f"  WMO_CODE = '{self.get_wmo_code()}'\n"
         if type(self.get_null_value()) == float:
@@ -402,8 +402,8 @@ class ParameterHeader(BaseHeader):
                                     f"{odfutils.check_float(self.get_magnetic_variation()):.6f}\n")
         parameter_header_output += f"  DEPTH = {odfutils.check_float(self.get_depth()):.6f}\n"
         if self.get_units() == "GMT" or self.get_units() == "UTC" or self.get_type() == "SYTM":
-            parameter_header_output += f"  MINIMUM_VALUE = {odfutils.check_value(self.get_minimum_value())}\n"
-            parameter_header_output += f"  MAXIMUM_VALUE = {odfutils.check_value(self.get_maximum_value())}\n"
+            parameter_header_output += f"  MINIMUM_VALUE = {odfutils.check_datetime(self.get_minimum_value())}\n"
+            parameter_header_output += f"  MAXIMUM_VALUE = {odfutils.check_datetime(self.get_maximum_value())}\n"
         else:
             parameter_header_output += (f"  MINIMUM_VALUE = "
                                         f"{odfutils.check_float(self.get_minimum_value()):.1f}\n")
