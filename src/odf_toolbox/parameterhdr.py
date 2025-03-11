@@ -401,7 +401,7 @@ class ParameterHeader(BaseHeader):
         parameter_header_output += (f"  MAGNETIC_VARIATION = "
                                     f"{odfutils.check_float(self.get_magnetic_variation()):.6f}\n")
         parameter_header_output += f"  DEPTH = {odfutils.check_float(self.get_depth()):.6f}\n"
-        if self.get_units() == "'GMT'" or self.get_units() == "'UTC'" or self.get_type() == "'SYTM'":
+        if self.get_units() == "GMT" or self.get_units() == "UTC" or self.get_type() == "SYTM":
             parameter_header_output += f"  MINIMUM_VALUE = {odfutils.check_value(self.get_minimum_value())}\n"
             parameter_header_output += f"  MAXIMUM_VALUE = {odfutils.check_value(self.get_maximum_value())}\n"
         else:

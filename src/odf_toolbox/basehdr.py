@@ -4,7 +4,7 @@ class BaseHeader:
     """
     Base Header Class
 
-    This base class is creates the logging functionality to be utilized by the subclasses.
+    This base class is used to create the logging functionality to be utilized by the subclasses.
 
     """
     # Shared log list to store the log entries for all instances of the class

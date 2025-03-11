@@ -451,7 +451,8 @@ if __name__ == "__main__":
 
     my_path = 'C:\\DEV\\GitHub\\odf_toolbox\\tests\\'
     # my_file = 'CTD_2000037_102_1_DN.ODF'
-    my_file = 'CTD_91001_1_1_DN.ODF'
+    # my_file = 'CTD_91001_1_1_DN.ODF'
+    my_file = 'CTD_SCD2022277_001_01_DN.ODF'
     odf.read_odf(my_path + my_file)
 
     # Add a new History Header to record the modifications that are made.
@@ -468,8 +469,8 @@ if __name__ == "__main__":
     odf.cruise_header.set_platform('HUDSON')
     odf.event_header.set_station_name('AR7W_15')
 
-    new_param_list = ['PRES_01', 'TEMP_01', 'CRAT_01', 'PSAL_01', 'NETR_01', 'FLOR_01', 'OTMP_01', 'OPPR_01', 'DOXY_01']
-    odf.fix_parameter_codes(new_param_list)
+    # new_param_list = ['PRES_01', 'TEMP_01', 'CRAT_01', 'PSAL_01', 'NETR_01', 'FLOR_01', 'OTMP_01', 'OPPR_01', 'DOXY_01']
+    # odf.fix_parameter_codes(new_param_list)
     # odf.fix_parameter_codes()
 
     # old_codes = odf.get_parameter_codes()
@@ -480,19 +481,19 @@ if __name__ == "__main__":
     # odf.event_header.set_original_creation_date(current_date_time)
     # print(odf.event_header.get_original_creation_date())
 
-    codes = odf.get_parameter_codes()
-    if 'SYTM_01' in codes:
-        odf.update_parameter('SYTM_01', 'units', 'GMT')
+    # codes = odf.get_parameter_codes()
+    # if 'SYTM_01' in codes:
+    #     odf.update_parameter('SYTM_01', 'units', 'GMT')
 
-    cspec = odf.get_file_specification()
-    cspec = cspec.strip("\'")
+    # cspec = odf.get_file_specification()
+    # cspec = cspec.strip("\'")
     spec = odf.generate_file_spec()
-    if cspec != spec:
-        print('cspec and spec do not match')
-        odf.set_file_specification(spec)
+    # if cspec != spec:
+    #     print('cspec and spec do not match')
+    #     odf.set_file_specification(spec)
 
-    odf.cruise_header.set_chief_scientist('W GLEN HARRISON')
-    odf.event_header.set_event_comments("The wind was very strong during this operation.")
+    # odf.cruise_header.set_chief_scientist('W GLEN HARRISON')
+    # odf.event_header.set_event_comments("The wind was very strong during this operation.")
 
     odf_file_text = odf.print_object(file_version=2)
 
