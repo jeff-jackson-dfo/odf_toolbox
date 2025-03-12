@@ -1,5 +1,6 @@
 from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox import odfutils
+from icecream import ic
 class ParameterHeader(BaseHeader):
     """
     A class to represent a Parameter Header in an ODF object.
@@ -133,23 +134,30 @@ class ParameterHeader(BaseHeader):
         self._wmo_code = f'{value}'
 
     def get_null_value(self):
-        # print(self._null_value)
-        # print(type(self._null_value))
-        # if self._null_value == None:
-        #     self._null_value = str(self._null_value)
-        # if type(self._null_value) == 'float':
-        #     self._null_value = str(self._null_value)
         return self._null_value
 
     def set_null_value(self, value: str, null_type: str, read_operation: bool = False) -> None:
-        null_type = 'str'
-        try:
-            value = float(value)
-            assert isinstance(value, float), \
-                f"Input value is not of type float: {value}"
-            null_type = 'float'
-        except ValueError:
-            f"Input value could not be successfully converted to type float: {value}"
+        if null_type == 'str':
+            if self.get_type() == 'SYTM':
+                value = '17-NOV-1858 00:00:00.00'
+            else:
+                # Accept given string as the null value
+                pass
+        elif null_type == 'float':
+            try:
+                value = float(value)
+                assert isinstance(value, float), f"Input value is not of type float: {value}"
+            except ValueError:
+                f"Input value could not be successfully converted to type float: {value}"
+        elif null_type == 'int':
+            try:
+                value = int(value)
+                assert isinstance(value, int), f"Input value is not of type int: {value}"
+            except ValueError:
+                f"Input value could not be successfully converted to type int: {value}"
+        else:
+            assert value is None, f"Input value is not of type None: {value}"
+
         if not read_operation:
             self.log_message(f"NULL_VALUE was changed from {self.get_null_value()} to {value} for "
                                  f"parameter {self.get_code()}.")
@@ -386,10 +394,14 @@ class ParameterHeader(BaseHeader):
         parameter_header_output += f"  UNITS = '{self.get_units()}'\n"
         parameter_header_output += f"  CODE = '{self.get_code()}'\n"
         parameter_header_output += f"  WMO_CODE = '{self.get_wmo_code()}'\n"
-        if type(self.get_null_value()) == float:
+        if type(self.get_null_value()) is float:
             parameter_header_output += f"  NULL_VALUE = {odfutils.check_float(self.get_null_value()):.2f}\n"
-        elif type(self.get_null_value()) == str:
-            parameter_header_output += f"  NULL_VALUE = {odfutils.check_value(self.get_null_value())}\n"
+        elif type(self.get_null_value()) is str:
+            parameter_header_output += f"  NULL_VALUE = {odfutils.check_datetime(self.get_null_value())}\n"
+        elif type(self.get_null_value()) is int:
+            parameter_header_output += f"  NULL_VALUE = {odfutils.check_int(self.get_null_value())}\n"
+        else:
+            parameter_header_output += f"  NULL_VALUE = {self.get_null_value()}\n"
         if file_version == 3:
             parameter_header_output += (f"  PRINT_FIELD_ORDER = "
                                         f"{odfutils.check_int(self.get_print_field_order())}\n")
@@ -422,7 +434,7 @@ if __name__ == "__main__":
     param.set_units('decibars')
     param.set_code('PRES_01')
     param.set_wmo_code('PRES')
-    param.set_null_value('-99.0', 'str')
+    param.set_null_value(-99.0, 'float')
     param.set_print_field_width(10)
     param.set_print_decimal_places(3)
     param.set_angle_of_section(0.0)
@@ -433,4 +445,12 @@ if __name__ == "__main__":
     param.set_maximum_value(176.5)
     param.set_number_valid(1064)
     param.set_number_null(643)
-    print(param.print_object())
+    ic(param.print_object())
+    param.set_null_value('17-NOV-1858 00:00:00.00', 'str')
+    ic(param.print_object())
+    param.set_null_value(-99, 'int')
+    ic(param.print_object())
+    param.set_null_value('', 'float')
+    ic(param.print_object())
+    param.set_null_value(-99.0, 'int')
+    ic(param.print_object())
