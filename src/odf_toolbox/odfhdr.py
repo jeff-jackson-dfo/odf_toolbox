@@ -461,12 +461,12 @@ if __name__ == "__main__":
     odf.add_to_log(f'{user} made the following modifications to this file:')
 
     # Modify some of the odf metadata
-    odf.cruise_header.set_organization('DFO BIO')
-    odf.cruise_header.set_chief_scientist('GLEN HARRISON')
-    odf.cruise_header.set_start_date('05-OCT-2010 00:00:00')
-    odf.cruise_header.set_end_date('22-OCT-2010 00:00:00')
-    odf.cruise_header.set_platform('HUDSON')
-    odf.event_header.set_station_name('AR7W_15')
+    # odf.cruise_header.set_organization('DFO BIO')
+    # odf.cruise_header.set_chief_scientist('GLEN HARRISON')
+    odf.cruise_header.set_start_date('01-APR-2022 00:00:00')
+    odf.cruise_header.set_end_date('31-OCT-2022 00:00:00')
+    # odf.cruise_header.set_platform('HUDSON')
+    # odf.event_header.set_station_name('AR7W_15')
 
     # new_param_list = ['PRES_01', 'TEMP_01', 'CRAT_01', 'PSAL_01', 'NETR_01', 'FLOR_01', 'OTMP_01', 'OPPR_01', 'DOXY_01']
     # odf.fix_parameter_codes(new_param_list)

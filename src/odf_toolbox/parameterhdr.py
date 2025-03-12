@@ -55,7 +55,7 @@ class ParameterHeader(BaseHeader):
         self._units = ''
         self._code = ''
         self._wmo_code = ''
-        self._null_value = None
+        self._null_value = ''
         self._print_field_order = None
         self._print_field_width = None
         self._print_decimal_places = None
@@ -136,27 +136,12 @@ class ParameterHeader(BaseHeader):
     def get_null_value(self):
         return self._null_value
 
-    def set_null_value(self, value: str, null_type: str, read_operation: bool = False) -> None:
-        if null_type == 'str':
-            if self.get_type() == 'SYTM':
-                value = '17-NOV-1858 00:00:00.00'
-            else:
-                # Accept given string as the null value
-                pass
-        elif null_type == 'float':
-            try:
-                value = float(value)
-                assert isinstance(value, float), f"Input value is not of type float: {value}"
-            except ValueError:
-                f"Input value could not be successfully converted to type float: {value}"
-        elif null_type == 'int':
-            try:
-                value = int(value)
-                assert isinstance(value, int), f"Input value is not of type int: {value}"
-            except ValueError:
-                f"Input value could not be successfully converted to type int: {value}"
+    def set_null_value(self, value: str, read_operation: bool = False) -> None:
+        if self.get_type() == 'SYTM':
+            value = '17-NOV-1858 00:00:00.00'
         else:
-            assert value is None, f"Input value is not of type None: {value}"
+            # Accept given string as the null value
+            pass
 
         if not read_operation:
             self.log_message(f"NULL_VALUE was changed from {self.get_null_value()} to {value} for "
@@ -355,10 +340,11 @@ class ParameterHeader(BaseHeader):
                         if self.get_code() == "":
                             self.set_code(value, read_operation=True)
                     case 'NULL_VALUE':
-                        if type(self._null_value) == 'string':
-                            self.set_null_value(value, 'string', read_operation=True)
-                        else:
-                            self.set_null_value(value, 'float', read_operation=True)
+                        # if type(self._null_value) == 'string':
+                            # self.set_null_value(value, 'string', read_operation=True)
+                        self.set_null_value(value, read_operation=True)
+                        # else:
+                        #     self.set_null_value(value, 'float', read_operation=True)
                     case 'PRINT_FIELD_ORDER':
                         self.set_print_field_order(value, read_operation=True)
                     case 'PRINT_FIELD_WIDTH':
@@ -378,7 +364,7 @@ class ParameterHeader(BaseHeader):
                     case 'MAXIMUM_VALUE':
                         self.set_maximum_value(value, read_operation=True)
                     case 'NUMBER_VALID':
-                        self.set_null_value(value, null_type='float', read_operation=True)
+                        self.set_number_valid(value, read_operation=True)
                     case 'NUMBER_NULL':
                         self.set_number_null(value, read_operation=True)
         return self
@@ -394,14 +380,18 @@ class ParameterHeader(BaseHeader):
         parameter_header_output += f"  UNITS = '{self.get_units()}'\n"
         parameter_header_output += f"  CODE = '{self.get_code()}'\n"
         parameter_header_output += f"  WMO_CODE = '{self.get_wmo_code()}'\n"
-        if type(self.get_null_value()) is float:
-            parameter_header_output += f"  NULL_VALUE = {odfutils.check_float(self.get_null_value()):.2f}\n"
-        elif type(self.get_null_value()) is str:
-            parameter_header_output += f"  NULL_VALUE = {odfutils.check_datetime(self.get_null_value())}\n"
-        elif type(self.get_null_value()) is int:
-            parameter_header_output += f"  NULL_VALUE = {odfutils.check_int(self.get_null_value())}\n"
+        if self.get_type() == "SYTM":
+            parameter_header_output += f"  NULL_VALUE = '{odfutils.check_datetime(self.get_null_value())}'\n"
         else:
             parameter_header_output += f"  NULL_VALUE = {self.get_null_value()}\n"
+        # if type(self.get_null_value()) is float:
+        #     parameter_header_output += f"  NULL_VALUE = {odfutils.check_float(self.get_null_value()):.2f}\n"
+        # elif type(self.get_null_value()) is str:
+        #     parameter_header_output += f"  NULL_VALUE = {odfutils.check_datetime(self.get_null_value())}\n"
+        # elif type(self.get_null_value()) is int:
+        #     parameter_header_output += f"  NULL_VALUE = {odfutils.check_int(self.get_null_value())}\n"
+        # else:
+        #     parameter_header_output += f"  NULL_VALUE = {self.get_null_value()}\n"
         if file_version == 3:
             parameter_header_output += (f"  PRINT_FIELD_ORDER = "
                                         f"{odfutils.check_int(self.get_print_field_order())}\n")
@@ -409,18 +399,18 @@ class ParameterHeader(BaseHeader):
         parameter_header_output += (f"  PRINT_DECIMAL_PLACES = "
                                     f"{odfutils.check_int(self.get_print_decimal_places())}\n")
         parameter_header_output += (f"  ANGLE_OF_SECTION = "
-                                    f"{odfutils.check_float(self.get_angle_of_section()):.6f}\n")
+                                    f"{odfutils.check_float(self.get_angle_of_section()):.1f}\n")
         parameter_header_output += (f"  MAGNETIC_VARIATION = "
-                                    f"{odfutils.check_float(self.get_magnetic_variation()):.6f}\n")
-        parameter_header_output += f"  DEPTH = {odfutils.check_float(self.get_depth()):.6f}\n"
+                                    f"{odfutils.check_float(self.get_magnetic_variation()):.1f}\n")
+        parameter_header_output += f"  DEPTH = {odfutils.check_float(self.get_depth()):.1f}\n"
         if self.get_units() == "GMT" or self.get_units() == "UTC" or self.get_type() == "SYTM":
             parameter_header_output += f"  MINIMUM_VALUE = {odfutils.check_datetime(self.get_minimum_value())}\n"
             parameter_header_output += f"  MAXIMUM_VALUE = {odfutils.check_datetime(self.get_maximum_value())}\n"
         else:
             parameter_header_output += (f"  MINIMUM_VALUE = "
-                                        f"{odfutils.check_float(self.get_minimum_value()):.1f}\n")
+                                        f"{odfutils.check_float(self.get_minimum_value()):.4f}\n")
             parameter_header_output += (f"  MAXIMUM_VALUE = "
-                                        f"{odfutils.check_float(self.get_maximum_value()):.1f}\n")
+                                        f"{odfutils.check_float(self.get_maximum_value()):.4f}\n")
         parameter_header_output += f"  NUMBER_VALID = {odfutils.check_int(self.get_number_valid())}\n"
         parameter_header_output += f"  NUMBER_NULL = {odfutils.check_int(self.get_number_null())}\n"
         return parameter_header_output
