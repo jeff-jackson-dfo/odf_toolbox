@@ -494,6 +494,8 @@ if __name__ == "__main__":
     # odf.cruise_header.set_chief_scientist('W GLEN HARRISON')
     # odf.event_header.set_event_comments("The wind was very strong during this operation.")
 
+    odf.update_odf()
+
     odf_file_text = odf.print_object(file_version=2)
 
     out_file = f"{spec}.ODF"

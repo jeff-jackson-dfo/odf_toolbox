@@ -379,19 +379,12 @@ class ParameterHeader(BaseHeader):
         parameter_header_output += f"  NAME = '{self.get_name()}'\n"
         parameter_header_output += f"  UNITS = '{self.get_units()}'\n"
         parameter_header_output += f"  CODE = '{self.get_code()}'\n"
-        parameter_header_output += f"  WMO_CODE = '{self.get_wmo_code()}'\n"
+        if self.get_wmo_code() != '':
+            parameter_header_output += f"  WMO_CODE = '{self.get_wmo_code()}'\n"
         if self.get_type() == "SYTM":
             parameter_header_output += f"  NULL_VALUE = '{odfutils.check_datetime(self.get_null_value())}'\n"
         else:
             parameter_header_output += f"  NULL_VALUE = {self.get_null_value()}\n"
-        # if type(self.get_null_value()) is float:
-        #     parameter_header_output += f"  NULL_VALUE = {odfutils.check_float(self.get_null_value()):.2f}\n"
-        # elif type(self.get_null_value()) is str:
-        #     parameter_header_output += f"  NULL_VALUE = {odfutils.check_datetime(self.get_null_value())}\n"
-        # elif type(self.get_null_value()) is int:
-        #     parameter_header_output += f"  NULL_VALUE = {odfutils.check_int(self.get_null_value())}\n"
-        # else:
-        #     parameter_header_output += f"  NULL_VALUE = {self.get_null_value()}\n"
         if file_version == 3:
             parameter_header_output += (f"  PRINT_FIELD_ORDER = "
                                         f"{odfutils.check_int(self.get_print_field_order())}\n")
@@ -404,8 +397,8 @@ class ParameterHeader(BaseHeader):
                                     f"{odfutils.check_float(self.get_magnetic_variation()):.1f}\n")
         parameter_header_output += f"  DEPTH = {odfutils.check_float(self.get_depth()):.1f}\n"
         if self.get_units() == "GMT" or self.get_units() == "UTC" or self.get_type() == "SYTM":
-            parameter_header_output += f"  MINIMUM_VALUE = {odfutils.check_datetime(self.get_minimum_value())}\n"
-            parameter_header_output += f"  MAXIMUM_VALUE = {odfutils.check_datetime(self.get_maximum_value())}\n"
+            parameter_header_output += f"  MINIMUM_VALUE = '{odfutils.check_datetime(self.get_minimum_value())}'\n"
+            parameter_header_output += f"  MAXIMUM_VALUE = '{odfutils.check_datetime(self.get_maximum_value())}'\n"
         else:
             parameter_header_output += (f"  MINIMUM_VALUE = "
                                         f"{odfutils.check_float(self.get_minimum_value()):.4f}\n")
