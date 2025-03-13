@@ -28,9 +28,9 @@ class ParameterHeader(BaseHeader):
     _angle_of_section : float
     _magnetic_variation : float
     _depth : float
-    _minimum_value : float
+    _minimum_value : not restricted but normally float or str (datetime)
         the minimum value of the parameter
-    _maximum_value : float
+    _maximum_value : not restricted but normally float or str (datetime)
         the maximum value of the parameter
     _number_valid : integer
         the number of valid parameter values
