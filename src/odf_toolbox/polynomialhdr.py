@@ -1,4 +1,4 @@
-from odf_toolbox.basehdr import BaseHeader
+from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
 class PolynomialCalHeader(BaseHeader):
     
@@ -135,20 +135,23 @@ class PolynomialCalHeader(BaseHeader):
         return polynomial_header_output
 
 
+    def main():
+        poly1 = PolynomialCalHeader()
+        poly1.set_parameter_code('PRES_01')
+        poly1.set_calibration_date('11-JUN-1995 05:35:46.82')
+        poly1.set_application_date('11-JUN-1995 05:35:46.82')
+        poly1.set_number_coefficients(2)
+        poly1.set_coefficients(['0.60000000D+01',  '0.15000001D+00'])
+        print(poly1.print_object())
+
+        poly2 = PolynomialCalHeader()
+        poly2.set_parameter_code('TEMP_01')
+        poly2.set_calibration_date('11-JUN-1995 05:35:46.83')
+        poly2.set_application_date('11-JUN-1995 05:35:46.83')
+        poly2.set_number_coefficients(2)
+        poly2.set_coefficients(['0.00000000D+01',  '0.25000001D-03'])
+        print(poly2.print_object())
+
 if __name__ == "__main__":
 
-    poly1 = PolynomialCalHeader()
-    poly1.set_parameter_code('PRES_01')
-    poly1.set_calibration_date('11-JUN-1995 05:35:46.82')
-    poly1.set_application_date('11-JUN-1995 05:35:46.82')
-    poly1.set_number_coefficients(2)
-    poly1.set_coefficients(['0.60000000D+01',  '0.15000001D+00'])
-    print(poly1.print_object())
-
-    poly2 = PolynomialCalHeader()
-    poly2.set_parameter_code('TEMP_01')
-    poly2.set_calibration_date('11-JUN-1995 05:35:46.83')
-    poly2.set_application_date('11-JUN-1995 05:35:46.83')
-    poly2.set_number_coefficients(2)
-    poly2.set_coefficients(['0.00000000D+01',  '0.25000001D-03'])
-    print(poly2.print_object())
+    PolynomialCalHeader.main()

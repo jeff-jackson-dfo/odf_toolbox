@@ -33,41 +33,43 @@ class BaseHeader:
         # self.logger.info(message)
         self.shared_log_list.append(message)
 
+    def main():
+        class SubClassA(BaseHeader):
+            def log_message(self, message):
+                super().log_message(f"SubClassA: {message}")
+
+        class SubClassB(BaseHeader):
+            def log_message(self, message):
+                super().log_message(f"SubClassB: {message}")
+
+        # Example usage
+        subclass_a = SubClassA()
+        subclass_b = SubClassB()
+
+        subclass_a.log_message("Message from SubClassA")
+        subclass_b.log_message("Message from SubClassB")
+
+        # Access the shared log messages before resetting
+        print("Shared log messages before resetting:")
+        for log_entry in BaseHeader.shared_log_list:
+            print(log_entry)
+
+        # Reset the shared log list
+        BaseHeader.reset_log_list()
+
+        # Access the shared log messages after resetting
+        print("Shared log messages after resetting:")
+        print(BaseHeader.shared_log_list)
+
+        subclass_a.log_message("New message from SubClassA after reset")
+        subclass_b.log_message("New message from SubClassB after reset")
+
+        # Access the shared log messages after new log entries
+        print("Shared log messages after new entries:")
+        for log_entry in BaseHeader.shared_log_list:
+            print(log_entry)
+
 
 if __name__ == "__main__":
 
-    class SubClassA(BaseHeader):
-        def log_message(self, message):
-            super().log_message(f"SubClassA: {message}")
-
-    class SubClassB(BaseHeader):
-        def log_message(self, message):
-            super().log_message(f"SubClassB: {message}")
-
-    # Example usage
-    subclass_a = SubClassA()
-    subclass_b = SubClassB()
-
-    subclass_a.log_message("Message from SubClassA")
-    subclass_b.log_message("Message from SubClassB")
-
-    # Access the shared log messages before resetting
-    print("Shared log messages before resetting:")
-    for log_entry in BaseHeader.shared_log_list:
-        print(log_entry)
-
-    # Reset the shared log list
-    BaseHeader.reset_log_list()
-
-    # Access the shared log messages after resetting
-    print("Shared log messages after resetting:")
-    print(BaseHeader.shared_log_list)
-
-    subclass_a.log_message("New message from SubClassA after reset")
-    subclass_b.log_message("New message from SubClassB after reset")
-
-    # Access the shared log messages after new log entries
-    print("Shared log messages after new entries:")
-    for log_entry in BaseHeader.shared_log_list:
-        print(log_entry)
-
+    BaseHeader.main()

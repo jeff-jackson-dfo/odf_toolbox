@@ -1,4 +1,4 @@
-from odf_toolbox.basehdr import BaseHeader
+from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
 
 class MeteoHeader(BaseHeader):
@@ -15,7 +15,7 @@ class MeteoHeader(BaseHeader):
         self._meteo_comments = []
 
     def log_message(self, message):
-        self.logger.info(message)
+        super().log_message(f"INSTRUMENT_HEADER: {message}")
 
     def get_air_temperature(self) -> float:
         return self._air_temperature
@@ -163,3 +163,19 @@ class MeteoHeader(BaseHeader):
         for meteo_comment in self.get_meteo_comments():
             meteo_header_output += f"  METEO_COMMENTS =  '{meteo_comment}'\n"
         return meteo_header_output
+
+    def main():
+        meteo = MeteoHeader()
+        meteo.set_air_temperature(10.0)
+        meteo.set_atmospheric_pressure(1000.0)
+        meteo.set_wind_speed(5.0)
+        meteo.set_wind_direction(180.0)
+        meteo.set_sea_state(3.0)
+        meteo.set_cloud_cover(50.0)
+        meteo.set_ice_thickness(0.0)
+        meteo.set_meteo_comments("This is a comment")
+        print(meteo.print_object())
+
+
+if __name__ == "__main__":
+    MeteoHeader.main()

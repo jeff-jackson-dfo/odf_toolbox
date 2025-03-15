@@ -1,4 +1,4 @@
-from odf_toolbox.basehdr import BaseHeader
+from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
 from icecream import ic
 class ParameterHeader(BaseHeader):
@@ -409,31 +409,35 @@ class ParameterHeader(BaseHeader):
         return parameter_header_output
 
 
+    def main():
+        param = ParameterHeader()
+        param.set_type('DOUB')
+        param.set_name('Pressure')
+        param.set_units('decibars')
+        param.set_code('PRES_01')
+        param.set_wmo_code('PRES')
+        param.set_null_value(-99.0, 'float')
+        param.set_print_field_width(10)
+        param.set_print_decimal_places(3)
+        param.set_angle_of_section(0.0)
+        param.set_magnetic_variation(0.0)
+        depth = odfutils.check_string('0.00000000D+00')
+        param.set_depth(float(depth))
+        param.set_minimum_value(2.177)
+        param.set_maximum_value(176.5)
+        param.set_number_valid(1064)
+        param.set_number_null(643)
+        # ic(param.print_object())
+        # param.set_null_value('17-NOV-1858 00:00:00.00', 'str')
+        # ic(param.print_object())
+        # param.set_null_value(-99, 'int')
+        # ic(param.print_object())
+        # param.set_null_value('', 'float')
+        # ic(param.print_object())
+        # param.set_null_value(-99.0, 'int')
+        print(param.print_object())
+
+
 if __name__ == "__main__":
 
-    param = ParameterHeader()
-    param.set_type('DOUB')
-    param.set_name('Pressure')
-    param.set_units('decibars')
-    param.set_code('PRES_01')
-    param.set_wmo_code('PRES')
-    param.set_null_value(-99.0, 'float')
-    param.set_print_field_width(10)
-    param.set_print_decimal_places(3)
-    param.set_angle_of_section(0.0)
-    param.set_magnetic_variation(0.0)
-    depth = odfutils.check_string('0.00000000D+00')
-    param.set_depth(float(depth))
-    param.set_minimum_value(2.177)
-    param.set_maximum_value(176.5)
-    param.set_number_valid(1064)
-    param.set_number_null(643)
-    ic(param.print_object())
-    param.set_null_value('17-NOV-1858 00:00:00.00', 'str')
-    ic(param.print_object())
-    param.set_null_value(-99, 'int')
-    ic(param.print_object())
-    param.set_null_value('', 'float')
-    ic(param.print_object())
-    param.set_null_value(-99.0, 'int')
-    ic(param.print_object())
+    ParameterHeader.main()

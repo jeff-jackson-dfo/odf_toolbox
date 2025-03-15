@@ -1,4 +1,4 @@
-from odf_toolbox.basehdr import BaseHeader
+from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
 
 class InstrumentHeader(BaseHeader):
@@ -112,3 +112,17 @@ class InstrumentHeader(BaseHeader):
         instrument_header_output += f"  SERIAL_NUMBER = '{odfutils.check_string(self.get_serial_number())}'\n"
         instrument_header_output += f"  DESCRIPTION = '{odfutils.check_string(self.get_description())}'\n"
         return instrument_header_output
+
+
+    def main():
+        instrument_header = InstrumentHeader()
+        instrument_header.set_instrument_type('CTD')
+        instrument_header.set_model('SBE 9')
+        instrument_header.set_serial_number('12345')
+        instrument_header.set_description('SeaBird CTD')
+        print(instrument_header.print_object())
+
+
+if __name__ == "__main__":
+
+    InstrumentHeader.main()

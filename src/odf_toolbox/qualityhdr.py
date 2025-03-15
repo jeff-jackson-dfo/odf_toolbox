@@ -1,4 +1,4 @@
-from odf_toolbox.basehdr import BaseHeader
+from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
 
 class QualityHeader(BaseHeader):
@@ -113,3 +113,16 @@ class QualityHeader(BaseHeader):
         for quality_comment in self.get_quality_comments():
             quality_header_output += f"  QUALITY_COMMENTS = '{quality_comment}'\n"
         return quality_header_output
+
+    def main():
+
+        quality_header = QualityHeader()
+        quality_header.set_quality_date('2021-07-01')
+        quality_header.set_quality_tests('Test 1')
+        quality_header.set_quality_tests('Test 2')
+        quality_header.set_quality_comments('Comment 1')
+        quality_header.set_quality_comments('Comment 2')
+        print(quality_header.print_object())
+
+if __name__ == '__main__':
+    QualityHeader.main()

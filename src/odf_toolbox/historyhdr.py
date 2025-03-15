@@ -1,4 +1,4 @@
-from odf_toolbox.basehdr import BaseHeader
+from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
 
 class HistoryHeader(BaseHeader):
@@ -33,11 +33,11 @@ class HistoryHeader(BaseHeader):
         if process_number == 0 and number_of_processes >= 0:
             if not read_operation:
                 self.log_message(f"The following PROCESS line was added to the History_Header: '{process}'")
-            self._processes.append(f"'{process}'")
+            self._processes.append(f"{process}")
         elif process_number <= number_of_processes and number_of_processes > 0:
             self.log_message(f"PROCESS {process_number} was changed from "
                                  f"{self._processes[process_number - 1]} to '{process}'")
-            self._processes[process_number-1] = f"'{process}'"
+            self._processes[process_number-1] = f"{process}"
         else:
             raise ValueError("The 'process' number does not match the number of PROCESS lines.")
 
@@ -69,3 +69,16 @@ class HistoryHeader(BaseHeader):
         else:
             history_header_output += "  PROCESS = ''\n"
         return history_header_output
+
+
+    def main():
+        history = HistoryHeader()
+        history_fields = ["CREATION_DATE = '2021-06-01 00:00:00'",
+                        "PROCESS = First process",
+                        "PROCESS = Last process"]
+        history.populate_object(history_fields)
+        print(history.print_object())
+
+if __name__ == '__main__':
+    
+    HistoryHeader.main()

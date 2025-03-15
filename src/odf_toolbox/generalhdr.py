@@ -1,4 +1,4 @@
-from odf_toolbox.basehdr import BaseHeader
+from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
 
 class GeneralCalHeader(BaseHeader):
@@ -128,13 +128,13 @@ class GeneralCalHeader(BaseHeader):
             if not read_operation:
                 self.log_message(f"The following comment was added to CALIBRATION_COMMENTS: "
                                      f"'{calibration_comment}'")
-            self._calibration_comments.append(f"'{calibration_comment}'")
+            self._calibration_comments.append(f"{calibration_comment}")
         elif comment_number <= number_of_comments and number_of_comments > 0:
             if not read_operation:
                 self.log_message(f"Comment {comment_number} in CALIBRATION_COMMENTS was "
                                      f"changed from {self._calibration_comments[comment_number-1]} to "
                                      f"'{calibration_comment}'")
-            self._calibration_comments[comment_number] = f"'{calibration_comment}'"
+            self._calibration_comments[comment_number] = f"{calibration_comment}"
         else:
             raise ValueError("The 'calibration_comment' number does not match the number of "
                              "CALIBRATION_COMMENTS lines.")
@@ -184,3 +184,19 @@ class GeneralCalHeader(BaseHeader):
         for general_comment in self.get_calibration_comments():
             general_header_output += f"  CALIBRATION_COMMENTS = '{general_comment}'\n"
         return general_header_output
+
+    def main():
+        general = GeneralCalHeader()
+        general.set_parameter_code('PAR')
+        general.set_calibration_type('Linear')
+        general.set_calibration_date('2024-10-28')
+        general.set_application_date('2025-03-14')
+        general.set_number_coefficients(2)
+        general.set_coefficients([0.75, 1.05834])
+        general.set_calibration_equation('y = mx + b')
+        general.set_calibration_comments('This is a comment')
+        print(general.print_object())
+
+if __name__ == "__main__":
+
+    GeneralCalHeader.main()

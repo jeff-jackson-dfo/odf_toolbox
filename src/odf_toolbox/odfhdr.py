@@ -4,7 +4,6 @@ from icecream import ic
 import re
 
 # ods_toolbox modules to import
-from odf_toolbox import odfutils
 from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox.compasshdr import CompassCalHeader
 from odf_toolbox.cruisehdr import CruiseHeader
@@ -18,6 +17,7 @@ from odf_toolbox.polynomialhdr import PolynomialCalHeader
 from odf_toolbox.qualityhdr import QualityHeader
 from odf_toolbox.recordhdr import RecordHeader
 from odf_toolbox.records import DataRecords
+from odf_toolbox import odfutils
 
 
 class OdfHeader(BaseHeader):
@@ -452,7 +452,8 @@ if __name__ == "__main__":
     my_path = 'C:\\DEV\\GitHub\\odf_toolbox\\tests\\'
     # my_file = 'CTD_2000037_102_1_DN.ODF'
     # my_file = 'CTD_91001_1_1_DN.ODF'
-    my_file = 'CTD_SCD2022277_001_01_DN.ODF'
+    my_file = 'ODF\\CTD_SCD2022277_001_01_DN.ODF'
+    # my_file = 'File_with_leading_spaces.ODF'
     odf.read_odf(my_path + my_file)
 
     # Add a new History Header to record the modifications that are made.

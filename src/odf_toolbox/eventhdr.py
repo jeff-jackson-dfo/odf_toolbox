@@ -1,4 +1,4 @@
-from odf_toolbox.basehdr import BaseHeader
+from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
 
 class EventHeader(BaseHeader):
@@ -389,7 +389,32 @@ class EventHeader(BaseHeader):
             event_header_output += "  EVENT_COMMENTS = ''\n"
         return event_header_output
 
+    def main():
+        event = EventHeader()
+        event.set_creation_date('2021-03-25T00:00:00')
+        event.set_data_type('CTD')
+        event.set_event_number('001')
+        event.set_event_qualifier1('123456')
+        event.set_event_qualifier2('DN')
+        event.set_creation_date('2025-03-14T08:55:00')
+        event.set_orig_creation_date('2024-10-25T12:20:00')
+        event.set_start_date_time('2017-07-03T19:12:00')
+        event.set_end_date_time('2017-07-03T20:05:00')
+        event.set_initial_latitude(33.123456)
+        event.set_initial_longitude(-118.123456)
+        event.set_end_latitude(33.123456)
+        event.set_end_longitude(-118.123456)
+        event.set_min_depth(0.0)
+        event.set_max_depth(100.0)
+        event.set_sampling_interval(1.0)
+        event.set_sounding(110.0)
+        event.set_depth_off_bottom(10.0)
+        event.set_station_name('Station Name')
+        event.set_set_number('001')
+        event.set_event_comments('Comment 1')
+        print(event.print_object())
+
+
 if __name__ == "__main__":
 
-    ehdr = EventHeader()
-    print(ehdr.print_object())
+    EventHeader.main()

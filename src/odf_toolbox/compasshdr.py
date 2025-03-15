@@ -1,8 +1,10 @@
+from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
-from odf_toolbox.basehdr import BaseHeader
 
 class CompassCalHeader(BaseHeader):
+    
     def __init__(self):
+        super().__init__()        
         self._parameter_code = ''
         self._calibration_date = ''
         self._application_date = ''
@@ -139,3 +141,18 @@ class CompassCalHeader(BaseHeader):
             corrections_print = corrections_print + "{:.8e}".format(correction) + " "
         compass_cal_header_output += f"  CORRECTIONS = {corrections_print}\n"
         return compass_cal_header_output
+
+    def main():
+        compass_cal_header = CompassCalHeader()
+        compass_cal_fields = ["PARAMETER_NAME = 'PARAMETER_CODE'",
+                            "PARAMETER_CODE = 'SOG'",
+                            "CALIBRATION_DATE = '2021-03-25T00:00:00'",
+                            "APPLICATION_DATE = '2021-03-25T00:00:00'",
+                            "DIRECTIONS = 0.0 90.0 180.0 270.0",
+                            "CORRECTIONS = 0.0 0.0 0.0 0.0"]
+        compass_cal_header.populate_object(compass_cal_fields)
+        print(compass_cal_header.print_object())
+
+if __name__ == "__main__":
+
+    CompassCalHeader.main()

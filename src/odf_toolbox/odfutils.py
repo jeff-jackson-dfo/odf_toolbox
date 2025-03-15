@@ -5,7 +5,6 @@ import shlex
 import re
 from icecream import ic
 
-
 def read_file_lines(file_with_path: str):
     assert isinstance(file_with_path, str), \
         f"Input value is not of type str: {file_with_path}"
@@ -18,7 +17,6 @@ def read_file_lines(file_with_path: str):
     except Exception as e:
         return f"An error occurred while reading the file: {e}"
 
-
 def find_lines_with_text(odf_file_lines: list, separator: str) -> list:
     assert isinstance(odf_file_lines, list), \
         f"Input value is not of type list: {odf_file_lines}"
@@ -28,12 +26,10 @@ def find_lines_with_text(odf_file_lines: list, separator: str) -> list:
                       if separator in text_line]
     return matching_lines
 
-
 def split_lines_into_dict(lines: list) -> dict:
     assert isinstance(lines, list), \
         f"Input value is not of type list: {lines}"
     return list_to_dict(lines)
-
 
 def search_dictionaries(search_text: str, dictionaries: list):
     assert isinstance(search_text, str), \
@@ -46,7 +42,6 @@ def search_dictionaries(search_text: str, dictionaries: list):
             if search_text.lower() in key.lower() or search_text.lower() in value.lower():
                 matching_results.append((string_index + 1, dictionary))
     return matching_results
-
 
 def split_lines_after_data(all_data_lines: list) -> pandas.DataFrame:
     assert isinstance(all_data_lines, list), \
@@ -62,12 +57,10 @@ def split_lines_after_data(all_data_lines: list) -> pandas.DataFrame:
 
     return df
 
-
 def get_current_date_time() -> str:
     dt = datetime.datetime.now()
     dts = dt.strftime("%d-%b-%Y %H:%M:%S.%f").upper()
     return f"'{dts[:-4]}'"
-
 
 def check_value(value):
     value_type = type(value)
@@ -78,14 +71,12 @@ def check_value(value):
     elif value_type == float:
         check_float(value)
 
-
 def check_float(value: float) -> float:
     if value is None:
         value = -99.0
     assert isinstance(value, float), \
         f"Input value is not of type float: {value}"
     return value
-
 
 def check_int(value: int) -> int:
     if value is None:
@@ -94,12 +85,10 @@ def check_int(value: int) -> int:
         f"Input value is not of type int: {value}"
     return value
 
-
 def check_long(value: float) -> float:
     if value is None:
         value = -999.0
     return value
-
 
 def check_datetime(value: str) -> str:
     assert isinstance(value, str), \
@@ -120,7 +109,6 @@ def check_datetime(value: str) -> str:
 
     return value
 
-
 def check_string(value: str) -> str:
     assert isinstance(value, str), \
         f"Input value is not of type str: {value}"
@@ -135,7 +123,6 @@ def check_string(value: str) -> str:
         value = ''
     return value
 
-
 def list_to_dict(lst: list) -> dict:
     assert isinstance(lst, list), \
         f"Input value is not of type list: {lst}"
@@ -143,6 +130,12 @@ def list_to_dict(lst: list) -> dict:
     result_dict = {lst[i]: lst[i + 1] for i in range(0, len(lst), 2)}
     return result_dict
 
+def remove_leading_whitespace(lst: list):
+    assert isinstance(lst, list), \
+        f"Input value is not of type list: {lst}"
+    # Using list comprehension to remove trailing commas and whitespace from each item
+    cleaned_list = [item.rstrip(', ').strip() for item in lst]
+    return cleaned_list
 
 def remove_trailing_commas_and_whitespace(lst: list):
     assert isinstance(lst, list), \
@@ -150,7 +143,6 @@ def remove_trailing_commas_and_whitespace(lst: list):
     # Using list comprehension to remove trailing commas and whitespace from each item
     cleaned_list = [item.rstrip(', ').strip() for item in lst]
     return cleaned_list
-
 
 def split_string_with_quotes(input_string: str):
     assert isinstance(input_string, str), \
@@ -167,14 +159,12 @@ def convert_to_float(item):
         # Return the original item if conversion is not possible
         return item
 
-
 def convert_dataframe(df: pandas.DataFrame) -> pandas.DataFrame:
     assert isinstance(df, pandas.DataFrame), \
         f"Input value is not of type pandas.DataFrame: {df}"
     # Apply the conversion function to each element in the DataFrame
     df = df.map(convert_to_float)
     return df
-
 
 def add_commas_except_last(lines: str) -> str:
     assert isinstance(lines, str), \
@@ -183,7 +173,6 @@ def add_commas_except_last(lines: str) -> str:
     lines_with_commas = lines_with_commas.rstrip(",\n")
     lines_with_commas = lines_with_commas + "\n"
     return lines_with_commas
-
 
 def add_commas(lines: str) -> str:
     assert isinstance(lines, str), \

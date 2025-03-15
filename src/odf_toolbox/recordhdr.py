@@ -1,4 +1,4 @@
-from odf_toolbox.basehdr import BaseHeader
+from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
 
 class RecordHeader(BaseHeader):
@@ -123,3 +123,10 @@ class RecordHeader(BaseHeader):
         record_header_output += f"  NUM_PARAM = {odfutils.check_int(self.get_num_param())}\n"
         record_header_output += f"  NUM_CYCLE = {odfutils.check_int(self.get_num_cycle())}\n"
         return record_header_output
+
+    def main():
+        record = RecordHeader()
+        print(record.print_object())
+
+if __name__ == "__main__":
+    RecordHeader.main()
