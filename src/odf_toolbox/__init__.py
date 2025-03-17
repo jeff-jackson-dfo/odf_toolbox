@@ -1,5 +1,4 @@
-# This file is part of the 'odf_toolbox' package
-print("Imported odf_toolbox")
+print("Importing odf_toolbox package ...")
 
 from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox.cruisehdr import CruiseHeader
@@ -21,3 +20,6 @@ __all__ = ['BaseHeader', 'CompassCalHeader', 'CruiseHeader', 'EventHeader',
            'GeneralCalHeader', 'HistoryHeader', 'InstrumentHeader', 'MeteoHeader',
            'OdfHeader', 'ParameterHeader', 'PolynomialCalHeader', 'QualityHeader',
            'RecordHeader', 'DataRecords', 'odfutils']
+
+# This file is part of the 'odf_toolbox' package
+print("... odf_toolbox package imported!")
