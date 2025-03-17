@@ -164,14 +164,75 @@ class MeteoHeader(BaseHeader):
             meteo_header_output += f"  METEO_COMMENTS =  '{meteo_comment}'\n"
         return meteo_header_output
 
+    # Function to convert wind speed from knots to meters per second
+    def wind_speed_knots_to_ms(self, wsKnots) -> float:
+        if wsKnots < 0:
+            wsMS = -99
+        else:
+            wsMS = wsKnots / 1.94384
+        return wsMS
+
+    # Function to covert percentage of cloud cover to the appropriate WMO 2700 code
+    def cloud_cover_percentage_to_wmo_code(self, cloud_cover_percentage: float) -> int:
+        if cloud_cover_percentage < 0.0:
+           cloud_cover_code = -99.0
+        elif cloud_cover_percentage == 0.0:
+            cloud_cover_code = 0
+        elif cloud_cover_percentage > 0.0 and cloud_cover_percentage < 0.15:
+           cloud_cover_code = 1
+        elif cloud_cover_percentage >= 0.15 and cloud_cover_percentage < 0.35:
+            cloud_cover_code = 2
+        elif cloud_cover_percentage >= 0.35 and cloud_cover_percentage < 0.45:
+            cloud_cover_code = 3
+        elif cloud_cover_percentage >= 0.45 and cloud_cover_percentage < 0.55:
+            cloud_cover_code = 4
+        elif cloud_cover_percentage >= 0.55 and cloud_cover_percentage < 0.65:
+            cloud_cover_code = 5
+        elif cloud_cover_percentage >= 0.65 and cloud_cover_percentage < 0.85:
+            cloud_cover_code = 6
+        elif cloud_cover_percentage >= 0.85 and cloud_cover_percentage < 0.95:
+            cloud_cover_code = 7
+        elif cloud_cover_percentage >= 0.95:
+            cloud_cover_code = 8
+        elif cloud_cover_percentage >= 1.0:
+            cloud_cover_code = 9
+        return(cloud_cover_code)
+
+    # Function to covert wave height in meters to the appropriate WMO 3700 code
+    def wave_height_meters_to_wmo_code(self, wave_height_meters: float) -> int:
+        if wave_height_meters < 0.0:
+            wind_speed_knots_to_ms = -99.0
+        elif wave_height_meters == 0.0:
+            wave_code = 0
+        elif wave_height_meters > 0.0 and wave_height_meters < 0.1:
+            wave_code = 1
+        elif wave_height_meters >= 0.1 and wave_height_meters < 0.5:
+            wave_code = 2
+        elif wave_height_meters >= 0.5 and wave_height_meters < 1.25:
+            wave_code = 3
+        elif wave_height_meters >= 1.25 and wave_height_meters < 2.5:
+            wave_code = 4
+        elif wave_height_meters >= 2.5 and wave_height_meters < 4.0:
+            wave_code = 5
+        elif wave_height_meters >= 4.0 and wave_height_meters < 6.0:
+            wave_code = 6
+        elif wave_height_meters >= 6.0 and wave_height_meters < 9.0:
+            wave_code = 7
+        elif wave_height_meters >= 9.0 and wave_height_meters < 14.0:
+            wave_code = 8
+        elif wave_height_meters > 14.0:
+            wave_code = 9
+        return(wave_code)
+
+
     def main():
         meteo = MeteoHeader()
         meteo.set_air_temperature(10.0)
         meteo.set_atmospheric_pressure(1000.0)
-        meteo.set_wind_speed(5.0)
+        meteo.set_wind_speed(meteo.wind_speed_knots_to_ms(5.0))
         meteo.set_wind_direction(180.0)
-        meteo.set_sea_state(3.0)
-        meteo.set_cloud_cover(50.0)
+        meteo.set_sea_state(meteo.wave_height_meters_to_wmo_code(3.0))
+        meteo.set_cloud_cover(meteo.cloud_cover_percentage_to_wmo_code(50.0))
         meteo.set_ice_thickness(0.0)
         meteo.set_meteo_comments("This is a comment")
         print(meteo.print_object())
