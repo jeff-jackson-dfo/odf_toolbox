@@ -39,7 +39,7 @@ class InstrumentHeader(BaseHeader):
         self._description = ''
 
     def log_message(self, message):
-        super().log_message(f"INSTRUMENT_HEADER: {message}")
+        super().log_message(f"In Instrument Header field {message}")
 
     def get_instrument_type(self) -> str:
         return self._instrument_type

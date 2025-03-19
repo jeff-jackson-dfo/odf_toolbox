@@ -11,7 +11,7 @@ class PolynomialCalHeader(BaseHeader):
         self._coefficients = []
 
     def log_message(self, message):
-        super().log_message(f"POLYNOMIAL_HEADER: {message}")
+        super().log_message(f"In Polynomial Cal Header field {message}")
 
     def get_parameter_code(self) -> str:
         return self._parameter_code

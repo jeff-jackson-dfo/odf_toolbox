@@ -1,6 +1,6 @@
 from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
-
+from icecream import ic
 class QualityHeader(BaseHeader):
     """
     A class to represent a Quality Header in an ODF object.
@@ -31,12 +31,12 @@ class QualityHeader(BaseHeader):
 
     def __init__(self):
         super().__init__()
-        self._quality_date = None
+        self._quality_date = ''
         self._quality_tests = []
         self._quality_comments = []
 
     def log_message(self, message):
-        super().log_message(f"QUALITY_HEADER: {message}")
+        super().log_message(f"In Quality Header field {message}")
 
     def get_quality_date(self):
         return self._quality_date
@@ -95,8 +95,8 @@ class QualityHeader(BaseHeader):
             tokens = header_line.split('=', maxsplit=1)
             quality_dict = odfutils.list_to_dict(tokens)
             for key, value in quality_dict.items():
-                key = key.strip()
-                value = value.strip()
+                key = key.strip("\' ")
+                value = value.strip("\' ")
                 match key:
                     case 'QUALITY_DATE':
                         self.set_quality_date(value, read_operation=True)
@@ -117,12 +117,17 @@ class QualityHeader(BaseHeader):
     def main():
 
         quality_header = QualityHeader()
-        quality_header.set_quality_date('2021-07-01')
+        sytm = '01-JUL-2017 10:45:19.00'
+        quality_header.set_quality_date(sytm)
         quality_header.set_quality_tests('Test 1')
         quality_header.set_quality_tests('Test 2')
         quality_header.set_quality_comments('Comment 1')
         quality_header.set_quality_comments('Comment 2')
         print(quality_header.print_object())
+
+        from datetime import datetime        
+        dt_object = datetime.strptime(sytm, '%d-%b-%Y %H:%M:%S.%f')
+        ic(dt_object)
 
 if __name__ == '__main__':
     QualityHeader.main()

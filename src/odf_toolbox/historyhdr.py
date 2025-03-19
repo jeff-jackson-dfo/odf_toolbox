@@ -9,8 +9,9 @@ class HistoryHeader(BaseHeader):
         self._processes = []
 
     def log_message(self, message):
-        super().log_message(f"HISTORY_HEADER: {message}")
-
+        # super().log_message(f"In History Header field {message}")
+        super().log_message(message)
+        
     def get_creation_date(self):
         return self._creation_date
 

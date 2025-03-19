@@ -12,7 +12,7 @@ class RecordHeader(BaseHeader):
         self._num_param = 0
 
     def log_message(self, message):
-        super().log_message(f"RECORD_HEADER: {message}")
+        super().log_message(f"In Record Header field {message}")
 
     def get_num_calibration(self) -> int:
         return self._num_calibration

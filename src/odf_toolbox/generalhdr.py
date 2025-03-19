@@ -15,7 +15,7 @@ class GeneralCalHeader(BaseHeader):
         self._calibration_comments = []
 
     def log_message(self, message):
-        super().log_message(f"GENERAL_HEADER: {message}")
+        super().log_message(f"In General Cal Header field {message}")
 
     def get_parameter_code(self) -> str:
         return self._parameter_code

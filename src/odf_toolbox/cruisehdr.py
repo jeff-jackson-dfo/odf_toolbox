@@ -17,7 +17,7 @@ class CruiseHeader(BaseHeader):
         self._cruise_description = ''
 
     def log_message(self, message):
-        super().log_message(f'CRUISE_HEADER: {message}')
+        super().log_message(f"In Cruise Header field {message}")
 
     def get_country_institute_code(self) -> int:
         return self._country_institute_code

@@ -68,7 +68,7 @@ class ParameterHeader(BaseHeader):
         self._number_null = None
 
     def log_message(self, message):
-        super().log_message(f"PARAMETER_HEADER: {message}")
+        super().log_message(f"In Parameter Header for {self.get_code()} field {message}")
 
     def __str__(self):
         return (f'Parameter named "{self.get_name()}" has code "{self.get_code()}", type "{self.get_type()}'

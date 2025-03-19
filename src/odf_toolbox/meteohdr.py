@@ -15,7 +15,7 @@ class MeteoHeader(BaseHeader):
         self._meteo_comments = []
 
     def log_message(self, message):
-        super().log_message(f"INSTRUMENT_HEADER: {message}")
+        super().log_message(f"In Meteo Header field {message}")
 
     def get_air_temperature(self) -> float:
         return self._air_temperature

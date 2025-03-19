@@ -66,12 +66,9 @@ class DataRecords:
         return len(self._data_frame)
 
     def populate_object(self, parameter_list: list, data_formats: dict, data_lines_list: list):
-        assert isinstance(parameter_list, list), \
-               f"Input value is not of type list: {parameter_list}"
-        assert isinstance(data_formats, dict), \
-               f"Input value is not of type dict: {data_formats}"
-        assert isinstance(data_lines_list, list), \
-               f"Input value is not of type list: {data_lines_list}"
+        assert isinstance(parameter_list, list), f"Input value is not of type list: {parameter_list}"
+        assert isinstance(data_formats, dict), f"Input value is not of type dict: {data_formats}"
+        assert isinstance(data_lines_list, list), f"Input value is not of type list: {data_lines_list}"
         data_record_list = [odfutils.split_string_with_quotes(s) for s in data_lines_list]
         df = pd.DataFrame(columns=parameter_list, data=data_record_list)
         df = odfutils.convert_dataframe(df)

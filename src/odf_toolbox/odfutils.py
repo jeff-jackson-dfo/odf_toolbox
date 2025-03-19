@@ -160,23 +160,20 @@ def convert_to_float(item):
         return item
 
 def convert_dataframe(df: pandas.DataFrame) -> pandas.DataFrame:
-    assert isinstance(df, pandas.DataFrame), \
-        f"Input value is not of type pandas.DataFrame: {df}"
+    assert isinstance(df, pandas.DataFrame), f"Input value is not of type pandas.DataFrame: {df}"
     # Apply the conversion function to each element in the DataFrame
     df = df.map(convert_to_float)
     return df
 
 def add_commas_except_last(lines: str) -> str:
-    assert isinstance(lines, str), \
-        f"Input value is not of type str: {lines}"
+    assert isinstance(lines, str), f"Input value is not of type str: {lines}"
     lines_with_commas = lines.replace("\n", ",\n")
     lines_with_commas = lines_with_commas.rstrip(",\n")
     lines_with_commas = lines_with_commas + "\n"
     return lines_with_commas
 
 def add_commas(lines: str) -> str:
-    assert isinstance(lines, str), \
-        f"Input value is not of type str: {lines}"
+    assert isinstance(lines, str), f"Input value is not of type str: {lines}"
     lines_with_commas = lines.replace("\n", ",\n")
     lines_with_commas = lines_with_commas.replace("' ,", "',")
     return lines_with_commas

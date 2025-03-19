@@ -12,7 +12,7 @@ class CompassCalHeader(BaseHeader):
         self._corrections = []
 
     def log_message(self, message):
-        super().log_message(f"COMPASS_CAL_HEADER: {message}")
+        super().log_message(f"In Compass Cal Header field {message}")
 
     def get_parameter_code(self) -> str:
         return self._parameter_code

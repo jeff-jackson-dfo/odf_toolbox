@@ -51,7 +51,7 @@ class OdfHeader(BaseHeader):
         self.data = DataRecords()
 
     def log_message(self, message):
-        super().log_message(f"ODF_HEADER: {message}")
+        super().log_message(f"In ODF Header field {message}")
 
     def get_file_specification(self) -> str:
         """
@@ -443,63 +443,89 @@ class OdfHeader(BaseHeader):
                 print(f"Item {poly_code} not found in old_codes list.")
         return self
 
+    def is_parameter_code(self, code: str) -> bool:
+        """
+        IS_PARAMETER_CODE: Check if a parameter code is in the ODF object.
+
+        Creation Date: 24-SEP-2014
+        Last Updated: 17-MAR-2025
+        """
+        codes = self.get_parameter_codes()
+        return code in codes
+
+    @staticmethod
+    def null2empty(df: pd.DataFrame) -> pd.DataFrame:
+        """
+        null2empty: replaces numeric null values (-99) with None values in the input Pandas data frame.
+        """
+        new_df = df.replace(-99, None, inplace=False)
+        return new_df
                 
 
-if __name__ == "__main__":
+    def main():
 
-    odf = OdfHeader()
+        odf = OdfHeader()
 
-    my_path = 'C:\\DEV\\GitHub\\odf_toolbox\\tests\\'
-    # my_file = 'CTD_2000037_102_1_DN.ODF'
-    # my_file = 'CTD_91001_1_1_DN.ODF'
-    my_file = 'ODF\\CTD_SCD2022277_001_01_DN.ODF'
-    # my_file = 'File_with_leading_spaces.ODF'
-    odf.read_odf(my_path + my_file)
+        my_path = 'C:\\DEV\\GitHub\\odf_toolbox\\tests\\'
+        # my_file = 'CTD_2000037_102_1_DN.ODF'
+        # my_file = 'CTD_91001_1_1_DN.ODF'
+        # my_file = 'ODF\\CTD_SCD2022277_001_01_DN.ODF'
+        # my_file = 'file_with_leading_spaces.ODF'
+        my_file = 'file_with_null_data_values.ODF'
+        odf.read_odf(my_path + my_file)
 
-    # Add a new History Header to record the modifications that are made.
-    odf.add_history()
-    user = 'Jeff Jackson'
-    odf.add_to_log(f'{user} made the following modifications to this file:')
+        # Add a new History Header to record the modifications that are made.
+        odf.add_history()
+        user = 'Jeff Jackson'
+        odf.add_to_log(f'{user} made the following modifications to this file:')
 
-    # Modify some of the odf metadata
-    # odf.cruise_header.set_organization('DFO BIO')
-    # odf.cruise_header.set_chief_scientist('GLEN HARRISON')
-    odf.cruise_header.set_start_date('01-APR-2022 00:00:00')
-    odf.cruise_header.set_end_date('31-OCT-2022 00:00:00')
-    # odf.cruise_header.set_platform('HUDSON')
-    # odf.event_header.set_station_name('AR7W_15')
+        # Modify some of the odf metadata
+        # odf.cruise_header.set_organization('DFO BIO')
+        # odf.cruise_header.set_chief_scientist('GLEN HARRISON')
+        odf.cruise_header.set_start_date('01-APR-2022 00:00:00')
+        odf.cruise_header.set_end_date('31-OCT-2022 00:00:00')
+        # odf.cruise_header.set_platform('HUDSON')
+        # odf.event_header.set_station_name('AR7W_15')
 
-    # new_param_list = ['PRES_01', 'TEMP_01', 'CRAT_01', 'PSAL_01', 'NETR_01', 'FLOR_01', 'OTMP_01', 'OPPR_01', 'DOXY_01']
-    # odf.fix_parameter_codes(new_param_list)
-    # odf.fix_parameter_codes()
+        # Prior to loading data into an Oracle database, the null values need to be replaced with None values.
+        new_df = odf.null2empty(odf.data.get_data_frame())
+        odf.data.set_data_frame(new_df)
 
-    # old_codes = odf.get_parameter_codes()
+        # new_param_list = ['PRES_01', 'TEMP_01', 'CRAT_01', 'PSAL_01', 'NETR_01', 'FLOR_01', 'OTMP_01', 'OPPR_01', 'DOXY_01']
+        # odf.fix_parameter_codes(new_param_list)
+        # odf.fix_parameter_codes()
 
-    # from datetime import datetime
-    # now: datetime = datetime.now()
-    # current_date_time = f'{now:%d-%b-%Y %H:%M:%S.%f}'.upper()
-    # odf.event_header.set_original_creation_date(current_date_time)
-    # print(odf.event_header.get_original_creation_date())
+        # old_codes = odf.get_parameter_codes()
 
-    # codes = odf.get_parameter_codes()
-    # if 'SYTM_01' in codes:
-    #     odf.update_parameter('SYTM_01', 'units', 'GMT')
+        # from datetime import datetime
+        # now: datetime = datetime.now()
+        # current_date_time = f'{now:%d-%b-%Y %H:%M:%S.%f}'.upper()
+        # odf.event_header.set_original_creation_date(current_date_time)
+        # print(odf.event_header.get_original_creation_date())
 
-    # cspec = odf.get_file_specification()
-    # cspec = cspec.strip("\'")
-    spec = odf.generate_file_spec()
-    # if cspec != spec:
-    #     print('cspec and spec do not match')
-    #     odf.set_file_specification(spec)
+        # codes = odf.get_parameter_codes()
+        # if 'SYTM_01' in codes:
+        #     odf.update_parameter('SYTM_01', 'units', 'GMT')
 
-    # odf.cruise_header.set_chief_scientist('W GLEN HARRISON')
-    # odf.event_header.set_event_comments("The wind was very strong during this operation.")
+        # cspec = odf.get_file_specification()
+        # cspec = cspec.strip("\'")
+        spec = odf.generate_file_spec()
+        # if cspec != spec:
+        #     print('cspec and spec do not match')
+        #     odf.set_file_specification(spec)
 
-    odf.update_odf()
+        # odf.cruise_header.set_chief_scientist('W GLEN HARRISON')
+        # odf.event_header.set_event_comments("The wind was very strong during this operation.")
 
-    odf_file_text = odf.print_object(file_version=2)
+        odf.update_odf()
 
-    out_file = f"{spec}.ODF"
-    file1 = open(out_file, "w")
-    file1.write(odf_file_text)
-    file1.close()
+        odf_file_text = odf.print_object(file_version=2)
+
+        out_file = f"{spec}.ODF"
+        file1 = open(out_file, "w")
+        file1.write(odf_file_text)
+        file1.close()
+
+
+if __name__ == '__main__':    
+    OdfHeader.main()

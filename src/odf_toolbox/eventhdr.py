@@ -27,7 +27,7 @@ class EventHeader(BaseHeader):
         self._event_comments = []
 
     def log_message(self, message):
-        super().log_message(f"EVENT_HEADER: {message}")
+        super().log_message(f"In Event Header field {message}")
 
     def get_data_type(self) -> str:
         return self._data_type
