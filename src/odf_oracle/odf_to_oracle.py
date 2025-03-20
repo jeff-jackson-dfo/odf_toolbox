@@ -1,4 +1,3 @@
-# import locale
 import os
 import platform
 import oracledb
@@ -35,11 +34,13 @@ from odf_oracle import general_cal_to_oracle
 
 # Set the NLS_DATE_FORMAT for a session
 def init_session(connection, requested_tag):
+    connection.current_schema = 'ODF_ARCHIVE'
     with connection.cursor() as cursor:
         cursor.execute("alter session set "
         "NLS_LANGUAGE = 'ENGLISH' "
         "NLS_DATE_FORMAT = 'YYYY-MM-DD HH24:MI' "
         "NLS_TIMESTAMP_FORMAT = 'YYYY-MM-DD HH24:MI:SS.FF'")
+    connection.commit()
         
 
 def odf_to_oracle(wildcard: str, user: str, password: str, oracle_host: str,
@@ -67,26 +68,15 @@ def odf_to_oracle(wildcard: str, user: str, password: str, oracle_host: str,
     None
     """
 
-    # ic(locale.getlocale())
-    # locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
-
     # Change from the default python-oracledb Thin mode to Thick mode.
-    oracle_client_dir = None                               # On Linux, no directory should be passed
-    if platform.system() == "Darwin":      # macOS
-      oracle_client_dir = os.environ.get("HOME")+("/Downloads/instantclient_23_3")
-    elif platform.system() == "Windows":   # Windows
-      oracle_client_dir = r"C:\Oracle\instantclient_23_7"
+    # oracle_client_dir = None                               # On Linux, no directory should be passed
+    # if platform.system() == "Darwin":      # macOS
+    #   oracle_client_dir = os.environ.get("HOME")+("/Downloads/instantclient_23_3")
+    # elif platform.system() == "Windows":   # Windows
+    #   oracle_client_dir = r"C:\Oracle\instantclient_23_7"
 
-    oracledb.init_oracle_client(lib_dir = oracle_client_dir)
-
-    # oracledb.init_oracle_client()
-
-    # connection = oracledb.connect(user = user, 
-    #                               password = password, 
-    #                               host = oracle_host, 
-    #                               port = 1521,
-    #                               service_name = oracle_service_name
-    #                               )
+    # oracledb.init_oracle_client(lib_dir = oracle_client_dir)
+    oracledb.init_oracle_client()
 
     pool = oracledb.create_pool(
                                 user = user, 
@@ -103,19 +93,26 @@ def odf_to_oracle(wildcard: str, user: str, password: str, oracle_host: str,
     # Acquire a connection from the pool (will always have the new date and
     # timestamp formats)
     connection = pool.acquire()
- 
+
+    # oracledb.init_oracle_client()
+
+    # connection = oracledb.connect(user = user, 
+    #                               password = password, 
+    #                               host = oracle_host, 
+    #                               port = 1521,
+    #                               service_name = oracle_service_name
+    #                               )
+
     # ic(connection.current_schema)
     # ic(connection.db_name)
     # ic(connection.db_domain)
     # ic(connection.dsn)
     # ic(connection.thin)
 
-    cursor = connection.cursor()
-
-    for row in cursor.execute("select * from NLS_SESSION_PARAMETERS"):
-      ic(row)
-
-    cursor.close()
+    # cursor = connection.cursor()
+    # for row in cursor.execute("select * from NLS_SESSION_PARAMETERS"):
+    #   ic(row)
+    # cursor.close()
 
     print(f'\nAttempting to load the ODF files in the folder << {mypath} >> '\
           'into ODF_ARCHIVE Oracle database')

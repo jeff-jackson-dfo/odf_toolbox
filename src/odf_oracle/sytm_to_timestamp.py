@@ -2,7 +2,8 @@ from datetime import datetime
 import numpy as np
 from icecream import ic
 
-def sytm_to_timestamp(sytm: str, strid: str) -> str:
+def sytm_to_timestamp(sytm: str, strid: str) -> datetime:
+# def sytm_to_timestamp(sytm: str, strid: str) -> str:
     """
     Convert SYTM strings to Oracle timestamps.
 
@@ -42,7 +43,8 @@ def sytm_to_timestamp(sytm: str, strid: str) -> str:
     if dstr[0:10] == '1858-11-17':
         dstr = ''
 
-    return dstr
+    # return dstr
+    return dt_object
 
 
 def main():

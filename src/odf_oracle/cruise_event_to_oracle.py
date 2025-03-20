@@ -1,6 +1,7 @@
 from odf_toolbox import OdfHeader
 from sytm_to_timestamp import sytm_to_timestamp
 from fix_null import fix_null
+from icecream import ic
 
 def cruise_event_to_oracle(odfobj: OdfHeader, connection, infile: str) -> str:
     """
@@ -48,6 +49,9 @@ def cruise_event_to_oracle(odfobj: OdfHeader, connection, infile: str) -> str:
             # Make the set number 0 for non-trawl surveys.
             odfobj.event_header.set_set_number(set_number)
 
+        # ic(sytm_to_timestamp(odfobj.cruise_header.get_start_date(), 'date'))
+        # ic(sytm_to_timestamp(odfobj.event_header.get_start_date_time(), 'datetime'))
+
         # Execute the Insert SQL statement.
         cursor.execute(
             "INSERT INTO ODF_CRUISE_EVENT (COUNTRY_CODE, INSTITUTE_CODE, "
@@ -59,12 +63,14 @@ def cruise_event_to_oracle(odfobj: OdfHeader, connection, infile: str) -> str:
             "SAMPLING_INTERVAL, SOUNDING, DEPTH_OFF_BOTTOM, STATION_NAME, "
             "SET_NUMBER, RESEARCH_PROGRAM, DATA_ACCESS_LEVEL, ODF_FILENAME) "
             "VALUES (:ccode, :icode, :cnum, :org, :cs, "
-            "TO_DATE(:sdate, \'YYYY-MM-DD\'), TO_DATE(:edate, \'YYYY-MM-DD\'), "
+            # "TO_DATE(:sdate, \'YYYY-MM-DD\'), TO_DATE(:edate, \'YYYY-MM-DD\'), "
+            ":sdate, :edate, "
             ":plat, :aop, :cdes, :dt, :enum, :eq1, :eq2, "
-            "TO_TIMESTAMP(:cdate, \'YYYY-MM-DD HH24:MI:SS.FF\'), "
-            "TO_TIMESTAMP(:odate, \'YYYY-MM-DD HH24:MI:SS.FF\'), "
-            "TO_TIMESTAMP(:sdt, \'YYYY-MM-DD HH24:MI:SS.FF\'), "
-            "TO_TIMESTAMP(:edt, \'YYYY-MM-DD HH24:MI:SS.FF\'), :ilat, :ilon, "
+            # "TO_TIMESTAMP(:cdate, \'YYYY-MM-DD HH24:MI:SS.FF\'), "
+            # "TO_TIMESTAMP(:odate, \'YYYY-MM-DD HH24:MI:SS.FF\'), "
+            # "TO_TIMESTAMP(:sdt, \'YYYY-MM-DD HH24:MI:SS.FF\'), "
+            # "TO_TIMESTAMP(:edt, \'YYYY-MM-DD HH24:MI:SS.FF\'), :ilat, :ilon, "
+            ":cdate, :odate, :sdt, :edt, :ilat, :ilon, "
             ":elat, :elon, :mind, :maxd, :sint, :snd, "
             ":dob, :stn, :setnum, :resprg, :dflag, :fname)",
             {

@@ -28,11 +28,18 @@ def compass_cal_to_oracle(odfobj: OdfHeader, connection, infile: str) -> None:
     # Create a cursor to the open connection.
     with connection.cursor() as cursor:
 
-        # Update the NLS_DATE_FORMAT and NLS_TIMESTAMP_FORMAT for the session.
         # cursor.execute(
-        #     "ALTER SESSION SET NLS_TERRITORY='AMERICA'"
+        #     "ALTER SESSION SET "
         #     " NLS_DATE_FORMAT = 'YYYY-MM-DD HH24:MI:SS'"
         #     " NLS_TIMESTAMP_FORMAT = 'YYYY-MM-DD HH24:MI:SS.FF'")
+
+        # print("\nNLS_SESSION_PARAMETERS:")
+        # for row in cursor.execute("select * from NLS_SESSION_PARAMETERS"):
+        #     ic(row)
+
+        # print("\nNLS_DATABASE_PARAMETERS:")
+        # for row in cursor.execute("select * from NLS_DATABASE_PARAMETERS"):
+        #     ic(row)
 
         # Check to see if the ODF object contains an COMPASS_CAL_HEADER.
         if not odfobj.compass_cal_headers:
@@ -42,12 +49,14 @@ def compass_cal_to_oracle(odfobj: OdfHeader, connection, infile: str) -> None:
         # Only one COMPASS_CAL_HEADER to process.
         elif type(odfobj.compass_cal_headers) is collections.OrderedDict:
 
+            compass_cal_header = odfobj.compass_cal_headers[0]
+
             # Get the information from the current COMPASS_CAL_HEADER.
-            param = odfobj.compass_cal_headers[0].get_parameter_code()
-            cdt = odfobj.compass_cal_headers[0].get_calibration_date()
-            adt = odfobj.compass_cal_headers[0].get_application_date()
-            dlist = odfobj.compass_cal_headers[0].get_directions()
-            clist = odfobj.compass_cal_headers[0].get_corrections()
+            param = compass_cal_header.get_parameter_code()
+            cdt = compass_cal_header.get_calibration_date()
+            adt = compass_cal_header.get_application_date()
+            dlist = compass_cal_header.get_directions()
+            clist = compass_cal_header.get_corrections()
             cch = []
             caldate = sytm_to_timestamp(cdt, 'datetime')
             appdate = sytm_to_timestamp(adt, 'datetime')
@@ -79,7 +88,7 @@ def compass_cal_to_oracle(odfobj: OdfHeader, connection, infile: str) -> None:
         elif type(odfobj.compass_cal_headers) is list:
 
             # Loop through the COMPASS_CAL_HEADER.
-            for i, compass_cal_header in enumerate(odfobj.compass_cal_headers):
+            for compass_cal_header in odfobj.compass_cal_headers:
 
                 # Get the information from the current COMPASS_CAL_HEADER.
                 param = compass_cal_header.get_parameter_code()
@@ -113,3 +122,7 @@ def compass_cal_to_oracle(odfobj: OdfHeader, connection, infile: str) -> None:
                 connection.commit()
 
                 print('Compass_Cal_Header successfully loaded into Oracle.')
+
+        
+        # for row in cursor.execute("SELECT * FROM ODF_COMPASS_CAL WHERE ODF_FILENAME LIKE 'MCM_HUD2010014_1771%' ORDER BY COMPASS_CAL_ID"):
+        #     print(row)
