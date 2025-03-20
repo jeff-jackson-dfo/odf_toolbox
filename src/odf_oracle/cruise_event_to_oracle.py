@@ -3,21 +3,15 @@ from sytm_to_timestamp import sytm_to_timestamp
 from fix_null import fix_null
 
 def cruise_event_to_oracle(odfobj: OdfHeader, connection, infile: str) -> str:
-# def cruise_event_to_oracle(odfobj: OdfHeader, user: str, pwd: str, 
-#                            hoststr: str, infile: str) -> str:
-    """"
+    """
     Load the ODF object's cruise header and event header metadata into Oracle.
     
     Parameters
     ----------
     odfobj: OdfHeader class object
         The ODF object to be loaded into Oracle.
-    user: str
-        The username for the Oracle account.
-    pwd: str
-        The password for the Oracle account.
-    hoststr: str
-        Oracle database host information.
+    connection: oracledb connection
+        Oracle database connection object.
     infile: str
         Name of ODF file currently being loaded into the database.
 
@@ -33,101 +27,93 @@ def cruise_event_to_oracle(odfobj: OdfHeader, connection, infile: str) -> str:
     if len(country_institute_code) != 4:
         country_institute_code = '1810'
 
-    # Create a database connection to the Oracle database.
-    # oracledb.init_oracle_client()
-    # connection = oracledb.connect(user + '/' + pwd + '@' + hoststr)
+    # Create a cursor to the open connection.
+    with connection.cursor() as cursor:
 
-    # Create a cursor to the database connection.
-    cursor = connection.cursor()
+        # Check to see if the current ODF file is from a groundfish (AZMP Ecosystem
+        # Trawl Survey). If it is then do not create the ODF filename to be stored 
+        # in the database from the ODF metadata but instead use the input filename.
+        cruise_description = odfobj.cruise_header.get_cruise_description()
+        set_number = '0'
+        if 'TRAWL' in cruise_description.upper():
+            # Drop the extension.
+            odf_filename = infile[0:-4]
+            # Get the set number from the file name.
+            items = odf_filename.split('_', 3)
+            set_number = items[2]
+            # if set_number != odfobj.event_header.get_set_number():
+            #     odfobj.event_header.set_set_number(set_number)
+        else:
+            odf_filename = odfobj.get_file_specification()
+            # Make the set number 0 for non-trawl surveys.
+            odfobj.event_header.set_set_number(set_number)
 
-    # Check to see if the current ODF file is from a groundfish (AZMP Ecosystem
-    # Trawl Survey). If it is then do not create the ODF filename to be stored 
-    # in the database from the ODF metadata but instead use the input filename.
-    cruise_description = odfobj.cruise_header.get_cruise_description()
-    set_number = '0'
-    if 'TRAWL' in cruise_description.upper():
-        # Drop the extension.
-        odf_filename = infile[0:-4]
-        # Get the set number from the file name.
-        items = odf_filename.split('_', 3)
-        set_number = items[2]
-        # if set_number != odfobj.event_header.get_set_number():
-        #     odfobj.event_header.set_set_number(set_number)
-    else:
-        odf_filename = odfobj.get_file_specification()
-        # Make the set number 0 for non-trawl surveys.
-        odfobj.event_header.set_set_number(set_number)
+        # Execute the Insert SQL statement.
+        cursor.execute(
+            "INSERT INTO ODF_CRUISE_EVENT (COUNTRY_CODE, INSTITUTE_CODE, "
+            "CRUISE_NUMBER, ORGANIZATION, CHIEF_SCIENTIST, START_DATE, END_DATE, "
+            "PLATFORM, AREA_OF_OPERATION, CRUISE_DESCRIPTION, DATA_TYPE, "
+            "EVENT_NUMBER, EVENT_QUALIFIER1, EVENT_QUALIFIER2, CREATION_DATE, "
+            "ORIG_CREATION_DATE, START_DATE_TIME, END_DATE_TIME, INITIAL_LATITUDE, "
+            "INITIAL_LONGITUDE, END_LATITUDE, END_LONGITUDE, MIN_DEPTH, MAX_DEPTH, "
+            "SAMPLING_INTERVAL, SOUNDING, DEPTH_OFF_BOTTOM, STATION_NAME, "
+            "SET_NUMBER, RESEARCH_PROGRAM, DATA_ACCESS_LEVEL, ODF_FILENAME) "
+            "VALUES (:ccode, :icode, :cnum, :org, :cs, "
+            "TO_DATE(:sdate, \'YYYY-MM-DD\'), TO_DATE(:edate, \'YYYY-MM-DD\'), "
+            ":plat, :aop, :cdes, :dt, :enum, :eq1, :eq2, "
+            "TO_TIMESTAMP(:cdate, \'YYYY-MM-DD HH24:MI:SS.FF\'), "
+            "TO_TIMESTAMP(:odate, \'YYYY-MM-DD HH24:MI:SS.FF\'), "
+            "TO_TIMESTAMP(:sdt, \'YYYY-MM-DD HH24:MI:SS.FF\'), "
+            "TO_TIMESTAMP(:edt, \'YYYY-MM-DD HH24:MI:SS.FF\'), :ilat, :ilon, "
+            ":elat, :elon, :mind, :maxd, :sint, :snd, "
+            ":dob, :stn, :setnum, :resprg, :dflag, :fname)",
+            {
+                'ccode': int(country_institute_code[0:2]),
+                'icode': int(country_institute_code[2:4]),
+                'cnum': odfobj.cruise_header.get_cruise_number(),
+                'org': odfobj.cruise_header.get_organization(),
+                'cs': odfobj.cruise_header.get_chief_scientist(),
+                'sdate': sytm_to_timestamp(
+                    odfobj.cruise_header.get_start_date(), 'date'),
+                'edate': sytm_to_timestamp(
+                    odfobj.cruise_header.get_end_date(), 'date'),
+                'plat': odfobj.cruise_header.get_platform(),
+                'aop': odfobj.cruise_header.get_area_of_operation(),
+                'cdes': odfobj.cruise_header.get_cruise_description(),
+                'dt': odfobj.event_header.get_data_type(),
+                'enum': odfobj.event_header.get_event_number(),
+                'eq1': odfobj.event_header.get_event_qualifier1(),
+                'eq2': odfobj.event_header.get_event_qualifier2(),
+                'cdate': sytm_to_timestamp(
+                    odfobj.event_header.get_creation_date(), 'datetime'),
+                'odate': sytm_to_timestamp(
+                    odfobj.event_header.get_orig_creation_date(), 'datetime'),
+                'sdt': sytm_to_timestamp(
+                    odfobj.event_header.get_start_date_time(), 'datetime'),
+                'edt': sytm_to_timestamp(
+                    odfobj.event_header.get_end_date_time(), 'datetime'),
+                'ilat': fix_null(float(odfobj.event_header.get_initial_latitude())),
+                'ilon': fix_null(float(
+                    odfobj.event_header.get_initial_longitude())),
+                'elat': fix_null(float(odfobj.event_header.get_end_latitude())),
+                'elon': fix_null(float(odfobj.event_header.get_end_longitude())),
+                'mind': fix_null(float(odfobj.event_header.get_min_depth())),
+                'maxd': fix_null(float(odfobj.event_header.get_max_depth())),
+                'sint': fix_null(float(
+                    odfobj.event_header.get_sampling_interval())),
+                'snd': fix_null(float(odfobj.event_header.get_sounding())),
+                'dob': fix_null(float(odfobj.event_header.get_depth_off_bottom())),
+                'stn': odfobj.event_header.get_station_name(),
+                'setnum': set_number,
+                'resprg': '',
+                'dflag': '',
+                'fname': odf_filename
+            }
+            )
 
-    # Execute the Insert SQL statement.
-    cursor.execute(
-        "INSERT INTO ODF_CRUISE_EVENT (COUNTRY_CODE, INSTITUTE_CODE, "
-        "CRUISE_NUMBER, ORGANIZATION, CHIEF_SCIENTIST, START_DATE, END_DATE, "
-        "PLATFORM, AREA_OF_OPERATION, CRUISE_DESCRIPTION, DATA_TYPE, "
-        "EVENT_NUMBER, EVENT_QUALIFIER1, EVENT_QUALIFIER2, CREATION_DATE, "
-        "ORIG_CREATION_DATE, START_DATE_TIME, END_DATE_TIME, INITIAL_LATITUDE, "
-        "INITIAL_LONGITUDE, END_LATITUDE, END_LONGITUDE, MIN_DEPTH, MAX_DEPTH, "
-        "SAMPLING_INTERVAL, SOUNDING, DEPTH_OFF_BOTTOM, STATION_NAME, "
-        "SET_NUMBER, RESEARCH_PROGRAM, DATA_ACCESS_LEVEL, ODF_FILENAME) "
-        "VALUES (:ccode, :icode, :cnum, :org, :cs, "
-        "TO_DATE(:sdate, \'YYYY-MM-DD\'), TO_DATE(:edate, \'YYYY-MM-DD\'), "
-        ":plat, :aop, :cdes, :dt, :enum, :eq1, :eq2, "
-        "TO_TIMESTAMP(:cdate, \'YYYY-MM-DD HH24:MI:SS.FF\'), "
-        "TO_TIMESTAMP(:odate, \'YYYY-MM-DD HH24:MI:SS.FF\'), "
-        "TO_TIMESTAMP(:sdt, \'YYYY-MM-DD HH24:MI:SS.FF\'), "
-        "TO_TIMESTAMP(:edt, \'YYYY-MM-DD HH24:MI:SS.FF\'), :ilat, :ilon, "
-        ":elat, :elon, :mind, :maxd, :sint, :snd, "
-        ":dob, :stn, :setnum, :resprg, :dflag, :fname)",
-        {
-            'ccode': int(country_institute_code[0:2]),
-            'icode': int(country_institute_code[2:4]),
-            'cnum': odfobj.cruise_header.get_cruise_number(),
-            'org': odfobj.cruise_header.get_organization(),
-            'cs': odfobj.cruise_header.get_chief_scientist(),
-            'sdate': sytm_to_timestamp(
-                odfobj.cruise_header.get_start_date(), 'date'),
-            'edate': sytm_to_timestamp(
-                odfobj.cruise_header.get_end_date(), 'date'),
-            'plat': odfobj.cruise_header.get_platform(),
-            'aop': odfobj.cruise_header.get_area_of_operation(),
-            'cdes': odfobj.cruise_header.get_cruise_description(),
-            'dt': odfobj.event_header.get_data_type(),
-            'enum': odfobj.event_header.get_event_number(),
-            'eq1': odfobj.event_header.get_event_qualifier1(),
-            'eq2': odfobj.event_header.get_event_qualifier2(),
-            'cdate': sytm_to_timestamp(
-                odfobj.event_header.get_creation_date(), 'datetime'),
-            'odate': sytm_to_timestamp(
-                odfobj.event_header.get_orig_creation_date(), 'datetime'),
-            'sdt': sytm_to_timestamp(
-                odfobj.event_header.get_start_date_time(), 'datetime'),
-            'edt': sytm_to_timestamp(
-                odfobj.event_header.get_end_date_time(), 'datetime'),
-            'ilat': fix_null(float(odfobj.event_header.get_initial_latitude())),
-            'ilon': fix_null(float(
-                odfobj.event_header.get_initial_longitude())),
-            'elat': fix_null(float(odfobj.event_header.get_end_latitude())),
-            'elon': fix_null(float(odfobj.event_header.get_end_longitude())),
-            'mind': fix_null(float(odfobj.event_header.get_min_depth())),
-            'maxd': fix_null(float(odfobj.event_header.get_max_depth())),
-            'sint': fix_null(float(
-                odfobj.event_header.get_sampling_interval())),
-            'snd': fix_null(float(odfobj.event_header.get_sounding())),
-            'dob': fix_null(float(odfobj.event_header.get_depth_off_bottom())),
-            'stn': odfobj.event_header.get_station_name(),
-            'setnum': set_number,
-            'resprg': '',
-            'dflag': '',
-            'fname': odf_filename
-        }
-        )
+        # Commit the changes to the database.
+        connection.commit()
 
-    # Commit the changes to the database.
-    connection.commit()
-
-    # Close the cursor and the connection.
-    cursor.close()
-    # connection.close()
-
-    print('\nCruise_Header and Event_Header successfully loaded into Oracle.')
+        print('\nCruise_Header and Event_Header successfully loaded into Oracle.')
 
     return odf_filename

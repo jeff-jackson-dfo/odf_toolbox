@@ -1,8 +1,6 @@
-import oracledb
 from odf_toolbox.odfhdr import OdfHeader
 
-def quality_comments_to_oracle(odfobj: OdfHeader, user: str, pwd: str, 
-                               hoststr: str, infile: str):
+def quality_comments_to_oracle(odfobj: OdfHeader, connection, infile: str):
     """
     Load the ODF object's quality header comments into Oracle.
   
@@ -10,12 +8,8 @@ def quality_comments_to_oracle(odfobj: OdfHeader, user: str, pwd: str,
     ----------
     odfobj: OdfHeader class object
         An ODF object.
-    user: str
-        Username of Oracle account.
-    pwd: str
-        Password for Oracle account.
-    hoststr: str
-        Oracle database host information.
+    connection: oracledb connection
+        Oracle database connection object.
     infile: str
         ODF file currently being loaded into the database.
 
@@ -30,49 +24,42 @@ def quality_comments_to_oracle(odfobj: OdfHeader, user: str, pwd: str,
 
     else:
 
-        # Create a database connection to an Oracle database.
-        connection = oracledb.connect(user + '/' + pwd + '@' + hoststr)
-
         # Create a cursor to the open connection.
-        cursor = connection.cursor()
+        with connection.cursor() as cursor:
 
-        # Loop through the Quality_Header.Quality_Comments.
-        quality_comments = odfobj.quality_header.get_quality_comments()
-        
-        if type(quality_comments) is list:
+            # Loop through the Quality_Header.Quality_Comments.
+            quality_comments = odfobj.quality_header.get_quality_comments()
+            
+            if type(quality_comments) is list:
 
-            for q, quality_comment in enumerate(quality_comments):
+                for q, quality_comment in enumerate(quality_comments):
 
+                    # Execute the Insert SQL statement.
+                    cursor.execute(
+                        "INSERT INTO ODF_QUALITY_COMMENTS (QUALITY_COMMENT_NUMBER, "
+                        "QUALITY_COMMENT, ODF_FILENAME) VALUES "
+                        "(:comment_no, :comments, :fname)",
+                        {
+                            'comment_no': q,
+                            'comments': quality_comment,
+                            'fname': infile
+                        }
+                        )
+                    connection.commit()
+
+            elif type(quality_comments) is str:
+                
                 # Execute the Insert SQL statement.
                 cursor.execute(
                     "INSERT INTO ODF_QUALITY_COMMENTS (QUALITY_COMMENT_NUMBER, "
-                    "QUALITY_COMMENT, ODF_FILENAME) VALUES "
-                    "(:comment_no, :comments, :fname)",
+                    "QUALITY_COMMENT, ODF_FILENAME) VALUES ("
+                    ":comment_no, :comments, :fname)",
                     {
-                        'comment_no': q,
-                        'comments': quality_comment,
+                        'comment_no': 1,
+                        'comments': quality_comments,
                         'fname': infile
                     }
                     )
                 connection.commit()
 
-        elif type(quality_comments) is str:
-            
-            # Execute the Insert SQL statement.
-            cursor.execute(
-                "INSERT INTO ODF_QUALITY_COMMENTS (QUALITY_COMMENT_NUMBER, "
-                "QUALITY_COMMENT, ODF_FILENAME) VALUES ("
-                ":comment_no, :comments, :fname)",
-                {
-                    'comment_no': 1,
-                    'comments': quality_comments,
-                    'fname': infile
-                }
-                )
-            connection.commit()
-
-        # Close the cursor and the connection.
-        cursor.close()
-        connection.close()
-
-        print('Quality_Header.Quality_Comments successfully loaded into Oracle.')
+            print('Quality_Header.Quality_Comments successfully loaded into Oracle.')

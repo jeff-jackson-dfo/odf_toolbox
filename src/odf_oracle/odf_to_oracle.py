@@ -1,7 +1,9 @@
-import glob
+# import locale
 import os
-from icecream import ic
+import platform
 import oracledb
+import glob
+from icecream import ic
 
 from odf_toolbox.odfhdr import OdfHeader
 from odf_toolbox.cruisehdr import CruiseHeader
@@ -28,11 +30,20 @@ from odf_oracle import quality_comments_to_oracle
 from odf_oracle import history_to_oracle
 from odf_oracle import compass_cal_to_oracle
 from odf_oracle import polynomial_cal_to_oracle
-# from odf_oracle import general_cal_to_oracle
+from odf_oracle import general_cal_to_oracle
 # from odf_oracle import data_to_oracle
 
-def odf_to_oracle(wildcard: str, username: str, userpwd: str, hoststr: str, 
-                  mypath: str) -> None:
+# Set the NLS_DATE_FORMAT for a session
+def init_session(connection, requested_tag):
+    with connection.cursor() as cursor:
+        cursor.execute("alter session set "
+        "NLS_LANGUAGE = 'ENGLISH' "
+        "NLS_DATE_FORMAT = 'YYYY-MM-DD HH24:MI' "
+        "NLS_TIMESTAMP_FORMAT = 'YYYY-MM-DD HH24:MI:SS.FF'")
+        
+
+def odf_to_oracle(wildcard: str, user: str, password: str, oracle_host: str,
+                  oracle_service_name: str, mypath: str) -> None:
     """
     Read ODF files and load them into the ODF_ARCHIVE Oracle database.
 
@@ -42,10 +53,12 @@ def odf_to_oracle(wildcard: str, username: str, userpwd: str, hoststr: str,
       used to identify specific ODF files in the supplied directory path.
     user: str
       The username for Oracle account.
-    pwd: str
+    password: str
       The password for Oracle account.
-    hoststr: str
-      Oracle database host information.
+    oracle_host: str
+      Server on which Oracle database exists.
+    oracle_service_name: str
+      Oracle database service name.
     mypath: str
       Directory where ODF files to be loaded reside.
 
@@ -54,95 +67,165 @@ def odf_to_oracle(wildcard: str, username: str, userpwd: str, hoststr: str,
     None
     """
 
-    with oracledb.connect(user=username, password=userpwd, dsn=hoststr) as connection:
+    # ic(locale.getlocale())
+    # locale.setlocale(locale.LC_ALL, 'de_DE.UTF-8')
 
-      print(f'\nAttempting to load the ODF files in the folder << {mypath} >> '\
-            'into ODF_ARCHIVE Oracle database')
-      
-      os.chdir(mypath)
+    # Change from the default python-oracledb Thin mode to Thick mode.
+    oracle_client_dir = None                               # On Linux, no directory should be passed
+    if platform.system() == "Darwin":      # macOS
+      oracle_client_dir = os.environ.get("HOME")+("/Downloads/instantclient_23_3")
+    elif platform.system() == "Windows":   # Windows
+      oracle_client_dir = r"C:\Oracle\instantclient_23_7"
 
-      # Find all ODF files in the current directory using the input wildcard.
-      os.listdir(path = mypath)
-      filelist = glob.glob(wildcard)
+    oracledb.init_oracle_client(lib_dir = oracle_client_dir)
 
-      if len(filelist) == 0:
-          print('No files found.')
+    # oracledb.init_oracle_client()
 
-      # Loop through the list of ODF files.
-      for filename in filelist:
-      
-        print(f'\nWorking on loading ODF file << {filename} >>:')
+    # connection = oracledb.connect(user = user, 
+    #                               password = password, 
+    #                               host = oracle_host, 
+    #                               port = 1521,
+    #                               service_name = oracle_service_name
+    #                               )
 
-        odf = OdfHeader()
+    pool = oracledb.create_pool(
+                                user = user, 
+                                password = password, 
+                                host = oracle_host, 
+                                port = 1521,
+                                service_name = oracle_service_name,
+                                min = 1, 
+                                max = 5, 
+                                increment = 1,
+                                session_callback = init_session
+                                )
+    
+    # Acquire a connection from the pool (will always have the new date and
+    # timestamp formats)
+    connection = pool.acquire()
+ 
+    # ic(connection.current_schema)
+    # ic(connection.db_name)
+    # ic(connection.db_domain)
+    # ic(connection.dsn)
+    # ic(connection.thin)
 
-        # Read the ODF file
-        odf.read_odf(filename)
+    cursor = connection.cursor()
 
-        # Change all null values to empty strings.
-        df = odf.null2empty(odf.data.get_data_frame())
-        odf.data.set_data_frame(df)
+    for row in cursor.execute("select * from NLS_SESSION_PARAMETERS"):
+      ic(row)
 
-        # # Load the Cruise_Header and Event_Header information into Oracle.
-        odf_file = cruise_event_to_oracle(odf, connection, filename)
+    cursor.close()
 
-        # # Load the Event_Header.Event_Comments into Oracle.
-        event_comments_to_oracle(odf, connection, odf_file)
+    print(f'\nAttempting to load the ODF files in the folder << {mypath} >> '\
+          'into ODF_ARCHIVE Oracle database')
+    
+    os.chdir(mypath)
 
-        # # Load the Meteo_Header information into Oracle.
-        meteo_to_oracle(odf, connection, odf_file)
+    # Find all ODF files in the current directory using the input wildcard.
+    os.listdir(path = mypath)
+    filelist = glob.glob(wildcard)
 
-        # # Load the Meteo_Header.Meteo_Comments into Oracle.
-        meteo_comments_to_oracle(odf, connection, odf_file)
+    if len(filelist) == 0:
+        print('No files found.')
 
-        # # Load the Quality_Header information into Oracle.
-        quality_to_oracle(odf, connection, odf_file)
+    # Loop through the list of ODF files.
+    for filename in filelist:
+    
+      print(f'\nWorking on loading ODF file << {filename} >>:')
 
-        # # Load the Quality_Header.Quality_Tests into Oracle.
-        quality_tests_to_oracle(odf, connection, odf_file)
+      odf = OdfHeader()
 
-        # # Load the Quality_Header.Quality_Comments into Oracle.
-        quality_comments_to_oracle(odf, connection, odf_file)
+      # Read the ODF file
+      odf.read_odf(filename)
 
-        # # Load the Instrument_Header information into Oracle.
-        instrument_to_oracle(odf, connection, odf_file)
+      # Change all null values to empty strings.
+      df = odf.null2empty(odf.data.get_data_frame())
+      odf.data.set_data_frame(df)
 
-        # # Load the General_Cal_Header information into Oracle.
-        # general_cal_to_oracle(odf, connection, odf_file)
+      # # Load the Cruise_Header and Event_Header information into Oracle.
+      odf_file = cruise_event_to_oracle(odf, connection, filename)
 
-        # # Load the Polynomial_Cal_Header information into Oracle.
-        polynomial_cal_to_oracle(odf, connection, odf_file)
+      # # Load the Event_Header.Event_Comments into Oracle.
+      event_comments_to_oracle(odf, connection, odf_file)
 
-        # # Load the Compass_Cal_Header information into Oracle.
-        compass_cal_to_oracle(odf, connection, odf_file)
+      # # Load the Meteo_Header information into Oracle.
+      meteo_to_oracle(odf, connection, odf_file)
 
-        # # Load the History_Header information into Oracle.
-        history_to_oracle(odf, connection, odf_file)
+      # # Load the Meteo_Header.Meteo_Comments into Oracle.
+      meteo_comments_to_oracle(odf, connection, odf_file)
 
-        # # Load the Data into Oracle.
-        # data_to_oracle(odf, connection, odf_file)
+      # # Load the Quality_Header information into Oracle.
+      quality_to_oracle(odf, connection, odf_file)
 
-        print(f'\n<< {filename} >> was successfully loaded into Oracle.\n')
+      # # Load the Quality_Header.Quality_Tests into Oracle.
+      quality_tests_to_oracle(odf, connection, odf_file)
+
+      # # Load the Quality_Header.Quality_Comments into Oracle.
+      quality_comments_to_oracle(odf, connection, odf_file)
+
+      # # Load the Instrument_Header information into Oracle.
+      instrument_to_oracle(odf, connection, odf_file)
+
+      # # Load the General_Cal_Header information into Oracle.
+      # general_cal_to_oracle(odf, connection, odf_file)
+
+      # # Load the Polynomial_Cal_Header information into Oracle.
+      polynomial_cal_to_oracle(odf, connection, odf_file)
+
+      # # Load the Compass_Cal_Header information into Oracle.
+      compass_cal_to_oracle(odf, connection, odf_file)
+
+      # # Load the History_Header information into Oracle.
+      history_to_oracle(odf, connection, odf_file)
+
+      # # Load the Data into Oracle.
+      # data_to_oracle(odf, connection, odf_file)
+
+      print(f'\n<< {filename} >> was successfully loaded into Oracle.\n')
+
+    # connection.close()
+    pool.drop(connection)
+    pool.close()
+
 
 def main():
-  
-  user = 'ODF_Archive'
-  pwd = os.environ.get("ODF_ARCHIVE_PASSWORD")
-  host = "VSNSBIOXP74.ENT.DFO-MPO.CA"
-  port = 1521
-  service_name = "PTRAN.ENT.DFO-MPO.CA"
-  hoststr = host + ':' + str(port) + '/' + service_name
 
-  # Test Oracle database connection
+  username = "ODF_Archive"
+  userpwd = os.environ.get("ODF_ARCHIVE_PASSWORD")
+  oracle_host = "VSNSBIOXP74.ENT.DFO-MPO.CA"
+  # port = 1521
+  oracle_service_name = "PTRAN.ENT.DFO-MPO.CA"
+  # hoststr = f"{oracle_host}:{str(port)}/{oracle_service_name}"
+  # ic(hoststr)
+
   # oracledb.init_oracle_client()
-  # connection = oracledb.connect(user + '/' + pwd + '@' + hoststr)
-  # ic(connection)
+
+  # connection = oracledb.connect(username + '/' + userpwd + '@' + hoststr)
+  # cursor = connection.cursor()
+  # for row in cursor.execute("select distinct cruise_number from ODF_CRUISE_EVENT where cruise_number like 'HUD2016%'"):
+  #   ic(row)
+  # cursor.close()
   # connection.close()
 
-  odf_to_oracle('*.ODF', connection, r'C:\\DEV\\GitHub\\odf_toolbox\\tests\\LOAD_TO_ORACLE\\')
+  # Test Oracle database connection
+  # with oracledb.connect(user = username, 
+  #                       password = userpwd, 
+  #                       host = oracle_host, 
+  #                       port = 1521,
+  #                       service_name = oracle_service_name
+  #                       ) as connection:    
+    # with connection.cursor() as cursor:
+    #   for row in cursor.execute("select distinct cruise_number from ODF_CRUISE_EVENT where cruise_number like 'HUD2016%'"):
+    #     ic(row)
 
-  # Get credentials for user from cryptographically secure password manager
-  # odf_to_oracle('*.ODF', connection, 'C:\\ODF\\')
+  odf_to_oracle(wildcard = '*.ODF', 
+                user = username, 
+                password = userpwd, 
+                oracle_host = oracle_host,
+                oracle_service_name = oracle_service_name,
+                mypath = r'C:\\DEV\\GitHub\\odf_toolbox\\tests\\LOAD_TO_ORACLE\\')
+
 
 if __name__ == "__main__":
   main()
-    
