@@ -50,8 +50,11 @@ class OdfHeader(BaseHeader):
         self.record_header = RecordHeader()
         self.data = DataRecords()
 
-    def log_message(self, message):
-        super().log_message(f"In ODF Header field {message}")
+    def log_message(self, message: str, type: str = 'self'):
+        if type == "self":
+            super().log_message(f"In ODF Header field {message}")
+        elif type == "base":
+            super().log_message(message)
 
     def get_file_specification(self) -> str:
         """
@@ -491,6 +494,14 @@ class OdfHeader(BaseHeader):
         new_df = odf.null2empty(odf.data.get_data_frame())
         odf.data.set_data_frame(new_df)
 
+        from odf_toolbox.remove_parameter import remove_parameter
+
+        # Remove the CRAT_01 parameter.
+        odf = remove_parameter(odf, 'CRAT_01')
+        # ic(odf.data.get_data_frame())
+        # for parameter_header in odf.parameter_headers:
+        #     ic(parameter_header.get_code())
+    
         # new_param_list = ['PRES_01', 'TEMP_01', 'CRAT_01', 'PSAL_01', 'NETR_01', 'FLOR_01', 'OTMP_01', 'OPPR_01', 'DOXY_01']
         # odf.fix_parameter_codes(new_param_list)
         # odf.fix_parameter_codes()

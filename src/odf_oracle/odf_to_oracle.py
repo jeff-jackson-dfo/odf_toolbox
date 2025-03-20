@@ -30,7 +30,7 @@ from odf_oracle import history_to_oracle
 from odf_oracle import compass_cal_to_oracle
 from odf_oracle import polynomial_cal_to_oracle
 from odf_oracle import general_cal_to_oracle
-# from odf_oracle import data_to_oracle
+from odf_oracle import data_to_oracle
 
 # Set the NLS_DATE_FORMAT for a session
 def init_session(connection, requested_tag):
@@ -177,7 +177,7 @@ def odf_to_oracle(wildcard: str, user: str, password: str, oracle_host: str,
       history_to_oracle(odf, connection, odf_file)
 
       # # Load the Data into Oracle.
-      # data_to_oracle(odf, connection, odf_file)
+      data_to_oracle(odf, connection, odf_file)
 
       print(f'\n<< {filename} >> was successfully loaded into Oracle.\n')
 

@@ -1,5 +1,5 @@
-from sytm_to_timestamp import sytm_to_timestamp
 from odf_toolbox.odfhdr import OdfHeader
+from odf_oracle import sytm_to_timestamp
 
 def quality_to_oracle(odfobj: OdfHeader, connection, infile: str):
     """

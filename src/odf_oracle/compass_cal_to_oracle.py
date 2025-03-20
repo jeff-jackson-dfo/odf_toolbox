@@ -1,7 +1,8 @@
 import collections
-from odf_toolbox.odfhdr import OdfHeader
-from .sytm_to_timestamp import sytm_to_timestamp
 from icecream import ic
+
+from odf_toolbox.odfhdr import OdfHeader
+from odf_oracle import sytm_to_timestamp
 
 def compass_cal_to_oracle(odfobj: OdfHeader, connection, infile: str) -> None:
     """"
