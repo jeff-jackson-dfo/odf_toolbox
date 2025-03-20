@@ -1,6 +1,6 @@
 from odf_toolbox import OdfHeader
-from odf_oracle import sytm_to_timestamp
-from odf_oracle import fix_null
+from odf_oracle.sytm_to_timestamp import sytm_to_timestamp
+from odf_oracle.fix_null import fix_null
 from icecream import ic
 
 def cruise_event_to_oracle(odfobj: OdfHeader, connection, infile: str) -> str:

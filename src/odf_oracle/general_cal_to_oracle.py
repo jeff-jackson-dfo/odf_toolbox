@@ -3,7 +3,7 @@ import collections
 from odf_toolbox.odfhdr import OdfHeader
 from odf_oracle import general_cal_equation_to_oracle
 from odf_oracle import general_cal_comments_to_oracle
-from odf_oracle import sytm_to_timestamp
+from odf_oracle.sytm_to_timestamp import sytm_to_timestamp
 
 def general_cal_to_oracle(odfobj: OdfHeader, connection, infile: str):
     """"
