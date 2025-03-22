@@ -165,7 +165,7 @@ def odf_to_oracle(wildcard: str, user: str, password: str, oracle_host: str,
       instrument_to_oracle(odf, connection, odf_file)
 
       # # Load the General_Cal_Header information into Oracle.
-      # general_cal_to_oracle(odf, connection, odf_file)
+      general_cal_to_oracle(odf, connection, odf_file)
 
       # # Load the Polynomial_Cal_Header information into Oracle.
       polynomial_cal_to_oracle(odf, connection, odf_file)

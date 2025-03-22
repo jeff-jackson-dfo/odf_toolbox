@@ -35,31 +35,31 @@ def meteo_comments_to_oracle(odfobj: OdfHeader, connection, infile):
             if type(meteo_comments) is list:
 
                 for j, meteo_comment in enumerate(meteo_comments):
-                    
-                    ic(meteo_comment)
-                
+
                     # Execute the Insert SQL statement.
                     cursor.execute(
-                        "INSERT INTO ODF_METEO_COMMENTS (METEO_COMMENT_NUMBER, METEO_COMMENT, ODF_FILENAME) VALUES ("
-                        ":comment_no, :comments, :fname)",
+                        "INSERT INTO ODF_METEO_COMMENTS (METEO_COMMENT_NUMBER, "
+                        "METEO_COMMENT, ODF_FILENAME) "
+                        "VALUES (:comment_no, :comments, :filename)",
                         {
                             'comment_no': j,
                             'comments': meteo_comment,
-                            'fname': infile
+                            'filename': infile
                         }
-                    )
+                        )
                     connection.commit()
 
             elif type(meteo_comments) is str:
 
+                meteo_comments.strip("\' ")
+
                 # Execute the Insert SQL statement.
                 cursor.execute(
-                    "INSERT INTO ODF_METEO_COMMENTS (METEO_COMMENT_NUMBER, METEO_COMMENT, ODF_FILENAME) VALUES ("
-                    ":comment_no, :comments, :fname)",
+                    "INSERT INTO ODF_METEO_COMMENTS (METEO_COMMENT_NUMBER, METEO_COMMENT, ODF_FILENAME) VALUES (:comment_no, :comments, :filename)",
                     {
                         'comment_no': 1,
                         'comments': meteo_comments,
-                        'fname': infile
+                        'filename': infile
                     }
                 )
                 connection.commit()

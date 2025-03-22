@@ -1,6 +1,6 @@
 from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
-
+from icecream import ic
 class MeteoHeader(BaseHeader):
 
     def __init__(self):
@@ -102,11 +102,14 @@ class MeteoHeader(BaseHeader):
                f"Input value is not of type str: {meteo_comment}"
         assert isinstance(comment_number, int), \
                f"Input value is not of type int: {comment_number}"
+        meteo_comment = meteo_comment.strip("\'")
         number_of_comments = len(self.get_meteo_comments())
         if comment_number == 0 and number_of_comments >= 0:
             if not read_operation:
                 self.log_message(f"The following comment was added to METEO_COMMENTS: "
                                      f"'{meteo_comment}'")
+                self._meteo_comments.append(meteo_comment)
+            else:
                 self._meteo_comments.append(meteo_comment)
         elif comment_number <= number_of_comments and number_of_comments > 0:
             if not read_operation:

@@ -22,9 +22,12 @@ def event_comments_to_oracle(odfobj: OdfHeader, connection, infile: str) -> None
     # Create a cursor to the open connection.
     with connection.cursor() as cursor:
 
-        # Loop through the Event_Header.Event_Comments.
+        # Get the Event_Comments.
         event_comments = odfobj.event_header.get_event_comments()
+        
         if type(event_comments) is list:
+
+            # Loop through the Event_Comments.
             for event_comment in event_comments:
                 # Execute the Insert SQL statement.
                 cursor.execute(
@@ -36,7 +39,9 @@ def event_comments_to_oracle(odfobj: OdfHeader, connection, infile: str) -> None
                     }
                     )
                 connection.commit()
+
         elif type(event_comments) is str:
+            
             # Execute the Insert SQL statement.
             cursor.execute("INSERT INTO ODF_EVENT_COMMENTS (EVENT_COMMENTS, "
             "ODF_FILENAME) VALUES (:comments, :filename)",

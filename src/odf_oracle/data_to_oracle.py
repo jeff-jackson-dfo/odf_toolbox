@@ -26,10 +26,10 @@ def data_to_oracle(odfobj: OdfHeader, connection, infile: str):
     with connection.cursor() as cursor:
 
         # Get the instrument id for the current file.
-        cursor.execute("SELECT INST_ID FROM ODF_INSTRUMENT WHERE ODF_FILENAME = '%s'" % infile)
+        sql_statement = "SELECT inst_id FROM odf_instrument WHERE odf_filename = '" + infile + "'"
+        cursor.execute(sql_statement)
         idx = cursor.fetchall()
         inst_id = int(idx[0][0])
-        ic(inst_id)
 
         # Remove the FFFF parameter if it is present since it contains no added value.
         odfobj = remove_parameter(odfobj, 'FFFF_01')
@@ -42,16 +42,16 @@ def data_to_oracle(odfobj: OdfHeader, connection, infile: str):
         if 'SYTM_01' in parameter_codes or 'SYTM' in parameter_codes:
             sytm_present = 1
             sytm_index = [i for i,pcode in enumerate(parameter_codes) if pcode[0:4] == 'SYTM']
+            sytm_index = sytm_index[0]
+        else:
+            sytm_present = 0
 
         # Retrieve the data from the input ODF structure.
         data = odfobj.data.get_data_frame()
-        ic(data)
 
         # Get the number of data rows and columns.
         nrows, ncols = data.shape
 
-        qf_present = 0
-        param = []
         null_params = list()
 
         # Cycle through all the parameter headers.
@@ -60,7 +60,8 @@ def data_to_oracle(odfobj: OdfHeader, connection, infile: str):
         for j, parameter_header in enumerate(parameter_headers):
 
             parameter_code = parameter_header.get_code()
-            parameter_code_short = parameter_code[0:4]
+            parameter_code_short, sensor_number = parameter_code.split("_")
+            sensor_number = float(sensor_number)
 
             # If the current column is a QF column then skip this column as 
             # the associate value from a QF column is assigned in the data row.
@@ -68,61 +69,63 @@ def data_to_oracle(odfobj: OdfHeader, connection, infile: str):
                 continue
             elif parameter_code == 'SYTM_01' or parameter_code == 'SYTM':
                 continue
-            else:
-                # Capture the parameter names in the array "param".
-                param.append(parameter_code)
+            # else:
+            #     # Capture the parameter names in the array "param".
+            #     param.append(parameter_code)
 
             # Notify user when a data column only contains null values.
-            if data[:, j].isnull().all():
+            if data.loc[:, parameter_code].isnull().all():
 
                 # Remember parameters to be removed.
                 null_params.append(j)
 
-                # Suggest removing parameter columns that only contain null values.
+                # Suggest removing parameter columns that only contain 
+                # null values.
                 print(f'Should the data for {parameter_code} be deleted from '
                       'the ODF structure since it only contains NULL values?')
 
             qf = 0
             dobj = []
+            
+            # Loop through the data records. 
             for r in range(0, nrows):
 
-                # Loop through the data records. If there is a SYTM parameter column then
-                # add the appropriate TIMESTAMP to each data record; otherwise asytm_indexign it
-                # an empty string.
+                # If there is a SYTM parameter column then add the appropriate 
+                # TIMESTAMP to each data record; otherwise assign it as None.
                 if sytm_present:
-                    # NUMPY arrays containing the SYTM character arrays enclose them with
-                    # single quotes; therefore the single quotes must be removed prior to
-                    # converting the date/time to a Python timestamp.
-                    st = sytm_to_timestamp(data[r, sytm_index], 'datetime')
+                    # NUMPY arrays containing the SYTM character arrays enclose 
+                    # them with single quotes; therefore the single quotes 
+                    # must be removed prior to converting the date/time to a 
+                    # Python timestamp.
+                    sample_time = sytm_to_timestamp(
+                        data.loc[r].iloc[sytm_index].strip("\'"), 'datetime')
                 else:
-                    st = None
+                    sample_time = None
 
-                # If there are quality fields present in the ODF structure then check if
-                # there is a quality_flag for the current data value; if there is one
-                # then load it into Oracle; otherwise asytm_indexign the quality flag as 0.
-                if qf_present:
-                    if j < ncols - 1:
-                        qfparamcode = param[j + 1]
-                        if qfparamcode == f'Q{parameter_code}':
-                            qf = float(data[r, j + 1])
-                        else:
-                            qf = 0
+                # Check for a quality field associated with the current 
+                # parameter. If there is one then load it into Oracle; 
+                # otherwise assign a quality flag as 0.
+                if f"Q{parameter_code}" in parameter_codes:
+                    qf_index = [i for i,pcode in enumerate(parameter_codes) 
+                                if pcode == f"Q{parameter_code}"]
+                    qf_index = qf_index[0]
+                    qf = int(data.loc[r].iloc[qf_index])
                 else:
                     qf = 0
 
-                # Handle Null values "-99" in the original data that were converted to
-                # 'None' strings. Replace the 'None' string with the Python None value
-                # which gets handled correctly by oracledb where the None string does
-                # not.
-                if data[r, c] == 'None':
-                    dobj.append((paramcode, sn, r + 1, None, qf, st, inst_id, infile))
-                else:
+                # Handle Null values "-99" in the original data that were 
+                # converted to 'None' strings. Replace the 'None' string with 
+                # the Python None value which gets handled correctly by 
+                # oracledb where the None string does not.
+                # if data[r, c] == 'None':
+                #     dobj.append((paramcode, sn, r + 1, None, qf, st, inst_id, infile))
+                # else:
                     # If the column after the current column is a QQQQ field then asytm_indexign
                     # load the value from the QQQQ column as the current data value's
                     # quality flag.
-                    dobj.append((paramcode, sn, r + 1, float(data[r, c]), qf, st, inst_id, infile))
-
-            print(f"The # of data rows for '{infile}' to be loaded = {len(dobj)}")
+                dobj.append((parameter_code, sensor_number, r + 1,
+                             float(data.loc[r].iloc[j]), qf, sample_time, 
+                             inst_id, infile))
 
             # Execute the Insert SQL statement.
             cursor.prepare(
@@ -134,4 +137,5 @@ def data_to_oracle(odfobj: OdfHeader, connection, infile: str):
             # Commit the changes to the database.
             connection.commit()
 
-            print('Data succesytm_indexfully loaded into Oracle.')
+        print(f"The # of data rows for '{infile}' loaded = {len(dobj)}")
+        print('Data successfully loaded into Oracle.')

@@ -470,11 +470,11 @@ class OdfHeader(BaseHeader):
         odf = OdfHeader()
 
         my_path = 'C:\\DEV\\GitHub\\odf_toolbox\\tests\\'
-        # my_file = 'CTD_2000037_102_1_DN.ODF'
+        my_file = 'CTD_2000037_102_1_DN.ODF'
         # my_file = 'CTD_91001_1_1_DN.ODF'
-        # my_file = 'ODF\\CTD_SCD2022277_001_01_DN.ODF'
+        # my_file = 'CTD_SCD2022277_002_01_DN.ODF'
         # my_file = 'file_with_leading_spaces.ODF'
-        my_file = 'file_with_null_data_values.ODF'
+        # my_file = 'file_with_null_data_values.ODF'
         odf.read_odf(my_path + my_file)
 
         # Add a new History Header to record the modifications that are made.
@@ -494,14 +494,51 @@ class OdfHeader(BaseHeader):
         new_df = odf.null2empty(odf.data.get_data_frame())
         odf.data.set_data_frame(new_df)
 
-        from odf_toolbox.remove_parameter import remove_parameter
-
         # Remove the CRAT_01 parameter.
-        odf = remove_parameter(odf, 'CRAT_01')
-        # ic(odf.data.get_data_frame())
-        # for parameter_header in odf.parameter_headers:
-        #     ic(parameter_header.get_code())
-    
+        # from odf_toolbox.remove_parameter import remove_parameter
+        # odf = remove_parameter(odf, 'CRAT_01')
+
+        for meteo_comment in odf.meteo_header.get_meteo_comments():
+            ic(meteo_comment)
+
+        # Retrieve the data from the input ODF structure.
+        data = odf.data.get_data_frame()
+
+        # Get the number of data rows and columns.
+        nrows, ncols = data.shape
+
+        # Retrieve the Parameter Headers from the input ODF structure.
+        parameter_headers = odf.parameter_headers
+        parameter_codes = odf.get_parameter_codes()
+
+        sytm_index = [i for i,pcode in enumerate(parameter_codes) if pcode[0:4] == 'SYTM']
+        if sytm_index != []:
+            sytm_index = sytm_index[0]
+
+        for j, parameter_header in enumerate(parameter_headers):
+
+            parameter_code = parameter_header.get_code()
+            parameter_code_short, sensor_number = parameter_code.split("_")
+            sensor_number = float(sensor_number)          
+
+            if data.loc[:, parameter_code].isnull().all():
+
+                # Suggest removing parameter columns that only contain 
+                # null values.
+                print(f'Should the data for {parameter_code} be deleted from '
+                        'the ODF structure since it only contains NULL values?')
+
+            # Loop through the data records. 
+            for r in range(0, nrows):
+                # ic(type(data.loc[r].iloc[j]))
+                value = data.loc[r].iloc[j]
+                # print(f'row {r}, column {j} has value {value} with type {type(value)}')
+
+            # if f"Q{parameter_code}" in parameter_codes:
+            #     qfcode = f"Q{parameter_code}"
+            #     ic(qfcode)
+            #     print(data[qfcode])
+
         # new_param_list = ['PRES_01', 'TEMP_01', 'CRAT_01', 'PSAL_01', 'NETR_01', 'FLOR_01', 'OTMP_01', 'OPPR_01', 'DOXY_01']
         # odf.fix_parameter_codes(new_param_list)
         # odf.fix_parameter_codes()

@@ -28,12 +28,6 @@ def general_cal_to_oracle(odfobj: OdfHeader, connection, infile: str):
     # Create a cursor to the open connection.
     with connection.cursor() as cursor:
 
-        # Update the NLS_DATE_FORMAT and NLS_TIMESTAMP_FORMAT for the session.
-        # cursor.execute(
-        #     "ALTER SESSION SET NLS_TERRITORY='AMERICA'"
-        #     " NLS_DATE_FORMAT = 'YYYY-MM-DD HH24:MI:SS'"
-        #     " NLS_TIMESTAMP_FORMAT = 'YYYY-MM-DD HH24:MI:SS.FF'")
-
         # Check to see if the ODF structure contains an GENERAL_CAL_HEADER.
         if odfobj.general_cal_headers is None:
 
