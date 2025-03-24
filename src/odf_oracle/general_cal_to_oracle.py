@@ -29,19 +29,21 @@ def general_cal_to_oracle(odfobj: OdfHeader, connection, infile: str):
     with connection.cursor() as cursor:
 
         # Check to see if the ODF structure contains an GENERAL_CAL_HEADER.
-        if odfobj.general_cal_headers is None:
+        if not odfobj.general_cal_headers:
 
             print('No GENERAL_CAL_HEADER was present to load into Oracle.')
 
         # Only one GENERAL_CAL_HEADER to process.
         elif type(odfobj.general_cal_headers) is collections.OrderedDict:
 
+            general_cal_header = odfobj.general_cal_headers[0]
+            
             # Get the information from the current GENERAL_CAL_HEADER.
-            param = odfobj.general_cal_headers[0].get_parameter_code()
-            caltype = odfobj.general_cal_headers[0].get_calibration_type()
-            cdt = odfobj.general_cal_headers[0].get_calibration_date()
-            adt = odfobj.general_cal_headers[0].get_application_date()
-            coeffs = odfobj.general_cal_headers[0].get_coefficients()
+            param = general_cal_header.get_parameter_code()
+            caltype = general_cal_header.get_calibration_type()
+            cdt = general_cal_header.get_calibration_date()
+            adt = general_cal_header.get_application_date()
+            coeffs = general_cal_header.get_coefficients()
             caldate = sytm_to_timestamp(cdt, 'datetime')
             appdate = sytm_to_timestamp(adt, 'datetime')
             gch = []
@@ -50,7 +52,9 @@ def general_cal_to_oracle(odfobj: OdfHeader, connection, infile: str):
                 "CALIBRATION_TYPE, CALIBRATION_DATE, APPLICATION_DATE, "
                 "COEFFICIENT_NUMBER, COEFFICIENT_VALUE, ODF_FILENAME) "
                 "VALUES (:1, :2, :3, :4, :5, :6, :7)")
+            
             if type(coeffs) is list:
+
                 # Loop through the GENERAL_CAL_HEADER's Coefficients.
                 # All calibrations start with intercept; i.e. coefficient 0.
                 for j, coef in enumerate(coeffs):

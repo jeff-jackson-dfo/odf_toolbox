@@ -29,19 +29,6 @@ def compass_cal_to_oracle(odfobj: OdfHeader, connection, infile: str) -> None:
     # Create a cursor to the open connection.
     with connection.cursor() as cursor:
 
-        # cursor.execute(
-        #     "ALTER SESSION SET "
-        #     " NLS_DATE_FORMAT = 'YYYY-MM-DD HH24:MI:SS'"
-        #     " NLS_TIMESTAMP_FORMAT = 'YYYY-MM-DD HH24:MI:SS.FF'")
-
-        # print("\nNLS_SESSION_PARAMETERS:")
-        # for row in cursor.execute("select * from NLS_SESSION_PARAMETERS"):
-        #     ic(row)
-
-        # print("\nNLS_DATABASE_PARAMETERS:")
-        # for row in cursor.execute("select * from NLS_DATABASE_PARAMETERS"):
-        #     ic(row)
-
         # Check to see if the ODF object contains an COMPASS_CAL_HEADER.
         if not odfobj.compass_cal_headers:
 
@@ -58,9 +45,9 @@ def compass_cal_to_oracle(odfobj: OdfHeader, connection, infile: str) -> None:
             adt = compass_cal_header.get_application_date()
             dlist = compass_cal_header.get_directions()
             clist = compass_cal_header.get_corrections()
-            cch = []
             caldate = sytm_to_timestamp(cdt, 'datetime')
             appdate = sytm_to_timestamp(adt, 'datetime')
+            cch = []
             cursor.prepare(
                 "INSERT INTO ODF_COMPASS_CAL (PARAMETER_CODE, CALIBRATION_DATE, "
                 "APPLICATION_DATE, DIRECTIONS, CORRECTIONS, ODF_FILENAME) "
@@ -123,7 +110,3 @@ def compass_cal_to_oracle(odfobj: OdfHeader, connection, infile: str) -> None:
                 connection.commit()
 
                 print('Compass_Cal_Header successfully loaded into Oracle.')
-
-        
-        # for row in cursor.execute("SELECT * FROM ODF_COMPASS_CAL WHERE ODF_FILENAME LIKE 'MCM_HUD2010014_1771%' ORDER BY COMPASS_CAL_ID"):
-        #     print(row)
