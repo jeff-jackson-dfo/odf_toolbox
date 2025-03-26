@@ -6,19 +6,6 @@ from icecream import ic
 from dotenv import load_dotenv
 
 from odf_toolbox.odfhdr import OdfHeader
-# from odf_toolbox.cruisehdr import CruiseHeader
-# from odf_toolbox.eventhdr import EventHeader
-# from odf_toolbox.meteohdr import MeteoHeader
-# from odf_toolbox.qualityhdr import QualityHeader
-# from odf_toolbox.instrumenthdr import InstrumentHeader
-# from odf_toolbox.generalhdr import GeneralCalHeader
-# from odf_toolbox.polynomialhdr import PolynomialCalHeader
-# from odf_toolbox.compasshdr import CompassCalHeader
-# from odf_toolbox.historyhdr import HistoryHeader
-# from odf_toolbox.recordhdr import RecordHeader
-# from odf_toolbox.records import DataRecords
-# from odf_toolbox import odfutils
-
 from odf_oracle.database_connection_pool import get_database_pool
 from odf_oracle import cruise_event_to_oracle
 from odf_oracle import event_comments_to_oracle
