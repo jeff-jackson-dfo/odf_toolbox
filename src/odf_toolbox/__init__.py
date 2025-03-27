@@ -14,11 +14,13 @@ from odf_toolbox.recordhdr import RecordHeader
 from odf_toolbox.records import DataRecords
 from odf_toolbox import odfutils
 from odf_toolbox import remove_parameter
+from odf_toolbox.mtrhdr import MtrHeader
 
 __all__ = ['BaseHeader', 'CompassCalHeader', 'CruiseHeader', 'EventHeader',
-           'GeneralCalHeader', 'HistoryHeader', 'InstrumentHeader', 'MeteoHeader',
-           'OdfHeader', 'ParameterHeader', 'PolynomialCalHeader', 'QualityHeader',
-           'RecordHeader', 'DataRecords', 'odfutils', 'remove_parameter']
+           'GeneralCalHeader', 'HistoryHeader', 'InstrumentHeader', 
+           'MeteoHeader', 'OdfHeader', 'ParameterHeader', 
+           'PolynomialCalHeader', 'QualityHeader', 'RecordHeader', 
+           'DataRecords', 'odfutils', 'remove_parameter', 'MtrHeader']
 
 # This file is part of the 'odf_toolbox' package
 print("odf_toolbox package imported successfully!")

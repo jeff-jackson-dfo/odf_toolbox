@@ -3,7 +3,6 @@ import pandas as pd
 from icecream import ic
 import re
 
-# ods_toolbox modules to import
 from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox.compasshdr import CompassCalHeader
 from odf_toolbox.cruisehdr import CruiseHeader
@@ -317,7 +316,7 @@ class OdfHeader(BaseHeader):
         self.data.populate_object(parameter_list, parameter_formats, data_lines)
         return self
 
-    def update_odf(self):
+    def update_odf(self) -> None:
         if self.record_header.get_num_calibration() != len(self.polynomial_cal_headers):
             self.record_header.set_num_calibration(len(self.polynomial_cal_headers))
         if self.record_header.get_num_history() != len(self.history_headers):
@@ -328,6 +327,15 @@ class OdfHeader(BaseHeader):
             self.record_header.set_num_param(len(self.parameter_headers))
         if self.record_header.get_num_cycle() != len(self.data):
             self.record_header.set_num_cycle(len(self.data))
+        self.set_file_specification(self.generate_file_spec())
+
+    def write_odf(self, odf_file_path: str, version: float = 2) -> None:
+        """ Write the ODF file to disk. """
+        odf_file_text = self.print_object(file_version=version)
+        file1 = open(odf_file_path, "w")
+        file1.write(odf_file_text)
+        file1.close()
+        print(f"ODF file written to {odf_file_path}\n")
 
     def add_history(self):
         nhh = HistoryHeader()
@@ -498,8 +506,8 @@ class OdfHeader(BaseHeader):
         # from odf_toolbox.remove_parameter import remove_parameter
         # odf = remove_parameter(odf, 'CRAT_01')
 
-        for meteo_comment in odf.meteo_header.get_meteo_comments():
-            ic(meteo_comment)
+        # for meteo_comment in odf.meteo_header.get_meteo_comments():
+        #     ic(meteo_comment)
 
         # Retrieve the data from the input ODF structure.
         data = odf.data.get_data_frame()
@@ -555,24 +563,16 @@ class OdfHeader(BaseHeader):
         # if 'SYTM_01' in codes:
         #     odf.update_parameter('SYTM_01', 'units', 'GMT')
 
-        # cspec = odf.get_file_specification()
-        # cspec = cspec.strip("\'")
-        spec = odf.generate_file_spec()
-        # if cspec != spec:
-        #     print('cspec and spec do not match')
-        #     odf.set_file_specification(spec)
-
         # odf.cruise_header.set_chief_scientist('W GLEN HARRISON')
         # odf.event_header.set_event_comments("The wind was very strong during this operation.")
 
         odf.update_odf()
 
-        odf_file_text = odf.print_object(file_version=2)
-
+        # Write the ODF file to disk.
+        odf_file_text = odf.print_object(file_version=3)
+        spec = odf.generate_file_spec()
         out_file = f"{spec}.ODF"
-        file1 = open(out_file, "w")
-        file1.write(odf_file_text)
-        file1.close()
+        odf.write_odf(my_path + out_file, version=3)
 
 
 if __name__ == '__main__':    
