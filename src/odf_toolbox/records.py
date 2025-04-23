@@ -110,13 +110,13 @@ class DataRecords:
         output_data_records_v2 = eval(formatter)
         return output_data_records_v2
 
-    def main():
-        records = DataRecords()
-        df = pd.DataFrame({"PRES_01":[1,4,7], "TEMP_01":[8,5,2], "PSAL_01":[31.5,32.0,32.5]})
-        records.set_data_frame(df)
-        print(records.print_object())
-        # print(records.print_object_old_style())
+def main():
+    records = DataRecords()
+    df = pd.DataFrame({"PRES_01":[1,4,7], "TEMP_01":[8,5,2], "PSAL_01":[31.5,32.0,32.5]})
+    records.set_data_frame(df)
+    print(records.print_object())
+    # print(records.print_object_old_style())
 
 if __name__ == "__main__":
     
-    DataRecords.main()
+    main()

@@ -1,93 +1,62 @@
 from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
+from typing import NoReturn
+from pydantic import BaseModel
 
-class InstrumentHeader(BaseHeader):
+class InstrumentHeader(BaseModel, BaseHeader):
     """
     A class to represent an Instrument Header in an ODF object.
-
-    Attributes:
-    -----------
-    InstrumentType : string
-        the type of the instrument used to collect the data
-    Model : string
-        the model of the instrument used to collect the data
-    SerialNumber : string
-        the units of the data collected by the instrument
-    Description : string
-        a description of the instrument
-
-    Methods:
-    -------
-    __init__ :
-        initialize a InstrumentHeader class object
-    get_instrument_type : string
-    set_instrument_type : None
-    get_model : string
-    set_model : None
-    get_serial_number: string
-    set_serial_number: None
-    get_description: string
-    set_description: None
-
     """
-
-    def __init__(self):
+    def __init__(self, 
+                 instrument_type: str = '', 
+                 model: str = '', 
+                 serial_number: str = '', 
+                 description: str = ''
+                 ) -> NoReturn:
         super().__init__()
-        self._instrument_type = ''
-        self._model = ''
-        self._serial_number = ''
-        self._description = ''
+        self.instrument_type = instrument_type
+        self.model = model
+        self.serial_number = serial_number
+        self.description = description
 
-    def log_message(self, message):
-        super().log_message(f"In Instrument Header field {message}")
+    def log_message(self, field: str, old_value: any, new_value: any) -> NoReturn:
+        old_value = "''"
+        message = f"In Instrument Header field {field.upper()} was changed from {old_value} to '{new_value}'"
+        super().log_message(message)
 
-    def get_instrument_type(self) -> str:
+    @property
+    def instrument_type(self) -> str:
         return self._instrument_type
 
-    def set_instrument_type(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
-        value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'INSTRUMENT_TYPE was changed from "{self._instrument_type}" to "{value}"')
-        self._instrument_type = f'{value}'
+    @instrument_type.setter
+    def instrument_type(self, value: str) -> NoReturn:
+        self._instrument_type = value
 
-    def get_model(self) -> str:
+    @property
+    def model(self) -> str:
         return self._model
 
-    def set_model(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
-        value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'MODEL was changed from "{self._model}" to "{value}"')
-        self._model = f'{value}'
+    @model.setter
+    def model(self, value: str) -> NoReturn:
+        self._model = value
 
-    def get_serial_number(self) -> str:
+    @property
+    def serial_number(self) -> str:
         return self._serial_number
 
-    def set_serial_number(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
-        value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'SERIAL_NUMBER was changed from "{self._serial_number}" to "{value}"')
-        self._serial_number = f'{value}'
+    @serial_number.setter
+    def serial_number(self, value: str) -> NoReturn:
+        self._serial_number = value
 
-    def get_description(self) -> str:
+    @property
+    def description(self) -> str:
         return self._description
 
-    def set_description(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
-        value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'DESCRIPTION was changed from "{self._description}" to "{value}"')
-        self._description = f'{value}'
+    @description.setter
+    def description(self, value: str) -> NoReturn:
+        self._description = value
 
     def populate_object(self, instrument_fields: list):
-        assert isinstance(instrument_fields, list), \
-               f"Input value is not of type list: {instrument_fields}"
         for header_line in instrument_fields:
             tokens = header_line.split('=', maxsplit=1)
             instrument_dict = odfutils.list_to_dict(tokens)
@@ -96,31 +65,35 @@ class InstrumentHeader(BaseHeader):
                 value = value.strip()
                 match key:
                     case 'INST_TYPE':
-                        self.set_instrument_type(value, read_operation=True)
+                        self.instrument_type = value
                     case 'MODEL':
-                        self.set_model(value, read_operation=True)
+                        self.model = value
                     case 'SERIAL_NUMBER':
-                        self.set_serial_number(value, read_operation=True)
+                        self.serial_number = value
                     case 'DESCRIPTION':
-                        self.set_description(value, read_operation=True)
+                        self.description = value
         return self
     
     def print_object(self) -> str:
         instrument_header_output = "INSTRUMENT_HEADER\n"
-        instrument_header_output += f"  INST_TYPE = '{odfutils.check_string(self.get_instrument_type())}'\n"
-        instrument_header_output += f"  MODEL = '{odfutils.check_string(self.get_model())}'\n"
-        instrument_header_output += f"  SERIAL_NUMBER = '{odfutils.check_string(self.get_serial_number())}'\n"
-        instrument_header_output += f"  DESCRIPTION = '{odfutils.check_string(self.get_description())}'\n"
+        instrument_header_output += f"  INST_TYPE = '{odfutils.check_string(self.instrument_type)}'\n"
+        instrument_header_output += f"  MODEL = '{odfutils.check_string(self.model)}'\n"
+        instrument_header_output += f"  SERIAL_NUMBER = '{odfutils.check_string(self.serial_number)}'\n"
+        instrument_header_output += f"  DESCRIPTION = '{odfutils.check_string(self.description)}'\n"
         return instrument_header_output
 
 
     def main():
         instrument_header = InstrumentHeader()
-        instrument_header.set_instrument_type('CTD')
-        instrument_header.set_model('SBE 9')
-        instrument_header.set_serial_number('12345')
-        instrument_header.set_description('SeaBird CTD')
+        instrument_header.instrument_type = 'CTD'
+        instrument_header.model = 'SBE 9'
+        instrument_header.serial_number = '12345'
+        instrument_header.log_message('description', instrument_header.description, 'SeaBird CTD')
+        instrument_header.description = 'SeaBird CTD'
         print(instrument_header.print_object())
+
+        for log_entry in BaseHeader.shared_log_list:
+            print(log_entry)
 
 
 if __name__ == "__main__":

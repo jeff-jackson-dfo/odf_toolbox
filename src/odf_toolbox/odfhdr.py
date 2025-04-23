@@ -17,9 +17,10 @@ from odf_toolbox.qualityhdr import QualityHeader
 from odf_toolbox.recordhdr import RecordHeader
 from odf_toolbox.records import DataRecords
 from odf_toolbox import odfutils
+from typing import NoReturn
+from pydantic import BaseModel
 
-
-class OdfHeader(BaseHeader):
+class OdfHeader(BaseModel, BaseHeader):
     """
     Odf Header Class
 
@@ -29,25 +30,39 @@ class OdfHeader(BaseHeader):
 
     """
 
-    def __init__(self):
+    def __init__(self,
+                 file_specification: str = '',
+                 odf_specification_version: int = 2,
+                 cruise_header: CruiseHeader = None,
+                 event_header: EventHeader = None,
+                 meteo_header: MeteoHeader = None,
+                 instrument_header: InstrumentHeader = None,
+                 quality_header: QualityHeader = None,
+                 general_cal_headers: list = None,
+                 compass_cal_headers: list = None,
+                 polynomial_cal_headers: list = None,
+                 history_headers: list = None,
+                 parameter_headers: list = None,
+                 record_header: RecordHeader = None,
+                 data: DataRecords = None):
         """
         Method that initializes an OdfHeader class object.
         """
         super().__init__()
-        self._file_specification = ''
-        self._odf_specification_version = 3
-        self.cruise_header = CruiseHeader()
-        self.event_header = EventHeader()
-        self.meteo_header = None
-        self.instrument_header = InstrumentHeader()
-        self.quality_header = None
-        self.general_cal_headers = []
-        self.compass_cal_headers = []
-        self.polynomial_cal_headers = []
-        self.history_headers = []
-        self.parameter_headers = []
-        self.record_header = RecordHeader()
-        self.data = DataRecords()
+        self.file_specification = file_specification
+        self.odf_specification_version = odf_specification_version
+        self.cruise_header = cruise_header if cruise_header is not None else CruiseHeader()
+        self.event_header = event_header if event_header is not None else EventHeader()
+        self.meteo_header = meteo_header if meteo_header is not None else MeteoHeader()
+        self.instrument_header = instrument_header if instrument_header is not None else InstrumentHeader()
+        self.quality_header = quality_header if quality_header is not None else QualityHeader()
+        self.general_cal_headers = general_cal_headers if general_cal_headers is not None else []
+        self.compass_cal_headers = compass_cal_headers if compass_cal_headers is not None else []
+        self.polynomial_cal_headers = polynomial_cal_headers if polynomial_cal_headers is not None else []
+        self.history_headers = history_headers if history_headers is not None else []
+        self.parameter_headers = parameter_headers if parameter_headers is not None else []
+        self.record_header = record_header if record_header is not None else RecordHeader()
+        self.data = data if data is not None else DataRecords()
 
     def log_message(self, message: str, type: str = 'self'):
         if type == "self":
@@ -55,7 +70,8 @@ class OdfHeader(BaseHeader):
         elif type == "base":
             super().log_message(message)
 
-    def get_file_specification(self) -> str:
+    @property
+    def file_specification(self) -> str:
         """
         Returns the file specification from the ODF_HEADER of an OdfHeader class object.
 
@@ -66,7 +82,8 @@ class OdfHeader(BaseHeader):
         """
         return self._file_specification
 
-    def set_file_specification(self, value: str, read_operation: bool = False) -> None:
+    @file_specification.setter
+    def file_specification(self, value: str) -> NoReturn:
         """
         Sets the file specification in the ODF_HEADER of an OdfHeader class object.
 
@@ -74,16 +91,12 @@ class OdfHeader(BaseHeader):
         ----------
         value : str
             The file name and possibly path of the OdfHeader object (default is an empty string).
-        read_operation: bool (False)
         """
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
         value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'FILE_SPECIFICATION changed from "{self._file_specification}" to "{value}"')
         self._file_specification = value
 
-    def get_odf_specification_version(self) -> float:
+    @property
+    def odf_specification_version(self) -> float:
         """
         Returns the file specification from the ODF_HEADER of an OdfHeader class object.
 
@@ -94,7 +107,8 @@ class OdfHeader(BaseHeader):
         """
         return self._odf_specification_version
 
-    def set_odf_specification_version(self, value: float, read_operation: bool = False):
+    @odf_specification_version.setter
+    def odf_specification_version(self, value: float) -> NoReturn:
         """
         Sets the file specification for the ODF_HEADER of an OdfHeader class object.
 
@@ -102,20 +116,104 @@ class OdfHeader(BaseHeader):
         ----------
         value : float
             The version of the ODF specification used to generate this file.
-        read_operation: bool (False)
-
         """
-        # convert input argument to float
-        try:
-            value = float(value)
-            assert isinstance(value, float), \
-                f"Input value is not of type float: {value}"
-        except ValueError:
-            f"Input value could not be successfully converted to type float: {value}"
-        if not read_operation:
-            self.log_message(f'ODF_SPECIFICATION_VERSION changed from {self._odf_specification_version} to {value}')
-
         self._odf_specification_version = value
+
+    @property
+    def cruise_header(self) -> CruiseHeader:
+        return self._cruise_header
+
+    @cruise_header.setter
+    def cruise_header(self, value: CruiseHeader) -> NoReturn:
+        self._cruise_header = value
+
+    @property
+    def event_header(self) -> EventHeader:
+        return self._event_header
+
+    @event_header.setter
+    def event_header(self, value: EventHeader) -> NoReturn:
+        self._event_header = value
+
+    @property
+    def meteo_header(self) -> MeteoHeader:
+        return self._meteo_header
+
+    @meteo_header.setter
+    def meteo_header(self, value: MeteoHeader) -> NoReturn:
+        self._meteo_header = value
+
+    @property
+    def instrument_header(self) -> InstrumentHeader:
+        return self._instrument_header
+
+    @instrument_header.setter
+    def instrument_header(self, value: InstrumentHeader) -> NoReturn:
+        self._instrument_header = value
+
+    @property
+    def quality_header(self) -> QualityHeader:
+        return self._quality_header
+
+    @quality_header.setter
+    def quality_header(self, value: QualityHeader) -> NoReturn:
+        self._quality_header = value
+
+    @property
+    def general_cal_headers(self) -> list:
+        return self._general_cal_headers
+
+    @general_cal_headers.setter
+    def general_cal_headers(self, value: list) -> NoReturn:
+        self._general_cal_headers = value
+
+    @property
+    def compass_cal_headers(self) -> list:
+        return self._compass_cal_headers
+
+    @compass_cal_headers.setter
+    def compass_cal_headers(self, value: list) -> NoReturn:
+        self._compass_cal_headers = value
+
+    @property
+    def polynomial_cal_headers(self) -> list:
+        return self._polynomial_cal_headers
+
+    @polynomial_cal_headers.setter
+    def polynomial_cal_headers(self, value: list) -> NoReturn:
+        self._polynomial_cal_headers = value
+
+    @property
+    def history_headers(self) -> list:
+        return self._history_headers
+
+    @history_headers.setter
+    def history_headers(self, value: list) -> NoReturn:
+        self._history_headers = value
+
+    @property
+    def parameter_headers(self) -> list:
+        return self._parameter_headers
+
+    @parameter_headers.setter
+    def parameter_headers(self, value: list) -> NoReturn:
+        self._parameter_headers = value
+
+    @property
+    def record_header(self) -> RecordHeader:
+        return self._record_header
+
+    @record_header.setter
+    def record_header(self, value: RecordHeader) -> NoReturn:
+        self._record_header = value
+
+    @property
+    def data(self) -> DataRecords:
+        return self._data
+
+    @data.setter
+    def data(self, value: DataRecords) -> NoReturn:
+        self._data = value
 
     def populate_object(self, odf_dict: dict):
         """
@@ -130,9 +228,9 @@ class OdfHeader(BaseHeader):
         for key, value in odf_dict.items():
             match key.strip():
                 case 'FILE_SPECIFICATION':
-                    self.set_file_specification(value.strip(), read_operation=True)
+                    self._file_specification = value.strip()
                 case 'ODF_SPECIFICATION_VERSION':
-                    self.set_odf_specification_version(value.strip(), read_operation=True)
+                    self._odf_specification_version = value.strip()
         return self
 
     def print_object(self, file_version: float = 2) -> str:
@@ -473,107 +571,108 @@ class OdfHeader(BaseHeader):
         return new_df
                 
 
-    def main():
+def main():
 
-        odf = OdfHeader()
+    odf = OdfHeader()
 
-        my_path = 'C:\\DEV\\GitHub\\odf_toolbox\\tests\\'
-        my_file = 'CTD_2000037_102_1_DN.ODF'
-        # my_file = 'CTD_91001_1_1_DN.ODF'
-        # my_file = 'CTD_SCD2022277_002_01_DN.ODF'
-        # my_file = 'file_with_leading_spaces.ODF'
-        # my_file = 'file_with_null_data_values.ODF'
-        odf.read_odf(my_path + my_file)
+    my_path = 'C:\\DEV\\GitHub\\odf_toolbox\\tests\\'
+    # my_file = 'CTD_2000037_102_1_DN.ODF'
+    my_file = 'CTD_91001_1_1_DN.ODF'
+    # my_file = 'CTD_SCD2022277_002_01_DN.ODF'
+    # my_file = 'file_with_leading_spaces.ODF'
+    # my_file = 'file_with_null_data_values.ODF'
+    odf.read_odf(my_path + my_file)
 
-        # Add a new History Header to record the modifications that are made.
-        odf.add_history()
-        user = 'Jeff Jackson'
-        odf.add_to_log(f'{user} made the following modifications to this file:')
+    # Add a new History Header to record the modifications that are made.
+    odf.add_history()
+    user = 'Jeff Jackson'
+    odf.add_to_log(f'{user} made the following modifications to this file:')
 
-        # Modify some of the odf metadata
-        # odf.cruise_header.set_organization('DFO BIO')
-        # odf.cruise_header.set_chief_scientist('GLEN HARRISON')
-        odf.cruise_header.set_start_date('01-APR-2022 00:00:00')
-        odf.cruise_header.set_end_date('31-OCT-2022 00:00:00')
-        # odf.cruise_header.set_platform('HUDSON')
-        # odf.event_header.set_station_name('AR7W_15')
+    # Modify some of the odf metadata
+    # odf.cruise_header.set_organization('DFO BIO')
+    # odf.cruise_header.set_chief_scientist('GLEN HARRISON')
+    odf.cruise_header.set_start_date('01-APR-2022 00:00:00')
+    odf.cruise_header.set_end_date('31-OCT-2022 00:00:00')
+    # odf.cruise_header.set_platform('HUDSON')
+    # odf.event_header.set_station_name('AR7W_15')
 
-        # Prior to loading data into an Oracle database, the null values need to be replaced with None values.
-        new_df = odf.null2empty(odf.data.get_data_frame())
-        odf.data.set_data_frame(new_df)
+    # Prior to loading data into an Oracle database, the null values need to be replaced with None values.
+    new_df = odf.null2empty(odf.data.get_data_frame())
+    odf.data.set_data_frame(new_df)
 
-        # Remove the CRAT_01 parameter.
-        # from odf_toolbox.remove_parameter import remove_parameter
-        # odf = remove_parameter(odf, 'CRAT_01')
+    # Remove the CRAT_01 parameter.
+    # from odf_toolbox.remove_parameter import remove_parameter
+    # odf = remove_parameter(odf, 'CRAT_01')
 
-        # for meteo_comment in odf.meteo_header.get_meteo_comments():
-        #     ic(meteo_comment)
+    # for meteo_comment in odf.meteo_header.get_meteo_comments():
+    #     ic(meteo_comment)
 
-        # Retrieve the data from the input ODF structure.
-        data = odf.data.get_data_frame()
+    # Retrieve the data from the input ODF structure.
+    data = odf.data.get_data_frame()
 
-        # Get the number of data rows and columns.
-        nrows, ncols = data.shape
+    # Get the number of data rows and columns.
+    nrows, ncols = data.shape
 
-        # Retrieve the Parameter Headers from the input ODF structure.
-        parameter_headers = odf.parameter_headers
-        parameter_codes = odf.get_parameter_codes()
+    # Retrieve the Parameter Headers from the input ODF structure.
+    parameter_headers = odf.parameter_headers
+    parameter_codes = odf.get_parameter_codes()
 
-        sytm_index = [i for i,pcode in enumerate(parameter_codes) if pcode[0:4] == 'SYTM']
-        if sytm_index != []:
-            sytm_index = sytm_index[0]
+    sytm_index = [i for i,pcode in enumerate(parameter_codes) if pcode[0:4] == 'SYTM']
+    if sytm_index != []:
+        sytm_index = sytm_index[0]
 
-        for j, parameter_header in enumerate(parameter_headers):
+    for j, parameter_header in enumerate(parameter_headers):
 
-            parameter_code = parameter_header.get_code()
-            parameter_code_short, sensor_number = parameter_code.split("_")
-            sensor_number = float(sensor_number)          
+        parameter_code = parameter_header.get_code()
+        parameter_code_short, sensor_number = parameter_code.split("_")
+        sensor_number = float(sensor_number)          
 
-            if data.loc[:, parameter_code].isnull().all():
+        if data.loc[:, parameter_code].isnull().all():
 
-                # Suggest removing parameter columns that only contain 
-                # null values.
-                print(f'Should the data for {parameter_code} be deleted from '
-                        'the ODF structure since it only contains NULL values?')
+            # Suggest removing parameter columns that only contain 
+            # null values.
+            print(f'Should the data for {parameter_code} be deleted from '
+                    'the ODF structure since it only contains NULL values?')
 
-            # Loop through the data records. 
-            for r in range(0, nrows):
-                # ic(type(data.loc[r].iloc[j]))
-                value = data.loc[r].iloc[j]
-                # print(f'row {r}, column {j} has value {value} with type {type(value)}')
+        # Loop through the data records. 
+        for r in range(0, nrows):
+            # ic(type(data.loc[r].iloc[j]))
+            value = data.loc[r].iloc[j]
+            # print(f'row {r}, column {j} has value {value} with type {type(value)}')
 
-            # if f"Q{parameter_code}" in parameter_codes:
-            #     qfcode = f"Q{parameter_code}"
-            #     ic(qfcode)
-            #     print(data[qfcode])
+        # if f"Q{parameter_code}" in parameter_codes:
+        #     qfcode = f"Q{parameter_code}"
+        #     ic(qfcode)
+        #     print(data[qfcode])
 
-        # new_param_list = ['PRES_01', 'TEMP_01', 'CRAT_01', 'PSAL_01', 'NETR_01', 'FLOR_01', 'OTMP_01', 'OPPR_01', 'DOXY_01']
-        # odf.fix_parameter_codes(new_param_list)
-        # odf.fix_parameter_codes()
+    # new_param_list = ['PRES_01', 'TEMP_01', 'CRAT_01', 'PSAL_01', 'NETR_01', 'FLOR_01', 'OTMP_01', 'OPPR_01', 'DOXY_01']
+    # odf.fix_parameter_codes(new_param_list)
+    # odf.fix_parameter_codes()
 
-        # old_codes = odf.get_parameter_codes()
+    # old_codes = odf.get_parameter_codes()
 
-        # from datetime import datetime
-        # now: datetime = datetime.now()
-        # current_date_time = f'{now:%d-%b-%Y %H:%M:%S.%f}'.upper()
-        # odf.event_header.set_original_creation_date(current_date_time)
-        # print(odf.event_header.get_original_creation_date())
+    # from datetime import datetime
+    # now: datetime = datetime.now()
+    # current_date_time = f'{now:%d-%b-%Y %H:%M:%S.%f}'.upper()
+    # odf.event_header.set_original_creation_date(current_date_time)
+    # print(odf.event_header.get_original_creation_date())
 
-        # codes = odf.get_parameter_codes()
-        # if 'SYTM_01' in codes:
-        #     odf.update_parameter('SYTM_01', 'units', 'GMT')
+    # codes = odf.get_parameter_codes()
+    # if 'SYTM_01' in codes:
+    #     odf.update_parameter('SYTM_01', 'units', 'GMT')
 
-        # odf.cruise_header.set_chief_scientist('W GLEN HARRISON')
-        # odf.event_header.set_event_comments("The wind was very strong during this operation.")
+    # odf.cruise_header.set_chief_scientist('W GLEN HARRISON')
+    # odf.event_header.set_event_comments("The wind was very strong during this operation.")
 
-        odf.update_odf()
+    odf.update_odf()
 
-        # Write the ODF file to disk.
-        odf_file_text = odf.print_object(file_version=3)
-        spec = odf.generate_file_spec()
-        out_file = f"{spec}.ODF"
-        odf.write_odf(my_path + out_file, version=3)
+    # Write the ODF file to disk.
+    odf_file_text = odf.print_object(file_version=3)
+    spec = odf.generate_file_spec()
+    out_file = f"{spec}.ODF"
+    odf.write_odf(my_path + out_file, version=3)
 
 
 if __name__ == '__main__':    
-    OdfHeader.main()
+    
+    main()

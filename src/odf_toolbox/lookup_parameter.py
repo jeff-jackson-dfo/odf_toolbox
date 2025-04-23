@@ -26,8 +26,9 @@ def lookup_parameter(parameter: str) -> dict:
 def main():
 
     # Get parameter information for TURB from the ODF database.
-    parameter = 'TURB'
-    lookup_parameter(parameter)
+    parameter = 'TEMP'
+    pinfo = lookup_parameter(parameter)
+    print(pinfo)
 
 
 if __name__ == '__main__':

@@ -1,389 +1,353 @@
 from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
+from typing import NoReturn
+from pydantic import BaseModel
 
-class EventHeader(BaseHeader):
-    
-    def __init__(self):
+class EventHeader(BaseModel, BaseHeader):
+    """
+    A class to represent an Event Header in an ODF object.
+    """    
+    def __init__(self, 
+                 data_type: str = '', 
+                 event_number: str = '', 
+                 event_qualifier1: str = '', 
+                 event_qualifier2: str = '', 
+                 creation_date: str = BaseHeader.sytm_null_value, 
+                 orig_creation_date: str = BaseHeader.sytm_null_value,
+                 start_date_time: str = BaseHeader.sytm_null_value, 
+                 end_date_time: str = BaseHeader.sytm_null_value, 
+                 initial_latitude: float = BaseHeader.null_value, 
+                 initial_longitude: float = BaseHeader.null_value, 
+                 end_latitude: float = BaseHeader.null_value, 
+                 end_longitude: float = BaseHeader.null_value,
+                 min_depth: float = BaseHeader.null_value, 
+                 max_depth: float = BaseHeader.null_value, 
+                 sampling_interval: float = BaseHeader.null_value, 
+                 sounding: float = BaseHeader.null_value, 
+                 depth_off_bottom: float = BaseHeader.null_value, 
+                 station_name: str = '', 
+                 set_number: str = '', 
+                 event_comments: list = []
+                 ) -> NoReturn:
         super().__init__()
-        self._data_type = ''
-        self._event_number = ''
-        self._event_qualifier1 = ''
-        self._event_qualifier2 = ''
-        self._creation_date = ''
-        self._orig_creation_date = ''
-        self._start_date_time = ''
-        self._end_date_time = ''
-        self._initial_latitude = None
-        self._initial_longitude = None
-        self._end_latitude = None
-        self._end_longitude = None
-        self._min_depth = None
-        self._max_depth = None
-        self._sampling_interval = None
-        self._sounding = None
-        self._depth_off_bottom = None
-        self._station_name = ''
-        self._set_number = ''
-        self._event_comments = []
+        self.data_type = data_type
+        self.event_number = event_number
+        self.event_qualifier1 = event_qualifier1
+        self.event_qualifier2 = event_qualifier2
+        self.creation_date = creation_date
+        self.orig_creation_date = orig_creation_date
+        self.start_date_time = start_date_time
+        self.end_date_time = end_date_time
+        self.initial_latitude = initial_latitude
+        self.initial_longitude = initial_longitude
+        self.end_latitude = end_latitude
+        self.end_longitude = end_longitude
+        self.min_depth = min_depth
+        self.max_depth = max_depth
+        self.sampling_interval = sampling_interval
+        self.sounding = sounding
+        self.depth_off_bottom = depth_off_bottom
+        self.station_name = station_name
+        self.set_number = set_number
+        self.event_comments = event_comments
+        
+    def log_message(self, field: str, old_value: any, new_value: any) -> NoReturn:
+        if field.upper() == 'EVENT_COMMENTS':
+            print("Use method 'update_event_comments' to modify EVENT_COMMENTS.")
+            return
+        if field.upper() == 'DATA_TYPE' or \
+           field.upper() == 'EVENT_NUMBER' or \
+           field.upper() == 'EVENT_QUALIFIER1' or \
+           field.upper() == 'EVENT_QUALIFIER2' or \
+           field.upper() == 'CREATION_DATE' or \
+           field.upper() == 'ORIG_CREATION_DATE' or \
+           field.upper() == 'START_DATE_TIME' or \
+           field.upper() == 'END_DATE_TIME' or \
+           field.upper() == 'STATION_NAME' or \
+           field.upper() == 'SET_NUMBER':
+            old_value = "''"
+            message = f"In Event Header field {field.upper()} was changed from {old_value} to '{new_value}'"
+        else:    
+            message = f"In Event Header field {field.upper()} was changed from {old_value} to {new_value}"
+        super().log_message(message)
 
-    def log_message(self, message):
-        super().log_message(f"In Event Header field {message}")
-
-    def get_data_type(self) -> str:
+    @property
+    def data_type(self) -> str:
         return self._data_type
 
-    def set_data_type(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
+    @data_type.setter
+    def data_type(self, value: str) -> NoReturn:
         value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'DATA_TYPE was changed from "{self._data_type}" to "{value}"')
-        self._data_type = f'{value}'
+        self._data_type = value
 
-    def get_event_number(self) -> str:
+    @property
+    def event_number(self) -> str:
         return self._event_number
 
-    def set_event_number(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
+    @event_number.setter
+    def event_number(self, value: str) -> NoReturn:
         value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'EVENT_NUMBER was changed from "{self._event_number}" to "{value}"')
-        self._event_number = f'{value}'
+        self._event_number = value
 
-    def get_event_qualifier1(self) -> str:
+    @property
+    def event_qualifier1(self) -> str:
         return self._event_qualifier1
 
-    def set_event_qualifier1(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
+    @event_qualifier1.setter
+    def event_qualifier1(self, value: str) -> NoReturn:
         value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'EVENT_QUALIFIER1 was changed from "{self._event_qualifier1}" to "{value}"')
-        self._event_qualifier1 = f'{value}'
+        self._event_qualifier1 = value
 
-    def get_event_qualifier2(self) -> str:
+    @property
+    def event_qualifier2(self) -> str:
         return self._event_qualifier2
 
-    def set_event_qualifier2(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
+    @event_qualifier2.setter
+    def event_qualifier2(self, value: str) -> NoReturn:
         value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'EVENT_QUALIFIER2 was changed from "{self._event_qualifier2}" to "{value}"')
-        self._event_qualifier2 = f'{value}'
+        self._event_qualifier2 = value
 
-    def get_creation_date(self) -> str:
+    @property
+    def creation_date(self) -> str:
         return self._creation_date
 
-    def set_creation_date(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
+    @creation_date.setter
+    def creation_date(self, value: str) -> NoReturn:
         value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'CREATION_DATE was changed from "{self._creation_date}" to "{value}"')
-        self._creation_date = f'{value}'
+        self._creation_date = value.upper()
 
-    def get_orig_creation_date(self) -> str:
+    @property
+    def orig_creation_date(self) -> str:
         return self._orig_creation_date
 
-    def set_orig_creation_date(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
+    @orig_creation_date.setter
+    def orig_creation_date(self, value: str) -> NoReturn:
         value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'ORIG_CREATION_DATE was changed from "{self._orig_creation_date}" to "{value}"')
-        self._orig_creation_date = f'{value}'
+        self._orig_creation_date = value.upper()
 
-    def get_start_date_time(self) -> str:
+    @property
+    def start_date_time(self) -> str:
         return self._start_date_time
 
-    def set_start_date_time(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
+    @start_date_time.setter
+    def start_date_time(self, value: str) -> NoReturn:
         value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'START_DATE_TIME was changed from "{self._start_date_time}" to "{value}"')
-        self._start_date_time = f'{value}'
+        self._start_date_time = value.upper()
 
-    def get_end_date_time(self) -> str:
+    @property
+    def end_date_time(self) -> str:
         return self._end_date_time
 
-    def set_end_date_time(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
+    @end_date_time.setter
+    def end_date_time(self, value: str) -> NoReturn:
         value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'END_DATE_TIME was changed from "{self._end_date_time}" to "{value}"')
-        self._end_date_time = f'{value}'
+        self._end_date_time = value.upper()
 
-    def get_initial_latitude(self) -> float:
+    @property
+    def initial_latitude(self) -> float:
         return self._initial_latitude
 
-    def set_initial_latitude(self, value: float, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to float
-            try:
-                value = float(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type float: {value}"
-        assert isinstance(value, float), \
-               f"Input value is not of type float: {value}"
-        if not read_operation:
-            self.log_message(f"INITIAL_LATITUDE was changed from {self._initial_latitude} to {value}")
+    @initial_latitude.setter
+    def initial_latitude(self, value: float) -> NoReturn:
         self._initial_latitude = value
 
-    def get_initial_longitude(self) -> float:
+    @property
+    def initial_longitude(self) -> float:
         return self._initial_longitude
 
-    def set_initial_longitude(self, value: float, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to float
-            try:
-                value = float(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type float: {value}"
-        assert isinstance(value, float), \
-               f"Input value is not of type float: {value}"
-        if not read_operation:
-            self.log_message(f"INITIAL_LONGITUDE was changed from {self._initial_longitude} to {value}")
+    @initial_longitude.setter
+    def initial_longitude(self, value: float) -> NoReturn:
         self._initial_longitude = value
 
-    def get_end_latitude(self) -> float:
+    @property
+    def end_latitude(self) -> float:
         return self._end_latitude
 
-    def set_end_latitude(self, value: float, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to float
-            try:
-                value = float(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type float: {value}"
-        assert isinstance(value, float), \
-               f"Input value is not of type float: {value}"
-        if not read_operation:
-            self.log_message(f"END_LATITUDE was changed from {self._end_latitude} to {value}")
+    @end_latitude.setter
+    def end_latitude(self, value: float) -> NoReturn:
         self._end_latitude = value
 
-    def get_end_longitude(self) -> float:
+    @property
+    def end_longitude(self) -> float:
         return self._end_longitude
 
-    def set_end_longitude(self, value: float, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to float
-            try:
-                value = float(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type float: {value}"
-        assert isinstance(value, float), \
-               f"Input value is not of type float: {value}"
-        if not read_operation:
-            self.log_message(f"END_LONGITUDE was changed from {self._end_longitude} to {value}")
+    @end_longitude.setter
+    def end_longitude(self, value: float) -> NoReturn:
         self._end_longitude = value
 
-    def get_min_depth(self) -> float:
+    @property
+    def min_depth(self) -> float:
         return self._min_depth
 
-    def set_min_depth(self, value: float, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to float
-            try:
-                value = float(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type float: {value}"
-        assert isinstance(value, float), \
-               f"Input value is not of type float: {value}"
-        if not read_operation:
-            self.log_message(f"MIN_DEPTH was changed from {self._min_depth} to {value}")
+    @min_depth.setter
+    def min_depth(self, value: float) -> NoReturn:
         self._min_depth = value
 
-    def get_max_depth(self) -> float:
+    @property
+    def max_depth(self) -> float:
         return self._max_depth
 
-    def set_max_depth(self, value: float, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to float
-            try:
-                value = float(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type float: {value}"
-        assert isinstance(value, float), \
-               f"Input value is not of type float: {value}"
-        if not read_operation:
-            self.log_message(f"MAX_DEPTH was changed from {self._max_depth} to {value}")
+    @max_depth.setter
+    def max_depth(self, value: float) -> NoReturn:
         self._max_depth = value
 
-    def get_sampling_interval(self) -> float:
+    @property
+    def sampling_interval(self) -> float:
         return self._sampling_interval
 
-    def set_sampling_interval(self, value: float, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to float
-            try:
-                value = float(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type float: {value}"
-        assert isinstance(value, float), \
-               f"Input value is not of type float: {value}"
-        if not read_operation:
-            self.log_message(f"SAMPLING_INTERVAL was changed from {self._sampling_interval} to {value}")
+    @sampling_interval.setter
+    def sampling_interval(self, value: float) -> NoReturn:
         self._sampling_interval = value
 
-    def get_sounding(self) -> float:
+    @property
+    def sounding(self) -> float:
         return self._sounding
 
-    def set_sounding(self, value: float, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to float
-            try:
-                value = float(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type float: {value}"
-        assert isinstance(value, float), \
-               f"Input value is not of type float: {value}"
-        if not read_operation:
-            self.log_message(f"SOUNDING was changed from {self._sounding} to {value}")
+    @sounding.setter
+    def sounding(self, value: float) -> NoReturn:
         self._sounding = value
 
-    def get_depth_off_bottom(self) -> float:
+    @property
+    def depth_off_bottom(self) -> float:
         return self._depth_off_bottom
 
-    def set_depth_off_bottom(self, value: float, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to float
-            try:
-                value = float(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type float: {value}"
-        assert isinstance(value, float), \
-               f"Input value is not of type float: {value}"
-        if not read_operation:
-            self.log_message(f"DEPTH_OFF_BOTTOM was changed from {self._depth_off_bottom} to {value}")
+    @depth_off_bottom.setter
+    def depth_off_bottom(self, value: float) -> NoReturn:
         self._depth_off_bottom = value
 
-    def get_station_name(self) -> str:
+    @property
+    def station_name(self) -> str:
         return self._station_name
 
-    def set_station_name(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
-        value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'STATION_NAME was changed from "{self._station_name}" to "{value}"')
+    @station_name.setter
+    def station_name(self, value: str) -> NoReturn:
         self._station_name = f'{value}'
 
-    def get_set_number(self) -> str:
+    @property
+    def set_number(self) -> str:
         return self._set_number
 
-    def set_set_number(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
-        value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'SET_NUMBER was changed from "{self._set_number}" to "{value}"')
+    @set_number.setter
+    def set_number(self, value: str) -> NoReturn:
         self._set_number = f'{value}'
 
-    def get_event_comments(self) -> list:
+    @property
+    def event_comments(self) -> list:
         return self._event_comments
 
-    def set_event_comments(self, event_comment: str, comment_number: int = 0, read_operation: bool = False) -> None:
-        assert isinstance(event_comment, str), \
-               f"Input value is not of type str: {event_comment}"
-        assert isinstance(comment_number, int), \
-               f"Input value is not of type int: {comment_number}"
+    @event_comments.setter
+    def event_comments(self, value: list) -> NoReturn:
+        self._event_comments = value
+    
+    def set_event_comment(self, event_comment: str, 
+                          comment_number: int = 0) -> None:
         event_comment = event_comment.strip("\'")
-        number_of_comments = len(self.get_event_comments())
+        number_of_comments = len(self.event_comments)
         if comment_number == 0 and number_of_comments >= 0:
-            if not read_operation:
-                self.log_message(f'The following comment was added to EVENT_COMMENTS: '
-                                     f'"{event_comment}"')
             self._event_comments.append(f'{event_comment}')
         elif comment_number <= number_of_comments and number_of_comments > 0:
-            if not read_operation:
-                self.log_message(f'Comment {comment_number} in EVENT_COMMENTS was changed from '
-                                     f'"{self._event_comments[comment_number-1]}" to "{event_comment}"')
             self._event_comments[comment_number-1] = f'{event_comment}'
         else:
-            raise ValueError("The 'event_comment' number does not match the number of EVENT_COMMENTS lines.")
+            raise ValueError("The 'event_comment' number is incorrect.")
 
     def populate_object(self, event_fields: list):
-        assert isinstance(event_fields, list), \
-               f"Input value is not of type list: {event_fields}"
         for header_line in event_fields:
             tokens = header_line.split('=', maxsplit=1)
             event_dict = odfutils.list_to_dict(tokens)
             for key, value in event_dict.items():
                 key = key.strip()
-                value = value.strip()
+                if str(value):
+                    value = value.strip()
                 match key:
                     case 'DATA_TYPE':
-                        self.set_data_type(value, read_operation=True)
+                        self.data_type = value
                     case 'EVENT_NUMBER':
-                        self.set_event_number(value, read_operation=True)
+                        self.event_number = value
                     case 'EVENT_QUALIFIER1':
-                        self.set_event_qualifier1(value, read_operation=True)
+                        self.event_qualifier1 = value
                     case 'EVENT_QUALIFIER2':
-                        self.set_event_qualifier2(value, read_operation=True)
+                        self.event_qualifier2 = value
                     case 'CREATION_DATE':
-                        self.set_creation_date(value, read_operation=True)
+                        self.creation_date = value
                     case 'ORIG_CREATION_DATE':
-                        self.set_orig_creation_date(value, read_operation=True)
+                        self.orig_creation_date = value
                     case 'START_DATE_TIME':
-                        self.set_start_date_time(value, read_operation=True)
+                        self.start_date_time = value
                     case 'END_DATE_TIME':
-                        self.set_end_date_time(value, read_operation=True)
+                        self.end_date_time = value
                     case 'INITIAL_LATITUDE':
-                        self.set_initial_latitude(value, read_operation=True)
+                        self.initial_latitude = value
                     case 'INITIAL_LONGITUDE':
-                        self.set_initial_longitude(value, read_operation=True)
+                        self.initial_longitude = value
                     case 'END_LATITUDE':
-                        self.set_end_latitude(value, read_operation=True)
+                        self.end_latitude = value
                     case 'END_LONGITUDE':
-                        self.set_end_longitude(value, read_operation=True)
+                        self.end_longitude = value
                     case 'MIN_DEPTH':
-                        self.set_min_depth(value, read_operation=True)
+                        self.min_depth = value
                     case 'MAX_DEPTH':
-                        self.set_max_depth(value, read_operation=True)
+                        self.max_depth = value
                     case 'SAMPLING_INTERVAL':
-                        self.set_sampling_interval(value, read_operation=True)
+                        self.sampling_interval = value
                     case 'SOUNDING':
-                        self.set_sounding(value, read_operation=True)
+                        self.sounding = value
                     case 'DEPTH_OFF_BOTTOM':
-                        self.set_depth_off_bottom(value, read_operation=True)
+                        self.depth_off_bottom = value
                     case 'STATION_NAME':
-                        self.set_station_name(value, read_operation=True)
+                        self.station_name = value
                     case 'SET_NUMBER':
-                        self.set_set_number(value, read_operation=True)
+                        self.set_number = value
                     case 'EVENT_COMMENTS':
-                        self.set_event_comments(value, read_operation=True)
+                        self.event_comments = value
         return self
 
     def print_object(self) -> str:
         event_header_output = "EVENT_HEADER\n"
-        event_header_output += f"  DATA_TYPE = '{self.get_data_type()}'\n"
-        event_header_output += f"  EVENT_NUMBER = '{self.get_event_number()}'\n"
-        event_header_output += f"  EVENT_QUALIFIER1 = '{self.get_event_qualifier1()}'\n"
-        event_header_output += f"  EVENT_QUALIFIER2 = '{self.get_event_qualifier2()}'\n"
-        event_header_output += f"  CREATION_DATE = '{odfutils.check_datetime(self.get_creation_date())}'\n"
-        event_header_output += f"  ORIG_CREATION_DATE = '{odfutils.check_datetime(self.get_orig_creation_date())}'\n"
-        event_header_output += f"  START_DATE_TIME = '{odfutils.check_datetime(self.get_start_date_time())}'\n"
-        event_header_output += f"  END_DATE_TIME = '{odfutils.check_datetime(self.get_end_date_time())}'\n"
-        event_header_output += (f"  INITIAL_LATITUDE = "
-                                f"{odfutils.check_long(self.get_initial_latitude()):.6f}\n")
-        event_header_output += (f"  INITIAL_LONGITUDE = "
-                                f"{odfutils.check_long(self.get_initial_longitude()):.6f}\n")
-        event_header_output += f"  END_LATITUDE = {odfutils.check_float(self.get_end_latitude()):.6f}\n"
-        event_header_output += f"  END_LONGITUDE = {odfutils.check_long(self.get_end_longitude()):.6f}\n"
-        event_header_output += f"  MIN_DEPTH = {odfutils.check_float(self.get_min_depth()):.2f}\n"
-        event_header_output += f"  MAX_DEPTH = {odfutils.check_float(self.get_max_depth()):.2f}\n"
-        event_header_output += (f"  SAMPLING_INTERVAL = "
-                                f"{odfutils.check_float(self.get_sampling_interval()):.2f}\n")
-        event_header_output += f"  SOUNDING = {odfutils.check_float(self.get_sounding()):.2f}\n"
-        event_header_output += f"  DEPTH_OFF_BOTTOM = {odfutils.check_float(self.get_depth_off_bottom()):.2f}\n"
-        event_header_output += f"  STATION_NAME = '{self.get_station_name()}'\n"
-        event_header_output += f"  SET_NUMBER = '{self.get_set_number()}'\n"
-        if self.get_event_comments():
-            for event_comment in self.get_event_comments():
+        event_header_output += f"  DATA_TYPE = '{self.data_type}'\n"
+        event_header_output += f"  EVENT_NUMBER = '{self.event_number}'\n"
+        event_header_output += f"  EVENT_QUALIFIER1 = '{self.event_qualifier1}'\n"
+        event_header_output += f"  EVENT_QUALIFIER2 = '{self.event_qualifier2}'\n"
+        event_header_output += f"  CREATION_DATE = '{odfutils.check_datetime(self.creation_date)}'\n"
+        event_header_output += f"  ORIG_CREATION_DATE = '{odfutils.check_datetime(self.orig_creation_date)}'\n"
+        event_header_output += f"  START_DATE_TIME = '{odfutils.check_datetime(self.start_date_time)}'\n"
+        event_header_output += f"  END_DATE_TIME = '{odfutils.check_datetime(self.end_date_time)}'\n"
+        if self.initial_latitude == BaseHeader.null_value:
+            event_header_output += f"  INITIAL_LATITUDE = {self.initial_latitude}\n"
+        else:
+            event_header_output += f"  INITIAL_LATITUDE = {self.initial_latitude:.2f}\n"
+        if self.initial_longitude == BaseHeader.null_value:
+            event_header_output += f"  INITIAL_LONGITUDE = {self.initial_longitude}\n"
+        else:
+            event_header_output += f"  INITIAL_LONGITUDE = {self.initial_longitude:.2f}\n"
+        if self.end_latitude == BaseHeader.null_value:
+            event_header_output += f"  END_LATITUDE = {self.end_latitude}\n"
+        else:
+            event_header_output += f"  END_LATITUDE = {self.end_latitude:.2f}\n"
+        if self.end_longitude == BaseHeader.null_value:
+            event_header_output += f"  END_LONGITUDE = {self.end_longitude}\n"
+        else:
+            event_header_output += f"  END_LONGITUDE = {self.end_longitude:.2f}\n"
+        if self.min_depth == BaseHeader.null_value:
+            event_header_output += f"  MIN_DEPTH = {self.min_depth}\n"
+        else:
+            event_header_output += f"  MIN_DEPTH = {self.min_depth:.2f}\n"
+        if self.max_depth == BaseHeader.null_value:
+            event_header_output += f"  MAX_DEPTH = {self.max_depth}\n"
+        else:
+            event_header_output += f"  MAX_DEPTH = {self.max_depth:.2f}\n"
+        event_header_output += f"  SAMPLING_INTERVAL = {self.sampling_interval}\n"
+        if self.sounding == BaseHeader.null_value:
+            event_header_output += f"  SOUNDING = {self.sounding}\n"
+        else:
+            event_header_output += f"  SOUNDING = {self.sounding:.2f}\n"
+        if self.depth_off_bottom == BaseHeader.null_value:
+            event_header_output += f"  DEPTH_OFF_BOTTOM = {self.depth_off_bottom}\n"
+        else:
+            event_header_output += f"  DEPTH_OFF_BOTTOM = {self.depth_off_bottom:.2f}\n"
+        event_header_output += f"  STATION_NAME = '{self.station_name}'\n"
+        event_header_output += f"  SET_NUMBER = '{self.set_number}'\n"
+        if self.event_comments:
+            for event_comment in self.event_comments:
                 event_header_output += f"  EVENT_COMMENTS = '{event_comment}'\n"
         else:
             event_header_output += "  EVENT_COMMENTS = ''\n"
@@ -391,28 +355,33 @@ class EventHeader(BaseHeader):
 
     def main():
         event = EventHeader()
-        event.set_creation_date('2021-03-25T00:00:00')
-        event.set_data_type('CTD')
-        event.set_event_number('001')
-        event.set_event_qualifier1('123456')
-        event.set_event_qualifier2('DN')
-        event.set_creation_date('2025-03-14T08:55:00')
-        event.set_orig_creation_date('2024-10-25T12:20:00')
-        event.set_start_date_time('2017-07-03T19:12:00')
-        event.set_end_date_time('2017-07-03T20:05:00')
-        event.set_initial_latitude(33.123456)
-        event.set_initial_longitude(-118.123456)
-        event.set_end_latitude(33.123456)
-        event.set_end_longitude(-118.123456)
-        event.set_min_depth(0.0)
-        event.set_max_depth(100.0)
-        event.set_sampling_interval(1.0)
-        event.set_sounding(110.0)
-        event.set_depth_off_bottom(10.0)
-        event.set_station_name('Station Name')
-        event.set_set_number('001')
-        event.set_event_comments('Comment 1')
         print(event.print_object())
+        event.creation_date = '2021-03-25T00:00:00'
+        event.data_type = 'CTD'
+        event.event_number = '001'
+        event.event_qualifier1 = '123456'
+        event.event_qualifier2 = 'DN'
+        event.creation_date = '14-Mar-2025 08:55:00.00'
+        event.orig_creation_date = '25-OCT-2024 12:20:00.00'
+        event.start_date_time = '03-jul-2017 19:12:00.00'
+        event.end_date_time = '03-Jul-2017 20:05:00.00'
+        event.initial_latitude = 33.123456
+        event.initial_longitude = -118.123456
+        event.end_latitude = 33.123456
+        event.end_longitude = -118.123456
+        event.min_depth = 0.0
+        event.max_depth = 100.0
+        event.sampling_interval = 1.0
+        event.sounding = 110.0
+        event.depth_off_bottom = 10.0
+        event.log_message('station_name', event.station_name, 'STN_01')
+        event.station_name = 'STN_01' 
+        event.set_number = '001'
+        event.set_event_comment('Good cast!')
+        print(event.print_object())
+        
+        for log_entry in BaseHeader.shared_log_list:
+            print(log_entry)
 
 
 if __name__ == "__main__":

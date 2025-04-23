@@ -1,132 +1,113 @@
 from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
+from typing import NoReturn
+from pydantic import BaseModel
 
-class RecordHeader(BaseHeader):
-
-    def __init__(self):
+class RecordHeader(BaseModel, BaseHeader):
+    """
+    A class to represent a Record Header in an ODF object.
+    """
+    def __init__(self, 
+                 num_calibration: int = 0, 
+                 num_swing: int = 0,
+                 num_history: int = 0,
+                 num_cycle: int = 0,
+                 num_param: int = 0,
+                 ):
         super().__init__()
-        self._num_calibration = 0
-        self._num_swing = 0
-        self._num_history = 0
-        self._num_cycle = 0
-        self._num_param = 0
+        self.num_calibration = num_calibration
+        self.num_swing = num_swing
+        self.num_history = num_history
+        self.num_cycle = num_cycle
+        self.num_param = num_param
 
-    def log_message(self, message):
-        super().log_message(f"In Record Header field {message}")
+    def log_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
+        message = f"In Record Header field {field.upper()} was changed from {old_value} to {new_value}"
+        super().log_message(message)
 
-    def get_num_calibration(self) -> int:
+    @property
+    def num_calibration(self) -> int:
         return self._num_calibration
 
-    def set_num_calibration(self, value: int, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to int
-            try:
-                value = int(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type int: {value}"
-        assert isinstance(value, int), \
-               f"Input value is not of type int: {value}"
-        if not read_operation:
-            self.log_message(f"NUM_CALIBRATION was changed from {self._num_calibration} to {value}")
+    @num_calibration.setter
+    def num_calibration(self, value: int) -> NoReturn:
         self._num_calibration = value
 
-    def get_num_swing(self) -> int:
+    @property
+    def num_swing(self) -> int:
         return self._num_swing
 
-    def set_num_swing(self, value: int, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to int
-            try:
-                value = int(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type int: {value}"
-        assert isinstance(value, int), \
-               f"Input value is not of type int: {value}"
-        if not read_operation:
-            self.log_message(f"NUM_SWING was changed from {self._num_swing} to {value}")
+    @num_swing.setter
+    def num_swing(self, value: int) -> NoReturn:
         self._num_swing = value
 
-    def get_num_history(self) -> int:
+    @property
+    def num_history(self) -> int:
         return self._num_history
 
-    def set_num_history(self, value: int, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to int
-            try:
-                value = int(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type int: {value}"
-        assert isinstance(value, int), \
-               f"Input value is not of type int: {value}"
-        if not read_operation:
-            self.log_message(f"NUM_HISTORY was changed from {self._num_history} to {value}")
+    @num_history.setter
+    def num_history(self, value: int) -> NoReturn:
         self._num_history = value
 
-    def get_num_cycle(self) -> int:
+    @property
+    def num_cycle(self) -> int:
         return self._num_cycle
 
-    def set_num_cycle(self, value: int, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to int
-            try:
-                value = int(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type int: {value}"
-        assert isinstance(value, int), \
-               f"Input value is not of type int: {value}"
-        if not read_operation:
-            self.log_message(f"NUM_CYCLE was changed from {self._num_cycle} to {value}")
+    @num_cycle.setter
+    def num_cycle(self, value: int) -> NoReturn:
         self._num_cycle = value
 
-    def get_num_param(self) -> int:
+    @property
+    def num_param(self) -> int:
         return self._num_param
 
-    def set_num_param(self, value: int, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to int
-            try:
-                value = int(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type int: {value}"
-        assert isinstance(value, int), \
-               f"Input value is not of type int: {value}"
-        if not read_operation:
-            self.log_message(f"NUM_PARAM was changed from {self._num_param} to {value}")
+    @num_param.setter
+    def num_param(self, value: int) -> NoReturn:
         self._num_param = value
 
-    def populate_object(self, record_fields: list) -> None:
-        assert isinstance(record_fields, list), \
-               f"Input value is not of type list: {record_fields}"
+    def populate_object(self, record_fields: list) -> NoReturn:
         for record_line in record_fields:
             tokens = record_line.split('=', maxsplit=1)
             record_dict = odfutils.list_to_dict(tokens)
             for key, value in record_dict.items():
                 key = key.strip()
-                value = value.strip()
+                value = int(value)
                 match key:
                     case 'NUM_CALIBRATION':
-                        self.set_num_calibration(value, read_operation=True)
+                        self.num_calibration = value
                     case 'NUM_SWING':
-                        self.set_num_swing(value, read_operation=True)
+                        self.num_swing = value
                     case 'NUM_HISTORY':
-                        self.set_num_history(value, read_operation=True)
+                        self.num_history = value
                     case 'NUM_CYCLE':
-                        self.set_num_cycle(value, read_operation=True)
+                        self.num_cycle = value
                     case 'NUM_PARAM':
-                        self.set_num_param(value, read_operation=True)
+                        self.num_param = value
 
     def print_object(self) -> str:
         record_header_output = "RECORD_HEADER\n"
-        record_header_output += f"  NUM_CALIBRATION = {odfutils.check_int(self.get_num_calibration())}\n"
-        record_header_output += f"  NUM_HISTORY = {odfutils.check_int(self.get_num_history())}\n"
-        record_header_output += f"  NUM_SWING = {odfutils.check_int(self.get_num_swing())}\n"
-        record_header_output += f"  NUM_PARAM = {odfutils.check_int(self.get_num_param())}\n"
-        record_header_output += f"  NUM_CYCLE = {odfutils.check_int(self.get_num_cycle())}\n"
+        record_header_output += f"  NUM_CALIBRATION = {odfutils.check_int(self.num_calibration)}\n"
+        record_header_output += f"  NUM_HISTORY = {odfutils.check_int(self.num_history)}\n"
+        record_header_output += f"  NUM_SWING = {odfutils.check_int(self.num_swing)}\n"
+        record_header_output += f"  NUM_PARAM = {odfutils.check_int(self.num_param)}\n"
+        record_header_output += f"  NUM_CYCLE = {odfutils.check_int(self.num_cycle)}\n"
         return record_header_output
 
     def main():
         record = RecordHeader()
+        record_fields = ["NUM_CALIBRATION = 1",
+                        "NUM_HISTORY = 3",
+                        "NUM_SWING = 0",
+                        "NUM_PARAM = 5",
+                        "NUM_CYCLE = 1000"]
+        record.populate_object(record_fields)
         print(record.print_object())
+        record.log_message('num_param', record.num_param, 17)
+        record.num_param = 17
+        print(record.print_object())
+
+        for log_entry in BaseHeader.shared_log_list:
+            print(log_entry)
 
 if __name__ == "__main__":
     RecordHeader.main()

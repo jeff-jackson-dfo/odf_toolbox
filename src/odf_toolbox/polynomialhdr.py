@@ -1,93 +1,82 @@
 from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
-class PolynomialCalHeader(BaseHeader):
+from typing import NoReturn
+from pydantic import BaseModel
+
+class PolynomialCalHeader(BaseModel, BaseHeader):
     
-    def __init__(self):
+    def __init__(self,
+                 parameter_code: str = '',
+                 calibration_date: str = '',
+                 application_date: str = '',
+                 number_coefficients: int = 0,
+                 coefficients: list = None
+                 ):
         super().__init__()
-        self._parameter_code = None
-        self._calibration_date = None
-        self._application_date = None
-        self._number_coefficients = 0
-        self._coefficients = []
+        self.parameter_code = parameter_code
+        self.calibration_date = calibration_date
+        self.application_date = application_date
+        self.number_coefficients = number_coefficients
+        self.coefficients = coefficients if coefficients is not None else []
 
-    def log_message(self, message):
-        super().log_message(f"In Polynomial Cal Header field {message}")
+    def log_poly_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
+        message = f"In Polynomial Cal Header field {field.upper()} was changed from '{old_value}' to '{new_value}'"
+        super().log_message(message)
 
-    def get_parameter_code(self) -> str:
+    @property
+    def parameter_code(self) -> str:
         return self._parameter_code
 
-    def set_parameter_code(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
+    @parameter_code.setter
+    def parameter_code(self, value: str) -> NoReturn:
         value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f"PARAMETER_CODE was changed from "
-                                 f"'{self._parameter_code}' to '{value}'")
-        self._parameter_code = f"{value}"
+        self._parameter_code = value
 
-    def get_calibration_date(self) -> str:
+    @property
+    def calibration_date(self) -> str:
         return self._calibration_date
 
-    def set_calibration_date(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
+    @calibration_date.setter
+    def calibration_date(self, value: str) -> NoReturn:
         value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f"CALIBRATION_DATE was changed from "
-                                 f"'{self._calibration_date}' to '{value}'")
-        self._calibration_date = f"{value}"
+        self._calibration_date = value
 
-    def get_application_date(self) -> str:
+    @property
+    def application_date(self) -> str:
         return self._application_date
 
-    def set_application_date(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
+    @application_date.setter
+    def application_date(self, value: str) -> NoReturn:
         value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f"APPLICATION_DATE was changed from "
-                                 f"{self._application_date} to '{value}'")
-        self._application_date = f"{value}"
+        self._application_date = value
 
-    def get_number_coefficients(self) -> int:
+    @property
+    def number_coefficients(self) -> int:
         return self._number_coefficients
 
-    def set_number_coefficients(self, value: int, read_operation: bool = False) -> None:
-        assert isinstance(value, int), \
-               f"Input value is not of type int: {value}"
-        if not read_operation:
-            self.log_message(f"NUMBER_COEFFICIENTS was changed from "
-                                 f"{self._number_coefficients} to {value}")
+    @number_coefficients.setter
+    def number_coefficients(self, value: int) -> NoReturn:
         self._number_coefficients = value
 
-    def get_coefficients(self) -> list:
+    @property
+    def coefficients(self) -> list:
         return self._coefficients
 
-    def set_coefficients(self, coefficient_list: list, coefficient_number: int = 0, read_operation: bool = False):
-        assert isinstance(coefficient_list, list), \
-               f"Input value is not of type list: {coefficient_list}"
-        assert isinstance(coefficient_number, int), \
-               f"Input value is not of type int: {coefficient_number}"
+    @coefficients.setter
+    def coefficients(self, coefficient_list: list):
+        self._coefficients = coefficient_list
+
+    def set_coefficient(self, coefficient_list: list, coefficient_number: int = 0):
         number_coefficients = self.get_number_coefficients()
         for idx, coefficient in enumerate(coefficient_list):
             new_coefficient = odfutils.check_string(coefficient)
             coefficient_list[idx] = odfutils.check_float(float(new_coefficient))
-            coefficient_list[idx]
         if coefficient_number == 0 and number_coefficients == 0:
-            if not read_operation:
-                self.log_message(f"The following set of COEFFICIENTS was added : {coefficient_list}")
             self._coefficients = coefficient_list
         elif coefficient_number == 0 and number_coefficients > 0:
-            if not read_operation:
-                self.log_message(f"The following set of COEFFICIENTS was added : {coefficient_list}")
             self._coefficients.extend(coefficient_list)
         elif coefficient_number <= number_coefficients and number_coefficients > 0:
             if len(coefficient_list) == 1:
-                if not read_operation:
-                    self.log_message(f"Coefficient {coefficient_list.pop()} in "
-                                         f"COEFFICIENTS was "
-                                         f"changed from {self._coefficients[coefficient_number - 1]} "
-                                         f"to {coefficient_list.pop()}")
                 self._coefficients[coefficient_number] = coefficient_list.pop()
         else:
             raise ValueError("The 'coefficient_number' does not match the number of COEFFICIENTS.")
@@ -103,53 +92,55 @@ class PolynomialCalHeader(BaseHeader):
                 value = value.strip()
                 match key:
                     case 'PARAMETER_NAME':
-                        self.set_parameter_code(value, read_operation=True)
+                        self._parameter_code = value
                     case 'PARAMETER_CODE':
-                        self.set_parameter_code(value, read_operation=True)
+                        self._parameter_code = value
                     case 'CALIBRATION_DATE':
-                        self.set_calibration_date(value, read_operation=True)
+                        self._calibration_date = value
                     case 'APPLICATION_DATE':
-                        self.set_application_date(value, read_operation=True)
+                        self._application_date = value
                     case 'NUMBER_OF_COEFFICIENTS':
                         value = int(value)
-                        self.set_number_coefficients(value, read_operation=True)
+                        self._number_coefficients = value
                     case 'COEFFICIENTS':
                         coefficient_list = value.split()
-                        self.set_coefficients(coefficient_list, read_operation=True)
+                        self._coefficients = coefficient_list
         return self
 
     def print_object(self) -> str:
         polynomial_header_output = "POLYNOMIAL_CAL_HEADER\n"
-        polynomial_header_output += f"  PARAMETER_CODE = '{odfutils.check_string(self.get_parameter_code())}'\n"
+        polynomial_header_output += f"  PARAMETER_CODE = '{odfutils.check_string(self.parameter_code)}'\n"
         polynomial_header_output += (f"  CALIBRATION_DATE = "
-                                     f"'{odfutils.check_datetime(self.get_calibration_date())}'\n")
+                                     f"'{odfutils.check_datetime(self.calibration_date)}'\n")
         polynomial_header_output += (f"  APPLICATION_DATE = "
-                                     f"'{odfutils.check_datetime(self.get_application_date())}'\n")
-        polynomial_header_output += (f"  NUMBER_COEFFICIENTS = "
-                                     f"{odfutils.check_int(self.get_number_coefficients())}\n")
-        coefficients_list = self.get_coefficients()
+                                     f"'{odfutils.check_datetime(self.application_date)}'\n")
+        polynomial_header_output += f"  NUMBER_COEFFICIENTS = {self.number_coefficients}\n"
+        coefficients_list = self.coefficients
         coefficients_print = ""
         for coefficient in coefficients_list:
+            coefficient = float(odfutils.check_string(coefficient))
             coefficients_print = coefficients_print + "{:.8e}".format(coefficient) + " "
         polynomial_header_output += f"  COEFFICIENTS = {coefficients_print}\n"
         return polynomial_header_output
 
-
+    @staticmethod
     def main():
+
         poly1 = PolynomialCalHeader()
-        poly1.set_parameter_code('PRES_01')
-        poly1.set_calibration_date('11-JUN-1995 05:35:46.82')
-        poly1.set_application_date('11-JUN-1995 05:35:46.82')
-        poly1.set_number_coefficients(2)
-        poly1.set_coefficients(['0.60000000D+01',  '0.15000001D+00'])
+        print(poly1.print_object())
+        poly1.parameter_code = 'PRES_01'
+        poly1.calibration_date = '11-JUN-1995 05:35:46.82'
+        poly1.application_date = '11-JUN-1995 05:35:46.82'
+        poly1.number_coefficients = 2
+        poly1.coefficients = ['0.60000000D+01',  '0.15000001D+00']
         print(poly1.print_object())
 
         poly2 = PolynomialCalHeader()
-        poly2.set_parameter_code('TEMP_01')
-        poly2.set_calibration_date('11-JUN-1995 05:35:46.83')
-        poly2.set_application_date('11-JUN-1995 05:35:46.83')
-        poly2.set_number_coefficients(2)
-        poly2.set_coefficients(['0.00000000D+01',  '0.25000001D-03'])
+        poly2.parameter_code = 'TEMP_01'
+        poly2.calibration_date = '11-JUN-1995 05:35:46.83'
+        poly2.application_date = '11-JUN-1995 05:35:46.83'
+        poly2.number_coefficients = 2
+        poly2.coefficients = ['0.00000000E+01',  '0.25000001E-03']
         print(poly2.print_object())
 
 if __name__ == "__main__":
