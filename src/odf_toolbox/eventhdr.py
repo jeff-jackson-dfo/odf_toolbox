@@ -49,9 +49,9 @@ class EventHeader(BaseModel, BaseHeader):
         self.depth_off_bottom = depth_off_bottom
         self.station_name = station_name
         self.set_number = set_number
-        self.event_comments = event_comments
+        self.event_comments = event_comments if event_comments is not None else []
         
-    def log_message(self, field: str, old_value: any, new_value: any) -> NoReturn:
+    def log_event_message(self, field: str, old_value: any, new_value: any) -> NoReturn:
         if field.upper() == 'EVENT_COMMENTS':
             print("Use method 'update_event_comments' to modify EVENT_COMMENTS.")
             return
@@ -65,8 +65,8 @@ class EventHeader(BaseModel, BaseHeader):
            field.upper() == 'END_DATE_TIME' or \
            field.upper() == 'STATION_NAME' or \
            field.upper() == 'SET_NUMBER':
-            old_value = "''"
-            message = f"In Event Header field {field.upper()} was changed from {old_value} to '{new_value}'"
+           old_value = "''"
+           message = f"In Event Header field {field.upper()} was changed from {old_value} to '{new_value}'"
         else:    
             message = f"In Event Header field {field.upper()} was changed from {old_value} to {new_value}"
         super().log_message(message)
@@ -276,29 +276,29 @@ class EventHeader(BaseModel, BaseHeader):
                     case 'END_DATE_TIME':
                         self.end_date_time = value
                     case 'INITIAL_LATITUDE':
-                        self.initial_latitude = value
+                        self.initial_latitude = float(value)
                     case 'INITIAL_LONGITUDE':
-                        self.initial_longitude = value
+                        self.initial_longitude = float(value)
                     case 'END_LATITUDE':
-                        self.end_latitude = value
+                        self.end_latitude = float(value)
                     case 'END_LONGITUDE':
-                        self.end_longitude = value
+                        self.end_longitude = float(value)
                     case 'MIN_DEPTH':
-                        self.min_depth = value
+                        self.min_depth = float(value)
                     case 'MAX_DEPTH':
-                        self.max_depth = value
+                        self.max_depth = float(value)
                     case 'SAMPLING_INTERVAL':
-                        self.sampling_interval = value
+                        self.sampling_interval = float(value)
                     case 'SOUNDING':
-                        self.sounding = value
+                        self.sounding = float(value)
                     case 'DEPTH_OFF_BOTTOM':
-                        self.depth_off_bottom = value
+                        self.depth_off_bottom = float(value)
                     case 'STATION_NAME':
                         self.station_name = value
                     case 'SET_NUMBER':
                         self.set_number = value
                     case 'EVENT_COMMENTS':
-                        self.event_comments = value
+                        self.set_event_comment(value)
         return self
 
     def print_object(self) -> str:
@@ -374,8 +374,8 @@ class EventHeader(BaseModel, BaseHeader):
         event.sampling_interval = 1.0
         event.sounding = 110.0
         event.depth_off_bottom = 10.0
-        event.log_message('station_name', event.station_name, 'STN_01')
-        event.station_name = 'STN_01' 
+        event.log_event_message('station_name', event.station_name, 'STN_01')
+        event.station_name = 'STN_01'
         event.set_number = '001'
         event.set_event_comment('Good cast!')
         print(event.print_object())

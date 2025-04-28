@@ -17,7 +17,7 @@ from odf_toolbox.qualityhdr import QualityHeader
 from odf_toolbox.recordhdr import RecordHeader
 from odf_toolbox.records import DataRecords
 from odf_toolbox import odfutils
-from typing import NoReturn
+from typing import NoReturn, Self
 from pydantic import BaseModel
 
 class OdfHeader(BaseModel, BaseHeader):
@@ -32,7 +32,7 @@ class OdfHeader(BaseModel, BaseHeader):
 
     def __init__(self,
                  file_specification: str = '',
-                 odf_specification_version: int = 2,
+                 odf_specification_version: float = 2.0,
                  cruise_header: CruiseHeader = None,
                  event_header: EventHeader = None,
                  meteo_header: MeteoHeader = None,
@@ -64,7 +64,7 @@ class OdfHeader(BaseModel, BaseHeader):
         self.record_header = record_header if record_header is not None else RecordHeader()
         self.data = data if data is not None else DataRecords()
 
-    def log_message(self, message: str, type: str = 'self'):
+    def log_odf_message(self, message: str, type: str = 'self'):
         if type == "self":
             super().log_message(f"In ODF Header field {message}")
         elif type == "base":
@@ -97,26 +97,10 @@ class OdfHeader(BaseModel, BaseHeader):
 
     @property
     def odf_specification_version(self) -> float:
-        """
-        Returns the file specification from the ODF_HEADER of an OdfHeader class object.
-
-        Returns
-        -------
-        odf_specification_version (float) :
-            The file name and possibly path of an OdfHeader object (default is an empty string).
-        """
         return self._odf_specification_version
 
     @odf_specification_version.setter
     def odf_specification_version(self, value: float) -> NoReturn:
-        """
-        Sets the file specification for the ODF_HEADER of an OdfHeader class object.
-
-        Parameters
-        ----------
-        value : float
-            The version of the ODF specification used to generate this file.
-        """
         self._odf_specification_version = value
 
     @property
@@ -246,9 +230,9 @@ class OdfHeader(BaseModel, BaseHeader):
 
         odf_output = ""
         if file_version == 2:
-            self.set_odf_specification_version(2.0)
+            self.odf_specification_version = 2.0
             odf_output = "ODF_HEADER,\n"
-            odf_output += f"  FILE_SPECIFICATION = '{odfutils.check_string(self.get_file_specification())}',\n"
+            odf_output += f"  FILE_SPECIFICATION = '{odfutils.check_string(self.file_specification)}',\n"
             odf_output += odfutils.add_commas(self.cruise_header.print_object())
             odf_output += odfutils.add_commas(self.event_header.print_object())
             if self.meteo_header is not None:
@@ -270,11 +254,10 @@ class OdfHeader(BaseModel, BaseHeader):
             odf_output += "-- DATA --\n"
             odf_output += self.data.print_object_old_style()
         elif file_version >= 3:
-            self.set_odf_specification_version(3.0)
+            self.odf_specification_version = 3.0
             odf_output = "ODF_HEADER\n"
-            odf_output += f"  FILE_SPECIFICATION = '{odfutils.check_string(self.get_file_specification())}'\n"
-            odf_output += (f"  ODF_SPECIFICATION_VERSION = "
-                           f"{odfutils.check_float(self.get_odf_specification_version())}\n")
+            odf_output += f"  FILE_SPECIFICATION = '{odfutils.check_string(self.file_specification)}'\n"
+            odf_output += (f"  ODF_SPECIFICATION_VERSION = {self.odf_specification_version}\n")
             odf_output += self.cruise_header.print_object()
             odf_output += self.event_header.print_object()
             if self.meteo_header is not None:
@@ -404,67 +387,62 @@ class OdfHeader(BaseModel, BaseHeader):
         parameter_list = list()
         parameter_formats = dict()
         for parameter in self.parameter_headers:
-            parameter_code = parameter.get_code().strip("'")
+            parameter_code = parameter.code.strip("'")
             parameter_list.append(parameter_code)
             if parameter_code[0:4] == 'SYTM':
-                parameter_formats[parameter_code] = f"{parameter.get_print_field_width()}"
+                parameter_formats[parameter_code] = f"{parameter.print_field_width}"
             else:
-                parameter_formats[parameter_code] = (f"{parameter.get_print_field_width()}."
-                                                     f"{parameter.get_print_decimal_places()}")
+                parameter_formats[parameter_code] = (f"{parameter.print_field_width}."
+                                                     f"{parameter.print_decimal_places}")
         self.data.populate_object(parameter_list, parameter_formats, data_lines)
         return self
 
     def update_odf(self) -> None:
-        if self.record_header.get_num_calibration() != len(self.polynomial_cal_headers):
-            self.record_header.set_num_calibration(len(self.polynomial_cal_headers))
-        if self.record_header.get_num_history() != len(self.history_headers):
-            self.record_header.set_num_history(len(self.history_headers))
-        if self.record_header.get_num_swing() != len(self.compass_cal_headers):
-            self.record_header.set_num_swing(len(self.compass_cal_headers))
-        if self.record_header.get_num_param() != len(self.parameter_headers):
-            self.record_header.set_num_param(len(self.parameter_headers))
-        if self.record_header.get_num_cycle() != len(self.data):
-            self.record_header.set_num_cycle(len(self.data))
-        self.set_file_specification(self.generate_file_spec())
+        if self.record_header.num_calibration != len(self.polynomial_cal_headers):
+            self.record_header.num_calibration = len(self.polynomial_cal_headers)
+        if self.record_header.num_history != len(self.history_headers):
+            self.record_header.num_history = len(self.history_headers)
+        if self.record_header.num_swing != len(self.compass_cal_headers):
+            self.record_header.num_swing = len(self.compass_cal_headers)
+        if self.record_header.num_param != len(self.parameter_headers):
+            self.record_header.num_param = len(self.parameter_headers)
+        if self.record_header.num_cycle != len(self.data):
+            self.record_header.num_cycle = len(self.data)
+        self.file_specification = self.generate_file_spec()
 
-    def write_odf(self, odf_file_path: str, version: float = 2) -> None:
+    def write_odf(self, odf_file_path: str, version: float = 2) -> NoReturn:
         """ Write the ODF file to disk. """
-        odf_file_text = self.print_object(file_version=version)
+        odf_file_text = self.print_object(file_version = version)
         file1 = open(odf_file_path, "w")
         file1.write(odf_file_text)
         file1.close()
         print(f"ODF file written to {odf_file_path}\n")
 
-    def add_history(self):
+    def add_history(self) -> NoReturn:
         nhh = HistoryHeader()
         dt = datetime.datetime.now().strftime("%d-%b-%Y %H:%M:%S.%f").upper()
-        nhh.set_creation_date(dt[:-4])
+        nhh.creation_date = dt[:-4]
         self.history_headers.append(nhh)
 
-    def add_to_history(self, history_comment):
+    def add_to_history(self, history_comment) -> NoReturn:
         if history_comment is not None:
             if len(self.history_headers) > 0:
                 self.history_headers[-1].add_process(history_comment)
             else:
                 self.history_headers.append(history_comment)
 
-    def add_log_to_history(self):
+    def add_log_to_history(self) -> NoReturn:
         # Access the log records stored in the custom handler
         for log_entry in self.shared_log_list:
             self.add_to_history(log_entry)
 
-    def add_to_log(self, message):
+    def add_to_log(self, message) -> NoReturn:
         # Access the log records stored in the custom handler
         self.shared_log_list.append(message)
 
-    def update_parameter(self, parameter_code: str, attribute: str, value):
-        assert isinstance(parameter_code, str), \
-               f"Input value is not of type str: {parameter_code}"
-        assert isinstance(attribute, str), \
-               f"Input value is not of type str: {attribute}"
+    def update_parameter(self, parameter_code: str, attribute: str, value) -> NoReturn:
         codes = self.data.get_parameter_list()
-        assert isinstance(codes, list), \
-               f"Input value is not of type list: {codes}"
+        assert isinstance(codes, list), f"Input value is not of type list: {codes}"
         if isinstance(value, str):
             eval(f"self.parameter_headers[codes.index(parameter_code)].set_{attribute}('{value}')")
         else:
@@ -473,38 +451,36 @@ class OdfHeader(BaseModel, BaseHeader):
     def get_parameter_codes(self) -> list:
         parameter_codes = list()
         for ph1 in self.parameter_headers:
-            parameter_codes.append(ph1.get_code())
+            parameter_codes.append(ph1.code)
         return parameter_codes
 
     def get_parameter_names(self) -> list:
         parameter_names = list()
         for ph2 in self.parameter_headers:
-            # ic(ph2.get_name())
-            parameter_names.append(ph2.get_name())
+            parameter_names.append(ph2.name)
         return parameter_names
 
-    def generate_file_spec(self):
-        dt = self.event_header.get_data_type().strip("'")
-        cn = self.cruise_header.get_cruise_number().strip("'")
-        en = self.event_header.get_event_number().strip("'")
-        eq1 = self.event_header.get_event_qualifier1().strip("'")
-        eq2 = self.event_header.get_event_qualifier2().strip("'")
+    def generate_file_spec(self) -> str:
+        dt = self.event_header.data_type.strip("'")
+        cn = self.cruise_header.cruise_number.strip("'")
+        en = self.event_header.event_number.strip("'")
+        eq1 = self.event_header.event_qualifier1.strip("'")
+        eq2 = self.event_header.event_qualifier2.strip("'")
         file_spec = f"{dt}_{cn}_{en}_{eq1}_{eq2}"
         file_spec = file_spec
         return file_spec
 
-    def fix_parameter_codes(self, new_codes: list = []):
+    def fix_parameter_codes(self, new_codes: list = None) -> Self:
 
         # Get the list of parameter names and the data frame in case names need to be fixed.
-        df = self.data.get_data_frame()
-        if new_codes == []:
+        df = self.data.data_frame
+        if not new_codes:
 
             # Check if the parameter codes are in the correct format. If they are not then fix them.
-            codes = self.data.get_parameter_list()
+            codes = self.data.parameter_list
 
             # Loop through the list of parameter codes and fix any that require it.
             for p, pcode in enumerate(codes):
-                ic(pcode)
                 expected_format = '[A-Z]{4}[_]{1}[0-9]{2}'
                 expected_match = re.compile(expected_format)
                 if expected_match.findall(pcode) == []:
@@ -518,17 +494,17 @@ class OdfHeader(BaseModel, BaseHeader):
                 self.fix_polynomial_codes(codes, new_codes)
 
             # Assign the revised data frame back to the odf object.
-            self.data.set_data_frame(df)
+            self.data.data_frame = df
         
         else:
 
             old_codes = df.columns.to_list()
             df.columns = new_codes
-            self.data.set_data_frame(df)
-            self.data.set_parameter_list(new_codes)
+            self.data.data_frame = df
+            self.data.parameter_list = new_codes
             nparams = len(self.get_parameter_codes())
             for j in range(nparams):
-                self.parameter_headers[j].set_code(new_codes[j])
+                self.parameter_headers[j].code = new_codes[j]
 
             # Fix the Polynomial_Cal_Headers if required.
             if self.polynomial_cal_headers:
@@ -536,18 +512,19 @@ class OdfHeader(BaseModel, BaseHeader):
         
         return self
     
-    def fix_polynomial_codes(self, old_codes: list, new_codes: list):
+    def fix_polynomial_codes(self, old_codes: list, new_codes: list) -> Self:
+
         for i, pch in enumerate(self.polynomial_cal_headers):
 
             # Find the Polynomial_Cal_Header Code in old_codes and replace it with the corresponding code from new_codes.
-            poly_code = pch.get_parameter_code()
+            poly_code = pch.parameter_code
             try:
                 # This poly_code may have actually been a parameter_name instead of a parameter_code.
                 # Check the parameter names and if there is a match then assign the parameter code as the polynomial code.
                 pnames = self.get_parameter_names()
                 pnames = [x.replace('"', '') for x in pnames]
                 if poly_code in pnames:
-                    self.polynomial_cal_headers[i].set_parameter_code(new_codes[i])
+                    self.polynomial_cal_headers[i].parameter_code = new_codes[i]
             except Exception as e:
                 print(f"Item {poly_code} not found in old_codes list.")
         return self
@@ -555,9 +532,6 @@ class OdfHeader(BaseModel, BaseHeader):
     def is_parameter_code(self, code: str) -> bool:
         """
         IS_PARAMETER_CODE: Check if a parameter code is in the ODF object.
-
-        Creation Date: 24-SEP-2014
-        Last Updated: 17-MAR-2025
         """
         codes = self.get_parameter_codes()
         return code in codes
@@ -567,7 +541,7 @@ class OdfHeader(BaseModel, BaseHeader):
         """
         null2empty: replaces numeric null values (-99) with None values in the input Pandas data frame.
         """
-        new_df = df.replace(-99, None, inplace=False)
+        new_df = df.replace(BaseHeader.null_value, None, inplace=False)
         return new_df
                 
 
@@ -581,24 +555,32 @@ def main():
     # my_file = 'CTD_SCD2022277_002_01_DN.ODF'
     # my_file = 'file_with_leading_spaces.ODF'
     # my_file = 'file_with_null_data_values.ODF'
-    odf.read_odf(my_path + my_file)
+    odf.read_odf(my_path + "ODF\\" + my_file)
 
     # Add a new History Header to record the modifications that are made.
     odf.add_history()
     user = 'Jeff Jackson'
-    odf.add_to_log(f'{user} made the following modifications to this file:')
+    odf.log_odf_message(f'{user} made the following modifications to this file:', 'base')
 
     # Modify some of the odf metadata
     # odf.cruise_header.set_organization('DFO BIO')
     # odf.cruise_header.set_chief_scientist('GLEN HARRISON')
-    odf.cruise_header.set_start_date('01-APR-2022 00:00:00')
-    odf.cruise_header.set_end_date('31-OCT-2022 00:00:00')
-    # odf.cruise_header.set_platform('HUDSON')
-    # odf.event_header.set_station_name('AR7W_15')
+    csdt = odf.cruise_header.start_date
+    odf.cruise_header.start_date = '01-APR-2022 00:00:00'
+    odf.cruise_header.log_cruise_message("START_DATE", csdt, '01-APR-2022 00:00:00')
+    cedt = odf.cruise_header.end_date
+    odf.cruise_header.end_date = '31-OCT-2022 00:00:00'
+    odf.cruise_header.log_cruise_message("END_DATE", cedt, '31-OCT-2022 00:00:00')
+    platform = odf.cruise_header.platform
+    odf.cruise_header.platform = "LATALANTE"
+    odf.cruise_header.log_cruise_message("PLATFORM", platform, "LATALANTE")
+    station_name = odf.event_header.station_name
+    odf.event_header.station_name = 'AR7W_15'
+    odf.event_header.log_event_message("STATION_NAME", station_name, "AR7W_15")
 
     # Prior to loading data into an Oracle database, the null values need to be replaced with None values.
-    new_df = odf.null2empty(odf.data.get_data_frame())
-    odf.data.set_data_frame(new_df)
+    new_df = odf.null2empty(odf.data.data_frame)
+    odf.data.data_frame = new_df
 
     # Remove the CRAT_01 parameter.
     # from odf_toolbox.remove_parameter import remove_parameter
@@ -608,7 +590,7 @@ def main():
     #     ic(meteo_comment)
 
     # Retrieve the data from the input ODF structure.
-    data = odf.data.get_data_frame()
+    data = odf.data.data_frame
 
     # Get the number of data rows and columns.
     nrows, ncols = data.shape
@@ -623,8 +605,13 @@ def main():
 
     for j, parameter_header in enumerate(parameter_headers):
 
-        parameter_code = parameter_header.get_code()
-        parameter_code_short, sensor_number = parameter_code.split("_")
+        parameter_code = parameter_header.code
+        try:
+            parameter_code_short, sensor_number = parameter_code.split("_")
+        except ValueError:
+            parameter_code_short = parameter_code
+            sensor_number = 1
+            continue
         sensor_number = float(sensor_number)          
 
         if data.loc[:, parameter_code].isnull().all():
@@ -667,12 +654,11 @@ def main():
     odf.update_odf()
 
     # Write the ODF file to disk.
-    odf_file_text = odf.print_object(file_version=3)
+    # odf_file_text = odf.print_object(file_version=3.0)
     spec = odf.generate_file_spec()
     out_file = f"{spec}.ODF"
-    odf.write_odf(my_path + out_file, version=3)
+    odf.write_odf(my_path + out_file, version = 2.0)
 
 
 if __name__ == '__main__':    
-    
-    main()
+    main()  

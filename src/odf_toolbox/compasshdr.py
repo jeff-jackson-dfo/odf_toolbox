@@ -18,7 +18,7 @@ class CompassCalHeader(BaseModel, BaseHeader):
         self.directions = directions
         self.corrections = corrections
 
-    def log_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
+    def log_compass_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
         message = f"In Compass Cal Header field {field.upper()} was changed from '{old_value}' to '{new_value}'"
         super().log_message(message)
 
@@ -141,5 +141,4 @@ def main():
     print(compass_cal_header.print_object())
 
 if __name__ == "__main__":
-
     main()

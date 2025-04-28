@@ -25,7 +25,7 @@ class GeneralCalHeader(BaseModel, BaseHeader):
         self.calibration_equation = calibration_equation
         self.calibration_comments = calibration_comments
 
-    def log_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
+    def log_general_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
         message = f"In General Cal Header field {field.upper()} was changed from '{old_value}' to '{new_value}'"
         super().log_message(message)
 
@@ -165,23 +165,22 @@ class GeneralCalHeader(BaseModel, BaseHeader):
             general_header_output += f"  CALIBRATION_COMMENTS = '{general_comment}'\n"
         return general_header_output
 
-    def main():
-        general = GeneralCalHeader()
-        print(general.print_object())
-        general.parameter_code = 'PAR'
-        general.calibration_type = 'Linear'
-        general.calibration_date = '2024-10-28'
-        general.application_date = '2025-03-14'
-        general.number_coefficients = 2
-        general.coefficients = [0.75, 1.05834]
-        general.calibration_equation = 'y = mx + b'
-        general.set_calibration_comment('This is a comment')
-        general.log_message('calibration_equation', general.calibration_equation, 'Y = X^2 + MX + B')
-        print(general.print_object())
 
-        for log_entry in BaseHeader.shared_log_list:
-            print(log_entry)
+def main():
+    general = GeneralCalHeader()
+    print(general.print_object())
+    general.parameter_code = 'PAR'
+    general.calibration_type = 'Linear'
+    general.calibration_date = '2024-10-28'
+    general.application_date = '2025-03-14'
+    general.number_coefficients = 2
+    general.coefficients = [0.75, 1.05834]
+    general.calibration_equation = 'y = mx + b'
+    general.set_calibration_comment('This is a comment')
+    general.log_general_message('calibration_equation', general.calibration_equation, 'Y = X^2 + MX + B')
+    print(general.print_object())
+    for log_entry in BaseHeader.shared_log_list:
+        print(log_entry)
 
 if __name__ == "__main__":
-
-    GeneralCalHeader.main()
+    main()

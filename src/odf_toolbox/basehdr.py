@@ -30,8 +30,7 @@ class BaseHeader:
     shared_log_list: ClassVar[list] = []
 
     # Various null values
-    old_null_value: ClassVar[float] = -999.0
-    null_value: ClassVar[float] = -9.99e-29
+    null_value: ClassVar[float] = -999.0
     sytm_null_value: ClassVar[str] = '17-NOV-1858 00:00:00.00'
 
     def __init__(self, config: LoggerConfig):

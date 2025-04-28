@@ -31,12 +31,11 @@ class CruiseHeader(BaseModel, BaseHeader):
         self.cruise_name = cruise_name
         self.cruise_description = cruise_description
 
-    def log_message(self, field: str, old_value: any, new_value: any) -> NoReturn:
+    def log_cruise_message(self, field: str, old_value: any, new_value: any) -> NoReturn:
         if field.upper() == 'COUNTRY_INSTITUTE_CODE':
             message = f"In Cruise Header field {field.upper()} was changed from {old_value} to {new_value}"
-        else:    
-            old_value = "''"
-            message = f"In Cruise Header field {field.upper()} was changed from {old_value} to '{new_value}'"
+        else:
+            message = f'In Cruise Header field {field.upper()} was changed from "{old_value}" to "{new_value}"'
         super().log_message(message)
 
     @property
@@ -137,63 +136,56 @@ class CruiseHeader(BaseModel, BaseHeader):
                 value = value.strip()
                 match key:
                     case 'COUNTRY_INSTITUTE_CODE':
-                        self.log_message(key, self._country_institute_code, value)
-                        self._country_institute_code = value
+                        self.country_institute_code = value
                     case 'CRUISE_NUMBER':
-                        self.log_message(key, self._cruise_number, value)
-                        self._cruise_number = value
+                        self.cruise_number = value
                     case 'ORGANIZATION':
-                        self.log_message(key, self._organization, value)
-                        self._organization = value
+                        self.organization = value
                     case 'CHIEF_SCIENTIST':
-                        self.log_message(key, self._chief_scientist, value)
-                        self._chief_scientist = value
+                        self.chief_scientist = value
                     case 'START_DATE':
-                        self.log_message(key, self._start_date, value)
-                        self._start_date = value
+                        self.start_date = value
                     case 'END_DATE':
-                        self.log_message(key, self._end_date, value)
-                        self._end_date = value
+                        self.end_date = value
                     case 'PLATFORM':
-                        self.log_message(key, self._platform, value)
-                        self._platform = value
+                        self.platform = value
                     case 'AREA_OF_OPERATION':
-                        self.log_message(key, self._area_of_operation, value)
-                        self._area_of_operation = value
+                        self.area_of_operation = value
                     case 'CRUISE_NAME':
-                        self.log_message(key, self._cruise_name, value)
-                        self._cruise_name = value
+                        self.cruise_name = value
                     case 'CRUISE_DESCRIPTION':
-                        self.log_message(key, self._cruise_description, value)
-                        self._cruise_description = value
+                        self.cruise_description = value
         return self
 
-    def print_object(self, file_version: int = 2) -> str:
+    def print_object(self, file_version: float = 2.0) -> str:
         cruise_header_output = "CRUISE_HEADER\n"
         cruise_header_output += (f"  COUNTRY_INSTITUTE_CODE = "
-                                 f"{odfutils.check_int(self.country_institute_code)}\n")
+                                 f"{self.country_institute_code}\n")
         cruise_header_output += f"  CRUISE_NUMBER = '{self.cruise_number}'\n"
         cruise_header_output += f"  ORGANIZATION = '{self.organization}'\n"
         cruise_header_output += f"  CHIEF_SCIENTIST = '{self.chief_scientist}'\n"
         cruise_header_output += f"  START_DATE = '{odfutils.check_datetime(self.start_date)}'\n"
         cruise_header_output += f"  END_DATE = '{odfutils.check_datetime(self.end_date)}'\n"
         cruise_header_output += f"  PLATFORM = '{self.platform}'\n"
-        if file_version == 3:
+        if file_version == 3.0:
             cruise_header_output += f"  AREA_OF_OPERATION = '{self.area_of_operation}'\n"
         cruise_header_output += f"  CRUISE_NAME = '{self.cruise_name}'\n"
         cruise_header_output += f"  CRUISE_DESCRIPTION = '{self.cruise_description}'\n"
         return cruise_header_output
 
 
-if __name__ == "__main__":
-
+def main():
     cruise = CruiseHeader()
-    cruise.log_message('COUNTRY_INSTITUTE_CODE', cruise.country_institute_code, 1805)
+    cruise.log_cruise_message('COUNTRY_INSTITUTE_CODE', cruise.country_institute_code, 1805)
     cruise.country_institute_code = 1805
-    cruise.log_message('CHIEF_SCIENTIST', cruise.chief_scientist, 'Jeff Jackson')
+    cruise.log_cruise_message('CHIEF_SCIENTIST', cruise.chief_scientist, 'Jeff Jackson')
     cruise.chief_scientist = 'Jeff Jackson'
-    cruise.log_message('organization', cruise.organization, "DFO BIO")
+    cruise.log_cruise_message('organization', cruise.organization, "DFO BIO")
     cruise.organization = "DFO BIO"
     print(cruise.print_object())
     for log_entry in BaseHeader.shared_log_list:
         print(log_entry)
+
+
+if __name__ == "__main__":
+    main()

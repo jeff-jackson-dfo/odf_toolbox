@@ -22,9 +22,9 @@ class MeteoHeader(BaseModel, BaseHeader):
         self.sea_state = sea_state
         self.cloud_cover = cloud_cover
         self.ice_thickness = ice_thickness
-        self.meteo_comments = meteo_comments
+        self.meteo_comments = meteo_comments if meteo_comments is not None else []
 
-    def meteo_log_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
+    def log_meteo_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
         message = f"In Meteo Header field {field.upper()} was changed from '{old_value}' to '{new_value}'"
         super().log_message(message)
 
@@ -61,19 +61,19 @@ class MeteoHeader(BaseModel, BaseHeader):
         self._wind_direction = value
 
     @property
-    def sea_state(self) -> float:
+    def sea_state(self) -> int:
         return self._sea_state
 
     @sea_state.setter
-    def sea_state(self, value: float) -> NoReturn:
+    def sea_state(self, value: int) -> NoReturn:
         self._sea_state = value
 
     @property
-    def cloud_cover(self) -> float:
+    def cloud_cover(self) -> int:
         return self._cloud_cover
 
     @cloud_cover.setter
-    def cloud_cover(self, value: float) -> NoReturn:
+    def cloud_cover(self, value: int) -> NoReturn:
         self._cloud_cover = value
 
     @property
@@ -109,21 +109,23 @@ class MeteoHeader(BaseModel, BaseHeader):
             for key, value in meteo_dict.items():
                 key = key.strip()
                 value = value.strip()
+                if value == -99.0:
+                    value = BaseHeader.null_value
                 match key:
                     case 'AIR_TEMPERATURE':
-                        self.air_temperature = value
+                        self.air_temperature = float(value)
                     case 'ATMOSPHERIC_PRESSURE':
-                        self.atmospheric_pressure = value
+                        self.atmospheric_pressure = float(value)
                     case 'WIND_SPEED':
-                        self.wind_speed = value
+                        self.wind_speed = float(value)
                     case 'WIND_DIRECTION':
-                        self.wind_direction = value
+                        self.wind_direction = float(value)
                     case 'SEA_STATE':
-                        self.sea_state = value
+                        self.sea_state = int(float(value))
                     case 'CLOUD_COVER':
-                        self.cloud_cover = value
+                        self.cloud_cover = int(float(value))
                     case 'ICE_THICKNESS':
-                        self.ice_thickness = value
+                        self.ice_thickness = float(value)
                     case 'METEO_COMMENTS':
                         self.meteo_comments = value
 

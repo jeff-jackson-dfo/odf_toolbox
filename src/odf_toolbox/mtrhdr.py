@@ -1,9 +1,11 @@
 from datetime import datetime
 import pandas as pd
 import os
-from icecream import ic
+from typing import NoReturn, ClassVar
+from pydantic import BaseModel
 
 from odf_toolbox.lookup_parameter import lookup_parameter
+from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox.odfhdr import OdfHeader
 from odf_toolbox.parameterhdr import ParameterHeader
 from odf_toolbox.historyhdr import HistoryHeader
@@ -15,51 +17,51 @@ class MtrHeader(OdfHeader):
     This class is responsible for storing the metadata and data associated 
     with a moored thermograph (MTR).
     """
+    date_format: ClassVar[str] = r'%Y-%m-%d'
+    time_format: ClassVar[str] = r'%H:%M:%S'
+    sytm_format: ClassVar[str] = r'%d-%b-%Y %H:%M:%S.%f'
 
-    def __init__(self):
+    def __init__(self) -> NoReturn:
         """
         Method that initializes an Mtr class object.
         """
         super().__init__()
-        self._date_format = r'%Y-%m-%d'
-        self._time_format = r'%H:%M:%S'
-        self._sytm_format = r'%d-%b-%Y %H:%M:%S.%f'
 
-    def get_sytm_format(self) -> str:
-        return self._sytm_format
-    
     def get_date_format(self) -> str:
-        return self._date_format
+        return MtrHeader.date_format
     
     def get_time_format(self) -> str:
-        return self._time_format
+        return MtrHeader.time_format
+
+    def get_sytm_format(self) -> str:
+        return MtrHeader.sytm_format
 
     def generate_creation_date(self) -> str:
         """ Generate a creation date in SYTM format. """
-        creation_date = datetime.now().strftime(self._sytm_format)[:-4].upper()
+        creation_date = datetime.now().strftime(MtrHeader.sytm_format)[:-4].upper()
         return creation_date
 
     def start_date_time(self, df: pd.Series) -> datetime:
         """ Retrieve the first date-time value from the data frame. """
-        start_date = datetime.strptime(df['date'].iloc[0], self._date_format)
-        start_time = datetime.strptime(df['time'].iloc[0], self._time_format).time()
+        start_date = datetime.strptime(df['date'].iloc[0], MtrHeader.date_format)
+        start_time = datetime.strptime(df['time'].iloc[0], MtrHeader.time_format).time()
         start_date_time = datetime.combine(start_date, start_time)
         return start_date_time
 
     def end_date_time(self, df: pd.Series) -> datetime:
         """ Retrieve the last date-time value from the data frame. """
-        end_date = datetime.strptime(df['date'].iloc[-1], self._date_format)
-        end_time = datetime.strptime(df['time'].iloc[-1], self._time_format).time()
+        end_date = datetime.strptime(df['date'].iloc[-1], MtrHeader.date_format)
+        end_time = datetime.strptime(df['time'].iloc[-1], MtrHeader.time_format).time()
         end_date_time = datetime.combine(end_date, end_time)
         return end_date_time
 
     def sampling_interval(self, df: pd.Series) -> int:
         """ Compute the time interval between the first two date-time values. """
-        date1 = datetime.strptime(df['date'].iloc[0], self._date_format)
-        time1 = datetime.strptime(df['time'].iloc[0], self._time_format).time()
+        date1 = datetime.strptime(df['date'].iloc[0], MtrHeader.date_format)
+        time1 = datetime.strptime(df['time'].iloc[0], MtrHeader.time_format).time()
         datetime1 = datetime.combine(date1, time1)
-        date2 = datetime.strptime(df['date'].iloc[1], self._date_format)
-        time2 = datetime.strptime(df['time'].iloc[1], self._time_format).time()
+        date2 = datetime.strptime(df['date'].iloc[1], MtrHeader.date_format)
+        time2 = datetime.strptime(df['time'].iloc[1], MtrHeader.time_format).time()
         datetime2 = datetime.combine(date2, time2)
         time_interval = datetime2 - datetime1
         time_interval = time_interval.seconds
@@ -67,14 +69,14 @@ class MtrHeader(OdfHeader):
 
     def create_sytm(self, df: pd.DataFrame) -> pd.DataFrame:
         """ Updated the data frame with the proper SYTM column. """
-        df['dates'] = df['date'].apply(lambda x: datetime.strptime(x, self._date_format).date())
+        df['dates'] = df['date'].apply(lambda x: datetime.strptime(x, MtrHeader.date_format).date())
         df['dates'] = df['dates'].astype("string")
-        df['times'] = df['time'].apply(lambda x: datetime.strptime(x, self._time_format).time())
+        df['times'] = df['time'].apply(lambda x: datetime.strptime(x, MtrHeader.time_format).time())
         df['times'] = df['times'].astype("string")
         df['datetimes'] = df['dates'] + ' ' + df['times']
         df = df.drop(columns=['date', 'time', 'dates', 'times'], axis=1)
         df['datetimes'] = pd.to_datetime(df['datetimes'])
-        df['sytm'] = df['datetimes'].apply(lambda x: datetime.strftime(x, self._sytm_format)).str.upper()
+        df['sytm'] = df['datetimes'].apply(lambda x: datetime.strftime(x, MtrHeader.sytm_format)).str.upper()
         df = df.drop('datetimes', axis=1)
         df['sytm'] = df['sytm'].str[:-4]
         df['sytm'] = df['sytm'].apply(lambda x: "'" + str(x) + "'")
@@ -91,53 +93,53 @@ class MtrHeader(OdfHeader):
             number_valid = int(number_of_rows - number_null)
             if column == 'sytm':
                 parameter_info = lookup_parameter('SYTM')
-                parameter_header.set_type('SYTM', read_operation=True)
-                parameter_header.set_name(parameter_info.get('description'), read_operation=True)
-                parameter_header.set_units(parameter_info.get('units'), read_operation=True)
-                parameter_header.set_code('SYTM_01', read_operation=True)
-                parameter_header.set_null_value('17-NOV-1858 00:00:00.00', read_operation=True)
-                parameter_header.set_print_field_width(parameter_info.get('print_field_width'), read_operation=True)
-                parameter_header.set_print_decimal_places(parameter_info.get('print_decimal_places'), read_operation=True)
-                parameter_header.set_angle_of_section('-99.0', read_operation=True)
-                parameter_header.set_magnetic_variation('-99.0', read_operation=True)
-                parameter_header.set_depth('-99.0', read_operation=True)
+                parameter_header.type = 'SYTM'
+                parameter_header.name = parameter_info.get('description')
+                parameter_header.units = parameter_info.get('units')
+                parameter_header.code = 'SYTM_01'
+                parameter_header.null_string = '17-NOV-1858 00:00:00.00'
+                parameter_header.print_field_width = parameter_info.get('print_field_width')
+                parameter_header.print_decimal_places = parameter_info.get('print_decimal_places')
+                parameter_header.angle_of_section = BaseHeader.null_value
+                parameter_header.magnetic_variation = BaseHeader.null_value
+                parameter_header.depth = BaseHeader.null_value
                 min_date = df[column].iloc[0].strip("\'")
                 max_date = df[column].iloc[-1].strip("\'")
-                parameter_header.set_minimum_value(min_date, read_operation=True)
-                parameter_header.set_maximum_value(max_date, read_operation=True)
-                parameter_header.set_number_valid(number_valid, read_operation=True)
-                parameter_header.set_number_null(number_null, read_operation=True)
+                parameter_header.minimum_value = min_date
+                parameter_header.maximum_value = max_date
+                parameter_header.number_valid = number_valid
+                parameter_header.number_null = number_null
                 parameter_list.append('SYTM_01')
-                print_formats['SYTM_01'] = (parameter_header.get_print_field_width())
+                print_formats['SYTM_01'] = (parameter_header.print_field_width)
             elif column == 'temperature':
                 parameter_info = lookup_parameter('TE90')
-                parameter_header.set_type('DOUB', read_operation=True)        
-                parameter_header.set_name(parameter_info.get('description'), read_operation=True)
-                parameter_header.set_units(parameter_info.get('units'), read_operation=True)
-                parameter_header.set_code('TE90_01', read_operation=True)
-                parameter_header.set_null_value('-99.0', read_operation=True)
-                parameter_header.set_print_field_width(parameter_info.get('print_field_width'), read_operation=True)
-                parameter_header.set_print_decimal_places(parameter_info.get('print_decimal_places'), read_operation=True)
-                parameter_header.set_angle_of_section('-99.0', read_operation=True)
-                parameter_header.set_magnetic_variation('-99.0', read_operation=True)
-                parameter_header.set_depth('-99.0', read_operation=True)
+                parameter_header.type = 'DOUB'        
+                parameter_header.name = parameter_info.get('description')
+                parameter_header.units = parameter_info.get('units')
+                parameter_header.code = 'TE90_01'
+                parameter_header.null_string = BaseHeader.null_value
+                parameter_header.print_field_width = parameter_info.get('print_field_width')
+                parameter_header.print_decimal_places = parameter_info.get('print_decimal_places')
+                parameter_header.angle_of_section = BaseHeader.null_value
+                parameter_header.magnetic_variation = BaseHeader.null_value
+                parameter_header.depth = BaseHeader.null_value
                 min_temp = df[column].min()
                 max_temp = df[column].max()
-                parameter_header.set_minimum_value(min_temp, read_operation=True)
-                parameter_header.set_maximum_value(max_temp, read_operation=True)
-                parameter_header.set_number_valid(number_valid, read_operation=True)
-                parameter_header.set_number_null(number_null, read_operation=True)
+                parameter_header.minimum_value = min_temp
+                parameter_header.maximum_value = max_temp
+                parameter_header.number_valid = number_valid
+                parameter_header.number_null = number_null
                 parameter_list.append('TE90_01')
-                print_formats['TE90_01'] = (f"{parameter_header.get_print_field_width()}."
-                                            f"{parameter_header.get_print_decimal_places()}")
+                print_formats['TE90_01'] = (f"{parameter_header.print_field_width}."
+                                            f"{parameter_header.print_decimal_places}")
             
             # Add the new parameter header to the list.
             self.parameter_headers.append(parameter_header)
 
         # Update the data object.
-        self.data.set_parameter_list(parameter_list)
-        self.data.set_print_formats(print_formats)
-        self.data.set_data_frame(df)
+        self.data.parameter_list = parameter_list
+        self.data.print_formats = print_formats
+        self.data.data_frame = df
         return self
     
     @staticmethod
@@ -214,94 +216,94 @@ class MtrHeader(OdfHeader):
         dfmeta['datetime'] = datetimes
         return dfmeta
 
-    def main():
+def main():
 
-        # Generate an empty MTR object.
-        mtr = MtrHeader()
+    # Generate an empty MTR object.
+    mtr = MtrHeader()
 
-        # operator = input('Enter the name of the operator: ')
-        operator = 'Jeff Jackson'
+    # operator = input('Enter the name of the operator: ')
+    operator = 'Jeff Jackson'
 
-        # Change to the drive's root folder
-        os.chdir('\\')
-        drive = os.getcwd()
-        pathlist = ['DEV', 'MTR', 'FSRS_data_2013_2014', 'LFA_27_14']
-        top_folder = os.path.join(drive, *pathlist)
-        os.chdir(top_folder)
+    # Change to the drive's root folder
+    os.chdir('\\')
+    drive = os.getcwd()
+    pathlist = ['DEV', 'MTR', 'FSRS_data_2013_2014', 'LFA_27_14']
+    top_folder = os.path.join(drive, *pathlist)
+    os.chdir(top_folder)
 
-        mtr_file = 'Bin4255RonFraser14.csv'
-        # mtr_file = 'Minilog-T_4239_2014JayMacDonald_1.csv'
-        mtr_path = os.path.join(top_folder, mtr_file)
-        print(f'\nProcessing MTR file: {mtr_path}\n')
+    mtr_file = 'Bin4255RonFraser14.csv'
+    # mtr_file = 'Minilog-T_4239_2014JayMacDonald_1.csv'
+    mtr_path = os.path.join(top_folder, mtr_file)
+    print(f'\nProcessing MTR file: {mtr_path}\n')
 
-        mydict = mtr.read_mtr(mtr_path)
-        df = mydict['df']
-        inst_model = mydict['inst_model']
-        gauge = mydict['gauge']
-        print(df.head())
+    mydict = mtr.read_mtr(mtr_path)
+    df = mydict['df']
+    inst_model = mydict['inst_model']
+    gauge = mydict['gauge']
+    print(df.head())
 
-        metadata_file = 'LatLong LFA 27_14.txt'
-        metadata_path = os.path.join(top_folder, metadata_file)
-        print(f'\nProcessing metadata file: {metadata_path}\n')
-        
-        meta = mtr.read_metadata(metadata_path)
+    metadata_file = 'LatLong LFA 27_14.txt'
+    metadata_path = os.path.join(top_folder, metadata_file)
+    print(f'\nProcessing metadata file: {metadata_path}\n')
+    
+    meta = mtr.read_metadata(metadata_path)
 
-        print(meta.head())
-        print('\n')
+    print(meta.head())
+    print('\n')
 
-        mtr.cruise_header.set_country_institute_code(1899, read_operation=True)
-        cruise_year = df['date'].to_string(index=False).split('-')[0]
-        cruise_number = f'BCD{cruise_year}603'
-        mtr.cruise_header.set_cruise_number(cruise_number, read_operation=True)
-        start_date = mtr.start_date_time(df).strftime(r'%d-%b-%Y') + ' 00:00:00'
-        mtr.cruise_header.set_start_date(start_date, read_operation=True)
-        end_date = mtr.end_date_time(df).strftime(r'%d-%b-%Y') + ' 00:00:00'
-        mtr.cruise_header.set_end_date(end_date, read_operation=True)
-        mtr.cruise_header.set_organization('FSRS', read_operation=True)
-        mtr.cruise_header.set_chief_scientist('Shannon Scott-Tibbetts', read_operation=True)
-        mtr.cruise_header.set_cruise_description('Fishermen and Scientists Research Society', read_operation=True)
-        
-        mtr.event_header.set_data_type('MTR', read_operation=True)
-        mtr.event_header.set_event_qualifier1(gauge, read_operation=True)
-        mtr.event_header.set_event_qualifier2(str(mtr.sampling_interval(df)), read_operation=True)
-        mtr.event_header.set_creation_date(mtr.generate_creation_date(), read_operation=True)
-        mtr.event_header.set_orig_creation_date(mtr.generate_creation_date(), read_operation=True)
-        mtr.event_header.set_start_date_time(mtr.start_date_time(df).strftime(mtr.get_sytm_format())[:-4].upper(), read_operation=True)
-        mtr.event_header.set_end_date_time(mtr.end_date_time(df).strftime(mtr.get_sytm_format())[:-4].upper(), read_operation=True)
-        mtr.event_header.set_initial_latitude(meta['latitude'].iloc[0], read_operation=True)
-        mtr.event_header.set_initial_longitude(meta['longitude'].iloc[0], read_operation=True)
-        mtr.event_header.set_end_latitude(meta['latitude'].iloc[0], read_operation=True)
-        mtr.event_header.set_end_longitude(meta['longitude'].iloc[0], read_operation=True)
-        mtr.event_header.set_min_depth(meta['depth'].iloc[0], read_operation=True)
-        mtr.event_header.set_max_depth(meta['depth'].iloc[0], read_operation=True)
-        mtr.event_header.set_event_number(str(meta['vessel_code'].iloc[0]), read_operation=True)
-        mtr.event_header.set_sampling_interval(float(mtr.sampling_interval(df)), read_operation=True)
-        
-        if 'minilog' in inst_model.lower():
-            mtr.instrument_header.set_instrument_type('MINILOG', read_operation=True)
-        mtr.instrument_header.set_model(inst_model, read_operation=True)
-        mtr.instrument_header.set_serial_number(gauge, read_operation=True)
-        mtr.instrument_header.set_description('Temperature data logger', read_operation=True)
+    mtr.cruise_header.country_institute_code = 1899
+    cruise_year = df['date'].to_string(index=False).split('-')[0]
+    cruise_number = f'BCD{cruise_year}603'
+    mtr.cruise_header.cruise_number = cruise_number
+    start_date = mtr.start_date_time(df).strftime(r'%d-%b-%Y') + ' 00:00:00'
+    mtr.cruise_header.start_date = start_date
+    end_date = mtr.end_date_time(df).strftime(r'%d-%b-%Y') + ' 00:00:00'
+    mtr.cruise_header.end_date = end_date
+    mtr.cruise_header.organization = 'FSRS'
+    mtr.cruise_header.chief_scientist = 'Shannon Scott-Tibbetts'
+    mtr.cruise_header.cruise_description = 'Fishermen and Scientists Research Society'
+    
+    mtr.event_header.data_type = 'MTR'
+    mtr.event_header.event_qualifier1 = gauge
+    mtr.event_header.event_qualifier2 = str(mtr.sampling_interval(df))
+    mtr.event_header.creation_date = mtr.generate_creation_date()
+    mtr.event_header.orig_creation_date = mtr.generate_creation_date()
+    mtr.event_header.start_date_time = mtr.start_date_time(df).strftime(mtr.get_sytm_format())[:-4].upper()
+    mtr.event_header.end_date_time = mtr.end_date_time(df).strftime(mtr.get_sytm_format())[:-4].upper()
+    mtr.event_header.initial_latitude = meta['latitude'].iloc[0]
+    mtr.event_header.initial_longitude = meta['longitude'].iloc[0]
+    mtr.event_header.end_latitude = meta['latitude'].iloc[0]
+    mtr.event_header.end_longitude = meta['longitude'].iloc[0]
+    mtr.event_header.min_depth = meta['depth'].iloc[0]
+    mtr.event_header.max_depth = meta['depth'].iloc[0]
+    mtr.event_header.event_number = str(meta['vessel_code'].iloc[0])
+    mtr.event_header.sampling_interval = float(mtr.sampling_interval(df))
+    
+    if 'minilog' in inst_model.lower():
+        mtr.instrument_header.instrument_type = 'MINILOG'
+    mtr.instrument_header.model = inst_model
+    mtr.instrument_header.serial_number = gauge
+    mtr.instrument_header.description = 'Temperature data logger'
 
-        history_header = HistoryHeader()
-        history_header.set_creation_date(mtr.generate_creation_date(), read_operation=True)
-        history_header.set_process(f'Initial file creation by {operator}', read_operation=True)
-        mtr.history_headers.append(history_header)
+    history_header = HistoryHeader()
+    history_header.creation_date = mtr.generate_creation_date()
+    history_header.set_process(f'Initial file creation by {operator}')
+    mtr.history_headers.append(history_header)
 
-        new_df = mtr.create_sytm(df)
+    new_df = mtr.create_sytm(df)
 
-        mtr = mtr.populate_parameter_headers(new_df)
+    mtr = mtr.populate_parameter_headers(new_df)
 
-        for x, column in enumerate(new_df.columns):
-            code = mtr.parameter_headers[x].get_code()
-            new_df.rename(columns={column: code}, inplace=True)
+    for x, column in enumerate(new_df.columns):
+        code = mtr.parameter_headers[x].get_code()
+        new_df.rename(columns={column: code}, inplace=True)
 
-        mtr.update_odf()
+    mtr.update_odf()
 
-        file_spec = mtr.generate_file_spec()
-        odf_file_path = os.path.join(top_folder, file_spec + '.ODF')
-        mtr.write_odf(odf_file_path, version=2)
+    file_spec = mtr.generate_file_spec()
+    odf_file_path = os.path.join(top_folder, file_spec + '.ODF')
+    mtr.write_odf(odf_file_path, version=2)
         
 
 if __name__ == "__main__":
-    MtrHeader.main()
+    main()

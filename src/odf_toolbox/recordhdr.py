@@ -21,7 +21,7 @@ class RecordHeader(BaseModel, BaseHeader):
         self.num_cycle = num_cycle
         self.num_param = num_param
 
-    def log_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
+    def log_record_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
         message = f"In Record Header field {field.upper()} was changed from {old_value} to {new_value}"
         super().log_message(message)
 
@@ -86,28 +86,27 @@ class RecordHeader(BaseModel, BaseHeader):
 
     def print_object(self) -> str:
         record_header_output = "RECORD_HEADER\n"
-        record_header_output += f"  NUM_CALIBRATION = {odfutils.check_int(self.num_calibration)}\n"
-        record_header_output += f"  NUM_HISTORY = {odfutils.check_int(self.num_history)}\n"
-        record_header_output += f"  NUM_SWING = {odfutils.check_int(self.num_swing)}\n"
-        record_header_output += f"  NUM_PARAM = {odfutils.check_int(self.num_param)}\n"
-        record_header_output += f"  NUM_CYCLE = {odfutils.check_int(self.num_cycle)}\n"
+        record_header_output += f"  NUM_CALIBRATION = {self.num_calibration}\n"
+        record_header_output += f"  NUM_HISTORY = {self.num_history}\n"
+        record_header_output += f"  NUM_SWING = {self.num_swing}\n"
+        record_header_output += f"  NUM_PARAM = {self.num_param}\n"
+        record_header_output += f"  NUM_CYCLE = {self.num_cycle}\n"
         return record_header_output
 
-    def main():
-        record = RecordHeader()
-        record_fields = ["NUM_CALIBRATION = 1",
-                        "NUM_HISTORY = 3",
-                        "NUM_SWING = 0",
-                        "NUM_PARAM = 5",
-                        "NUM_CYCLE = 1000"]
-        record.populate_object(record_fields)
-        print(record.print_object())
-        record.log_message('num_param', record.num_param, 17)
-        record.num_param = 17
-        print(record.print_object())
-
-        for log_entry in BaseHeader.shared_log_list:
-            print(log_entry)
+def main():
+    record = RecordHeader()
+    record_fields = ["NUM_CALIBRATION = 1",
+                    "NUM_HISTORY = 3",
+                    "NUM_SWING = 0",
+                    "NUM_PARAM = 5",
+                    "NUM_CYCLE = 1000"]
+    record.populate_object(record_fields)
+    print(record.print_object())
+    record.log_record_message('num_param', record.num_param, 17)
+    record.num_param = 17
+    print(record.print_object())
+    for log_entry in BaseHeader.shared_log_list:
+        print(log_entry)
 
 if __name__ == "__main__":
-    RecordHeader.main()
+    main()

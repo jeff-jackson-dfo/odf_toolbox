@@ -1,9 +1,10 @@
 import io
 import pandas as pd
 from odf_toolbox import odfutils
-from icecream import ic
+from typing import NoReturn, Self
+from pydantic import BaseModel
 
-class DataRecords:
+class DataRecords(BaseModel):
     """
     A class to represent the data records stored within an ODF object.
 
@@ -15,89 +16,74 @@ class DataRecords:
         list of the parameter codes associated with the ODF object
     PrintFormats : list of strings
         dictionary of the parameter code print formats
-
-    Methods:
-    -------
-    __init__ :
-        initialize a QualityHeader class object
-    get_data_frame : pd.DataFrame
-    set_data_frame : None
-    get_data_record_count : int
-    get_parameter_list : list
-    set_parameter_list : None
-    get_print_formats : dict
-    set_print_formats : None
-    populate_object : None
-    print_object : None
-    print_object_old_style : None
-
     """
 
-    def __init__(self):
-        self._data_frame = pd.DataFrame()
-        self._parameter_list = []
-        self._print_formats = {}
+    def __init__(self, 
+                 data_frame: pd.DataFrame = pd.DataFrame(),
+                 parameter_list: list = None,
+                 print_formats: dict = None
+                 ):
+        self.data_frame = data_frame
+        self.parameter_list = parameter_list
+        self.print_formats = print_formats
 
-    def get_data_frame(self) -> pd.DataFrame:
+    @property
+    def data_frame(self) -> pd.DataFrame:
         return self._data_frame
 
-    def set_data_frame(self, data_frame: pd.DataFrame) -> None:
-        assert isinstance(data_frame, pd.DataFrame), \
-               f"Input value is not of type pd.DataFrame: {data_frame}"
-        self._data_frame = data_frame
+    @data_frame.setter
+    def data_frame(self, dataframe: pd.DataFrame) -> NoReturn:
+        self._data_frame = dataframe
 
-    def get_parameter_list(self) -> list:
+    @property
+    def parameter_list(self) -> list:
         return self._parameter_list
 
-    def set_parameter_list(self, parameters: list):
-        assert isinstance(parameters, list), \
-               f"Input value is not of type list: {parameters}"
+    @parameter_list.setter
+    def parameter_list(self, parameters: list) -> NoReturn:
         self._parameter_list = parameters
 
-    def get_print_formats(self) -> dict:
+    @property
+    def print_formats(self) -> dict:
         return self._print_formats
 
-    def set_print_formats(self, formats: dict):
-        assert isinstance(formats, dict), \
-               f"Input value is not of type dict: {formats}"
+    @print_formats.setter
+    def print_formats(self, formats: dict) -> NoReturn:
         self._print_formats = formats
 
     def __len__(self):
         return len(self._data_frame)
 
-    def populate_object(self, parameter_list: list, data_formats: dict, data_lines_list: list):
-        assert isinstance(parameter_list, list), f"Input value is not of type list: {parameter_list}"
-        assert isinstance(data_formats, dict), f"Input value is not of type dict: {data_formats}"
-        assert isinstance(data_lines_list, list), f"Input value is not of type list: {data_lines_list}"
+    def populate_object(self, parameter_list: list, data_formats: dict, data_lines_list: list) -> Self:
         data_record_list = [odfutils.split_string_with_quotes(s) for s in data_lines_list]
         df = pd.DataFrame(columns=parameter_list, data=data_record_list)
         df = odfutils.convert_dataframe(df)
         if 'SYTM_01' in df.columns:
             df['SYTM_01'] = df['SYTM_01'].apply(lambda x: f"'{x}'")
-        self.set_data_frame(df)
-        self.set_parameter_list(parameter_list)
-        self.set_print_formats(data_formats)
+        self.data_frame = df
+        self.parameter_list = parameter_list
+        self.print_formats = data_formats
         return self
 
     def print_object(self) -> str:
-        df = self.get_data_frame()
-        plist = self.get_parameter_list()
+        df = self.data_frame
+        plist = self.parameter_list
         q_params = [s for s in plist if s.startswith("Q")]
         value = 'int'
         convert_dict = {key: value for key in q_params}
         df = df.astype(convert_dict)
-        self.set_data_frame(df)
+        self.data_frame = df
         buffer = io.StringIO()
-        self.get_data_frame().to_csv(buffer, index=False, sep=",", lineterminator="\n")
+        self.data_frame.to_csv(buffer, index=False, sep=",", lineterminator="\n")
         output_data_records_v3 = buffer.getvalue()
         return output_data_records_v3
 
     def print_object_old_style(self) -> str:
-        nf = len(self.get_print_formats().items())
+        nf = len(self.print_formats.items())
         key_number = 0
-        formatter = (f"self.get_data_frame().to_string(columns={self.get_parameter_list()}, "
+        formatter = (f"self.data_frame.to_string(columns={self.parameter_list}, "
                      f"index=False, header=False, formatters={{")
-        for key, value in self.get_print_formats().items():
+        for key, value in self.print_formats.items():
             if key == 'SYTM_01':
                 pformat = "'{0}': '{{:>{1}}}'.format".format(key, value)
             else:
@@ -112,10 +98,12 @@ class DataRecords:
 
 def main():
     records = DataRecords()
-    df = pd.DataFrame({"PRES_01":[1,4,7], "TEMP_01":[8,5,2], "PSAL_01":[31.5,32.0,32.5]})
-    records.set_data_frame(df)
+    df = pd.DataFrame({"PRES_01":[1,4,7], "TEMP_01":[8.2,5.6,2.45], "PSAL_01":[31.5,32.0,32.88]})
+    records.data_frame = df
+    records.parameter_list = ['PRES_01', "TEMP_01", "PSAL_01"]
+    records.print_formats = {'PRES_01': '10.1', "TEMP_01": "10.4", "PSAL_01": '10.4'}
     print(records.print_object())
-    # print(records.print_object_old_style())
+    print(records.print_object_old_style())
 
 if __name__ == "__main__":
     

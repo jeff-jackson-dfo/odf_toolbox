@@ -5,11 +5,20 @@ description = "Toolbox for working with Open Document Format (ODF) files"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "boltons>=25.0.0",
     "dotenv>=0.9.9",
     "icecream>=2.1.4",
     "netcdf4>=1.7.2",
     "openpyxl>=3.1.5",
     "oracledb>=3.0.0",
     "pandas>=2.2.3",
+    "pendulum>=3.1.0",
     "pydantic>=2.11.3",
+    "python-dotenv>=1.1.0",
+    "rich>=14.0.0",
 ]
+
+[tool.uv]
+# Ensure that the setuptools v60.0.0 is used whenever a package has a build dependency
+# on setuptools.
+build-constraint-dependencies = ["setuptools==60.0.0"]

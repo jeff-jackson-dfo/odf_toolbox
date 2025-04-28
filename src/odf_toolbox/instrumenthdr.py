@@ -19,7 +19,7 @@ class InstrumentHeader(BaseModel, BaseHeader):
         self.serial_number = serial_number
         self.description = description
 
-    def log_message(self, field: str, old_value: any, new_value: any) -> NoReturn:
+    def log_instrument_message(self, field: str, old_value: any, new_value: any) -> NoReturn:
         old_value = "''"
         message = f"In Instrument Header field {field.upper()} was changed from {old_value} to '{new_value}'"
         super().log_message(message)
@@ -62,7 +62,7 @@ class InstrumentHeader(BaseModel, BaseHeader):
             instrument_dict = odfutils.list_to_dict(tokens)
             for key, value in instrument_dict.items():
                 key = key.strip()
-                value = value.strip()
+                value = value.strip("' ")
                 match key:
                     case 'INST_TYPE':
                         self.instrument_type = value
@@ -83,19 +83,17 @@ class InstrumentHeader(BaseModel, BaseHeader):
         return instrument_header_output
 
 
-    def main():
-        instrument_header = InstrumentHeader()
-        instrument_header.instrument_type = 'CTD'
-        instrument_header.model = 'SBE 9'
-        instrument_header.serial_number = '12345'
-        instrument_header.log_message('description', instrument_header.description, 'SeaBird CTD')
-        instrument_header.description = 'SeaBird CTD'
-        print(instrument_header.print_object())
-
-        for log_entry in BaseHeader.shared_log_list:
-            print(log_entry)
+def main():
+    instrument_header = InstrumentHeader()
+    instrument_header.instrument_type = 'CTD'
+    instrument_header.model = 'SBE 9'
+    instrument_header.serial_number = '12345'
+    instrument_header.log_instrument_message('description', instrument_header.description, 'SeaBird CTD')
+    instrument_header.description = 'SeaBird CTD'
+    print(instrument_header.print_object())
+    for log_entry in BaseHeader.shared_log_list:
+        print(log_entry)
 
 
 if __name__ == "__main__":
-
-    InstrumentHeader.main()
+    main()

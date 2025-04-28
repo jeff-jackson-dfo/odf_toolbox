@@ -91,8 +91,6 @@ def check_long(value: float) -> float:
     return value
 
 def check_datetime(value: str) -> str:
-    assert isinstance(value, str), \
-        f"Input value is not of type str: {value}"
     if value is None:
         value = "'17-NOV-1858 00:00:00.00'"
     else:

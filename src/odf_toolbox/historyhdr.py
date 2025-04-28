@@ -14,8 +14,8 @@ class HistoryHeader(BaseModel, BaseHeader):
         self.creation_date = creation_date
         self.processes = processes
 
-    def log_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
-        message = f"In History Header field {field.upper()} was changed from '{old_value}' to '{new_value}'"
+    def log_history_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
+        message = f'In History Header field {field.upper()} was changed from "{old_value}" to "{new_value}"'
         super().log_message(message)
         
     @property
@@ -24,7 +24,7 @@ class HistoryHeader(BaseModel, BaseHeader):
 
     @creation_date.setter
     def creation_date(self, value: str) -> NoReturn:
-        value = value.strip("\' ")
+        value = value.strip("' ")
         self._creation_date = value.upper()
 
     @property
@@ -36,7 +36,7 @@ class HistoryHeader(BaseModel, BaseHeader):
         self._processes = plist
 
     def set_process(self, process: str, process_number: int = 0) -> NoReturn:
-        process = process.strip("\' ")
+        process = process.strip("' ")
         number_of_processes = len(self.processes)
         if process_number == 0 and number_of_processes >= 0:
             self._processes.append(process)
@@ -46,7 +46,7 @@ class HistoryHeader(BaseModel, BaseHeader):
             raise ValueError("The 'process' number does not match the number of PROCESS lines.")
 
     def add_process(self, process: str) -> NoReturn:
-        process = process.strip("\'")
+        process = process.strip("' ")
         self._processes.append(process)
 
     def populate_object(self, history_fields: list) -> NoReturn:
@@ -55,7 +55,7 @@ class HistoryHeader(BaseModel, BaseHeader):
             history_dict = odfutils.list_to_dict(tokens)
             for key, value in history_dict.items():
                 key = key.strip()
-                value = value.strip()
+                value = value.strip("' ")
                 match key:
                     case 'CREATION_DATE':
                         self.creation_date = value
@@ -73,21 +73,21 @@ class HistoryHeader(BaseModel, BaseHeader):
         return history_header_output
 
 
-    def main():
-        history = HistoryHeader()
-        print(history.print_object())
-        history_fields = ["CREATION_DATE = '01-jun-2021 00:00:00.00'",
-                        "PROCESS = First process",
-                        "PROCESS = Last process"]
-        history.populate_object(history_fields)
-        print(history.print_object())
-        history.log_message('process', history.processes[1], 'Bad Cast')
-        history.set_process('Bad Cast', 2)
-        print(history.print_object())
+def main():
+    history = HistoryHeader()
+    print(history.print_object())
+    history_fields = ["CREATION_DATE = '01-jun-2021 00:00:00.00'",
+                    "PROCESS = First process",
+                    "PROCESS = Last process"]
+    history.populate_object(history_fields)
+    print(history.print_object())
+    history.log_history_message('process', history.processes[1], 'Bad Cast')
+    history.set_process('Bad Cast', 2)
+    print(history.print_object())
 
-        for log_entry in BaseHeader.shared_log_list:
-            print(log_entry)
+    for log_entry in BaseHeader.shared_log_list:
+        print(log_entry)
 
 
 if __name__ == '__main__':
-    HistoryHeader.main()
+    main()

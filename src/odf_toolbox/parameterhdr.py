@@ -1,7 +1,8 @@
 from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
-from icecream import ic
-class ParameterHeader(BaseHeader):
+from typing import NoReturn
+from pydantic import BaseModel
+class ParameterHeader(BaseModel, BaseHeader):
     """
     A class to represent a Parameter Header in an ODF object.
 
@@ -43,282 +44,190 @@ class ParameterHeader(BaseHeader):
         initialize a ParameterHeader class object
     __str__ : str
         returns a ParameterHeader class object as a string
-    get_type : string
-    set_type : None
-
     """
 
-    def __init__(self):
-        super().__init__()
-        self._type = ''
-        self._name = ''
-        self._units = ''
-        self._code = ''
-        self._wmo_code = ''
-        self._null_value = ''
-        self._print_field_order = None
-        self._print_field_width = None
-        self._print_decimal_places = None
-        self._angle_of_section = None
-        self._magnetic_variation = None
-        self._depth = None
-        self._minimum_value = None
-        self._maximum_value = None
-        self._number_valid = None
-        self._number_null = None
+    def __init__(self,
+                 type: str = '',
+                 name: str = '',
+                 units: str = '',
+                 code: str = '',
+                 wmo_code: str = '',
+                 null_string: str = '',
+                 print_field_order: int = None,
+                 print_field_width: int = None,
+                 print_decimal_places: int = None,
+                 angle_of_section: float = None,
+                 magnetic_variation: float = None,
+                 depth: float = None,
+                 minimum_value = None,
+                 maximum_value = None,
+                 number_valid: int = None,
+                 number_null: int = None
+                ):
 
-    def log_message(self, message):
-        super().log_message(f"In Parameter Header for {self.get_code()} field {message}")
+        super().__init__()
+        self._type = type
+        self._name = name
+        self._units = units
+        self._code = code
+        self._wmo_code = wmo_code
+        self._null_string = null_string
+        self._print_field_order = print_field_order
+        self._print_field_width = print_field_width
+        self._print_decimal_places = print_decimal_places
+        self._angle_of_section = angle_of_section
+        self._magnetic_variation = magnetic_variation
+        self._depth = depth
+        self._minimum_value = minimum_value
+        self._maximum_value = maximum_value
+        self._number_valid = number_valid
+        self._number_null = number_null
+
+    def log_parameter_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
+        message = f"In Parameter Header field {field.upper()} was changed from '{old_value}' to '{new_value}'"
+        super().log_message(message)
 
     def __str__(self):
         return (f'Parameter named "{self.get_name()}" has code "{self.get_code()}", type "{self.get_type()}'
                 f'", and units "{self.get_units()}".')
 
-    def get_type(self) -> str:
+    @property
+    def type(self) -> str:
         return self._type
 
-    def set_type(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
+    @type.setter
+    def type(self, value: str) -> NoReturn:
         value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'TYPE was changed from "{self.get_type()}" to "{value}" for parameter "{self.get_name()}"')
-        self._type = f'{value}'
+        self._type = value
 
-    def get_name(self) -> str:
+    @property
+    def name(self) -> str:
         return self._name
 
-    def set_name(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
+    @name.setter
+    def name(self, value: str) -> NoReturn:
         value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'NAME was changed from "{self.get_name()}" to "{value}" for parameter "{self.get_name()}"')
-        self._name = f'{value}'
+        self._name = value
 
-    def get_units(self) -> str:
+    @property
+    def units(self) -> str:
         return self._units
 
-    def set_units(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
+    @units.setter
+    def units(self, value: str) -> NoReturn:
         value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'UNITS was changed from "{self.get_units()}" to "{value}" for parameter "{self.get_name()}"')
-        self._units = f'{value}'
+        self._units = value
 
-    def get_code(self) -> str:
+    @property
+    def code(self) -> str:
         return self._code
 
-    '''
-    TODO: this function may have to update other headers that reference the parameter code. Write the code to handle 
-    these situations.
-    '''
-    def set_code(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
+    @code.setter
+    def code(self, value: str) -> NoReturn:
         value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'CODE was changed from "{self.get_code()}" to "{value}" for parameter "{self.get_name()}"')
-        self._code = f'{value}'
+        self._code = value
 
-    def get_wmo_code(self) -> str:
+    @property
+    def wmo_code(self) -> str:
         return self._wmo_code
 
-    def set_wmo_code(self, value: str, read_operation: bool = False) -> None:
-        assert isinstance(value, str), \
-               f"Input value is not of type str: {value}"
+    @wmo_code.setter
+    def wmo_code(self, value: str) -> NoReturn:
         value = value.strip("\' ")
-        if not read_operation:
-            self.log_message(f'WMO_CODE was changed from "{self.get_wmo_code()}" to "{value}" for parameter "{self.get_name()}"')
-        self._wmo_code = f'{value}'
+        self._wmo_code = value
 
-    def get_null_value(self):
-        return self._null_value
+    @property
+    def null_string(self) -> str:
+        return self._null_string
 
-    def set_null_value(self, value: str, read_operation: bool = False) -> None:
-        if self.get_type() == 'SYTM':
-            value = '17-NOV-1858 00:00:00.00'
-        else:
-            # Accept given string as the null value
-            pass
+    @null_string.setter
+    def null_string(self, value: str) -> NoReturn:
+        value = value.strip("\' ")
+        # if self.type == 'SYTM':
+        #     value = '17-NOV-1858 00:00:00.00'
+        self._null_string = value
 
-        if not read_operation:
-            self.log_message(f"NULL_VALUE was changed from {self.get_null_value()} to {value} for "
-                                 f"parameter {self.get_code()}.")
-        self._null_value = value
-
-    def get_print_field_order(self) -> int:
+    @property
+    def print_field_order(self) -> int:
         return self._print_field_order
 
-    def set_print_field_order(self, value: int, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to int
-            try:
-                value = int(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type int: {value}"
-        assert isinstance(value, int), \
-               f"Input value is not of type int: {value}"
-        if not read_operation:
-            self.log_message(f"PRINT_FIELD_ORDER was changed from {self.get_print_field_order()} "
-                                 f"to {value} for parameter {self.get_code()}")
+    @print_field_order.setter
+    def print_field_order(self, value: int) -> NoReturn:
         self._print_field_order = value
 
-    def get_print_field_width(self) -> int:
+    @property
+    def print_field_width(self) -> int:
         return self._print_field_width
 
-    def set_print_field_width(self, value: int, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to int
-            try:
-                value = int(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type int: {value}"
-        assert isinstance(value, int), \
-               f"Input value is not of type int: {value}"
-        if not read_operation:
-            self.log_message(f"PRINT_FIELD_WIDTH was changed from {self.get_print_field_width()} "
-                                 f"to {value} for parameter {self.get_code()}")
+    @print_field_width.setter
+    def print_field_width(self, value: int) -> NoReturn:
         self._print_field_width = value
 
-    def get_print_decimal_places(self) -> int:
+    @property
+    def print_decimal_places(self) -> int:
         return self._print_decimal_places
 
-    def set_print_decimal_places(self, value: int, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to int
-            try:
-                value = int(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type int: {value}"
-        assert isinstance(value, int), \
-               f"Input value is not of type int: {value}"
-        if not read_operation:
-            self.log_message(f"PRINT_DECIMAL_PLACES was changed from {self.get_print_decimal_places()} "
-                                 f"to {value} for parameter {self.get_code()}")
+    @print_decimal_places.setter
+    def print_decimal_places(self, value: int) -> NoReturn:
         self._print_decimal_places = value
 
-    def get_angle_of_section(self) -> float:
+    @property
+    def angle_of_section(self) -> float:
         return self._angle_of_section
 
-    def set_angle_of_section(self, value: float, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to float
-            try:
-                value = float(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type float: {value}"
-        assert isinstance(value, float), \
-               f"Input value is not of type float: {value}"
-        if not read_operation:
-            self.log_message(f"ANGLE_OF_SECTION was changed from {self.get_angle_of_section()} "
-                                 f"to {value} for parameter {self.get_code()}")
+    @angle_of_section.setter
+    def angle_of_section(self, value: float) -> NoReturn:
         self._angle_of_section = value
 
-    def get_magnetic_variation(self) -> float:
+    @property
+    def magnetic_variation(self) -> float:
         return self._magnetic_variation
 
-    def set_magnetic_variation(self, value: float, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to float
-            try:
-                value = float(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type float: {value}"
-        assert isinstance(value, float), \
-               f"Input value is not of type float: {value}"
-        if not read_operation:
-            self.log_message(f"MAGNETIC_VARIATION was changed from {self.get_magnetic_variation()} "
-                                 f"to {value} for parameter {self.get_code()}")
+    @magnetic_variation.setter
+    def magnetic_variation(self, value: float) -> NoReturn:
         self._magnetic_variation = value
 
-    def get_depth(self) -> float:
+    @property
+    def depth(self) -> float:
         return self._depth
 
-    def set_depth(self, value: float, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to float
-            try:
-                value = float(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type float: {value}"
-        assert isinstance(value, float), \
-               f"Input value is not of type float: {value}"
-        if not read_operation:
-            self.log_message(f"DEPTH was changed from {self.get_depth()} "
-                                 f"to {value} for parameter {self.get_code()}")
+    @depth.setter
+    def depth(self, value: float) -> NoReturn:
         self._depth = value
 
-    def get_minimum_value(self):
+    @property
+    def minimum_value(self):
         return self._minimum_value
 
-    def set_minimum_value(self, value, read_operation: bool = False) -> None:
-        try:
-            value = float(value)
-            assert isinstance(value, float), \
-                f"Input value is not of type float: {value}"
-        except ValueError:
-            assert isinstance(value, str), \
-                f"Input value is not of type str: {value}"
-        if not read_operation:
-            self.log_message(f"MINIMUM_VALUE was changed from {self.get_minimum_value()} "
-                                 f"to {value} for parameter {self.get_code()}")
+    @minimum_value.setter
+    def minimum_value(self, value) -> NoReturn:
         self._minimum_value = value
 
-    def get_maximum_value(self):
+    @property
+    def maximum_value(self):
         return self._maximum_value
 
-    def set_maximum_value(self, value, read_operation: bool = False) -> None:
-        try:
-            value = float(value)
-            assert isinstance(value, float), \
-                f"Input value is not of type float: {value}"
-        except ValueError:
-            assert isinstance(value, str), \
-                f"Input value is not of type str: {value}"
-        if not read_operation:
-            self.log_message(f"MAXIMUM_VALUE was changed from {self.get_maximum_value()} "
-                                 f"to {value} for parameter {self.get_code()}")
+    @maximum_value.setter
+    def maximum_value(self, value) -> NoReturn:
         self._maximum_value = value
 
-    def get_number_valid(self) -> int:
+    @property
+    def number_valid(self) -> int:
         return self._number_valid
 
-    def set_number_valid(self, value: int, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to int
-            try:
-                value = int(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type int: {value}"
-        assert isinstance(value, int), \
-               f"Input value is not of type int: {value}"
-        if not read_operation:
-            self.log_message(f"NUMBER_VALID was changed from {self.get_number_valid()} "
-                                 f"to {value} for parameter {self.get_code()}")
+    @number_valid.setter
+    def number_valid(self, value: int) -> NoReturn:
         self._number_valid = value
 
-    def get_number_null(self) -> int:
+    @property
+    def number_null(self) -> int:
         return self._number_null
 
-    def set_number_null(self, value: int, read_operation: bool = False) -> None:
-        if read_operation:
-            # convert string to int
-            try:
-                value = int(value)
-            except ValueError:
-                f"Input value could not be successfully converted to type int: {value}"
-        assert isinstance(value, int), \
-               f"Input value is not of type int: {value}"
-        if not read_operation:
-            self.log_message(f"NUMBER_NULL was changed from {self.get_number_null()} "
-                                 f"to {value} for parameter {self.get_code()}")
+    @number_null.setter
+    def number_null(self, value: int) -> NoReturn:
         self._number_null = value
 
-    def populate_object(self, parameter_fields: list):
-        assert isinstance(parameter_fields, list), \
-               f"Input value is not of type list: {parameter_fields}"
+    def populate_object(self, parameter_fields: list) -> NoReturn:
         for header_line in parameter_fields:
             tokens = header_line.split('=', maxsplit=1)
             parameter_dict = odfutils.list_to_dict(tokens)
@@ -327,117 +236,116 @@ class ParameterHeader(BaseHeader):
                 value = value.strip()
                 match key:
                     case 'TYPE':
-                        self.set_type(value, read_operation=True)
+                        self.type = value
                     case 'NAME':
-                        self.set_name(value, read_operation=True)
+                        self.name = value
                     case 'UNITS':
-                        self.set_units(value, read_operation=True)
+                        self.units = value
                     case 'CODE':
-                        self.set_code(value, read_operation=True)
+                        self.code = value
                     case 'WMO_CODE':
-                        self.set_wmo_code(value, read_operation=True)
+                        self.wmo_code = value
                         # If there was no code field in the ODF file being read then assign it the same value as WMO_CODE.
-                        if self.get_code() == "":
-                            self.set_code(value, read_operation=True)
+                        if self.code == "":
+                            self.code = value
                     case 'NULL_VALUE':
-                        # if type(self._null_value) == 'string':
-                            # self.set_null_value(value, 'string', read_operation=True)
-                        self.set_null_value(value, read_operation=True)
-                        # else:
-                        #     self.set_null_value(value, 'float', read_operation=True)
+                        self.null_string = value
                     case 'PRINT_FIELD_ORDER':
-                        self.set_print_field_order(value, read_operation=True)
+                        self.print_field_order = int(float(value))
                     case 'PRINT_FIELD_WIDTH':
-                        self.set_print_field_width(value, read_operation=True)
+                        self.print_field_width = int(float(value))
                     case 'PRINT_DECIMAL_PLACES':
-                        self.set_print_decimal_places(value, read_operation=True)
+                        self.print_decimal_places = int(float(value))
                     case 'ANGLE_OF_SECTION':
-                        self.set_angle_of_section(value, read_operation=True)
+                        self.angle_of_section = float(value)
                     case 'MAGNETIC_VARIATION':
-                        self.set_magnetic_variation(value, read_operation=True)
+                        self.magnetic_variation = float(value)
                     case 'DEPTH':
                         new_value = odfutils.check_string(value)
-                        value = odfutils.check_float(float(new_value))
-                        self.set_depth(value, read_operation=True)
+                        value = float(new_value)
+                        self.depth = value
                     case 'MINIMUM_VALUE':
-                        self.set_minimum_value(value, read_operation=True)
+                        if str(value):
+                            self.minimum_value = value
+                        elif float(value):
+                            self.minimum_value = float(value)
+                        else:
+                            self.minimum_value = BaseHeader.null_value
                     case 'MAXIMUM_VALUE':
-                        self.set_maximum_value(value, read_operation=True)
+                        if str(value):
+                            self.minimum_value = value
+                        elif float(value):
+                            self.minimum_value = float(value)
+                        else:
+                            self.maximum_value = BaseHeader.null_value
                     case 'NUMBER_VALID':
-                        self.set_number_valid(value, read_operation=True)
+                        self.number_valid = int(float(value))
                     case 'NUMBER_NULL':
-                        self.set_number_null(value, read_operation=True)
+                        self.number_null = int(float(value))
         return self
 
-    def print_object(self, file_version: int = 2) -> str:
-        assert isinstance(file_version, int), \
-               f"Input value is not of type int: {file_version}"
-        assert file_version >= 2, \
-               f"File version must be >= 2.0 but is: {file_version}"
+    def print_object(self, file_version: float = 2.0) -> str:
+        assert file_version >= 2.0, f"File version must be >= 2.0 but is: {file_version}"
         parameter_header_output = "PARAMETER_HEADER\n"
-        parameter_header_output += f"  TYPE = '{self.get_type()}'\n"
-        parameter_header_output += f"  NAME = '{self.get_name()}'\n"
-        parameter_header_output += f"  UNITS = '{self.get_units()}'\n"
-        parameter_header_output += f"  CODE = '{self.get_code()}'\n"
-        if self.get_wmo_code() != '':
-            parameter_header_output += f"  WMO_CODE = '{self.get_wmo_code()}'\n"
-        if self.get_type() == "SYTM":
-            parameter_header_output += f"  NULL_VALUE = '{odfutils.check_datetime(self.get_null_value())}'\n"
+        parameter_header_output += f"  TYPE = '{self.type}'\n"
+        parameter_header_output += f"  NAME = '{self.name}'\n"
+        parameter_header_output += f"  UNITS = '{self.units}'\n"
+        parameter_header_output += f"  CODE = '{self.code}'\n"
+        if self._wmo_code != '':
+            parameter_header_output += f"  WMO_CODE = '{self.wmo_code}'\n"
+        if self._type == "SYTM":
+            parameter_header_output += f"  NULL_VALUE = '{odfutils.check_datetime(self.null_string)}'\n"
         else:
-            parameter_header_output += f"  NULL_VALUE = {self.get_null_value()}\n"
+            parameter_header_output += f"  NULL_VALUE = {self.null_string}\n"
         if file_version == 3:
             parameter_header_output += (f"  PRINT_FIELD_ORDER = "
-                                        f"{odfutils.check_int(self.get_print_field_order())}\n")
-        parameter_header_output += f"  PRINT_FIELD_WIDTH = {odfutils.check_int(self.get_print_field_width())}\n"
+                                        f"{self.print_field_order}\n")
+        parameter_header_output += f"  PRINT_FIELD_WIDTH = {self.print_field_width}\n"
         parameter_header_output += (f"  PRINT_DECIMAL_PLACES = "
-                                    f"{odfutils.check_int(self.get_print_decimal_places())}\n")
+                                    f"{self.print_decimal_places}\n")
         parameter_header_output += (f"  ANGLE_OF_SECTION = "
-                                    f"{odfutils.check_float(self.get_angle_of_section()):.1f}\n")
+                                    f"{self.angle_of_section:.1f}\n")
         parameter_header_output += (f"  MAGNETIC_VARIATION = "
-                                    f"{odfutils.check_float(self.get_magnetic_variation()):.1f}\n")
-        parameter_header_output += f"  DEPTH = {odfutils.check_float(self.get_depth()):.1f}\n"
-        if self.get_units() == "GMT" or self.get_units() == "UTC" or self.get_type() == "SYTM":
-            parameter_header_output += f"  MINIMUM_VALUE = '{odfutils.check_datetime(self.get_minimum_value())}'\n"
-            parameter_header_output += f"  MAXIMUM_VALUE = '{odfutils.check_datetime(self.get_maximum_value())}'\n"
+                                    f"{self.magnetic_variation:.1f}\n")
+        parameter_header_output += f"  DEPTH = {self.depth:.1f}\n"
+        if self._units == "GMT" or self._units == "UTC" or self.type == "SYTM":
+            parameter_header_output += f"  MINIMUM_VALUE = '{odfutils.check_datetime(self.minimum_value)}'\n"
+            parameter_header_output += f"  MAXIMUM_VALUE = '{odfutils.check_datetime(self.maximum_value)}'\n"
         else:
-            parameter_header_output += (f"  MINIMUM_VALUE = "
-                                        f"{odfutils.check_float(self.get_minimum_value()):.4f}\n")
-            parameter_header_output += (f"  MAXIMUM_VALUE = "
-                                        f"{odfutils.check_float(self.get_maximum_value()):.4f}\n")
-        parameter_header_output += f"  NUMBER_VALID = {odfutils.check_int(self.get_number_valid())}\n"
-        parameter_header_output += f"  NUMBER_NULL = {odfutils.check_int(self.get_number_null())}\n"
+            if self.minimum_value is None:
+                parameter_header_output += (f"  MINIMUM_VALUE = {BaseHeader.null_value}\n")
+            else:
+                parameter_header_output += (f"  MINIMUM_VALUE = {float(self.minimum_value):.4f}\n")
+            if self.maximum_value is None:
+                parameter_header_output += (f"  MAXIMUM_VALUE = {BaseHeader.null_value}\n")
+            else:
+                parameter_header_output += (f"  MAXIMUM_VALUE = {float(self.maximum_value):.4f}\n")
+        parameter_header_output += f"  NUMBER_VALID = {self.number_valid}\n"
+        parameter_header_output += f"  NUMBER_NULL = {self.number_null}\n"
         return parameter_header_output
 
 
-    def main():
-        param = ParameterHeader()
-        param.set_type('DOUB')
-        param.set_name('Pressure')
-        param.set_units('decibars')
-        param.set_code('PRES_01')
-        param.set_wmo_code('PRES')
-        param.set_null_value(-99.0, 'float')
-        param.set_print_field_width(10)
-        param.set_print_decimal_places(3)
-        param.set_angle_of_section(0.0)
-        param.set_magnetic_variation(0.0)
-        depth = odfutils.check_string('0.00000000D+00')
-        param.set_depth(float(depth))
-        param.set_minimum_value(2.177)
-        param.set_maximum_value(176.5)
-        param.set_number_valid(1064)
-        param.set_number_null(643)
-        # ic(param.print_object())
-        # param.set_null_value('17-NOV-1858 00:00:00.00', 'str')
-        # ic(param.print_object())
-        # param.set_null_value(-99, 'int')
-        # ic(param.print_object())
-        # param.set_null_value('', 'float')
-        # ic(param.print_object())
-        # param.set_null_value(-99.0, 'int')
-        print(param.print_object())
+def main():
+    param = ParameterHeader()
+    param.type = 'DOUB'
+    param.name = 'Pressure'
+    param.units = 'decibars'
+    param.code = 'PRES_01'
+    param.wmo_code = 'PRES'
+    param.null_string = f'{BaseHeader.null_value}'
+    param.print_field_width = 10
+    param.print_decimal_places = 3
+    param.angle_of_section = 0.0
+    param.magnetic_variation = 0.0
+    depth = odfutils.check_string('0.00000000D+00')
+    param.depth = float(depth)
+    param.minimum_value = 2.177
+    param.maximum_value = 176.5
+    param.number_valid = 1064
+    param.number_null = 643
+    param.number_valid = 1064
+    print(param.print_object())
 
 
 if __name__ == "__main__":
-
-    ParameterHeader.main()
+    main()

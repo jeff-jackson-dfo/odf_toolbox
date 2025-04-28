@@ -89,7 +89,7 @@ class PolynomialCalHeader(BaseModel, BaseHeader):
             poly_dict = odfutils.list_to_dict(tokens)
             for key, value in poly_dict.items():
                 key = key.strip()
-                value = value.strip()
+                value = value.strip("' ")
                 match key:
                     case 'PARAMETER_NAME':
                         self._parameter_code = value
@@ -123,26 +123,24 @@ class PolynomialCalHeader(BaseModel, BaseHeader):
         polynomial_header_output += f"  COEFFICIENTS = {coefficients_print}\n"
         return polynomial_header_output
 
-    @staticmethod
-    def main():
 
-        poly1 = PolynomialCalHeader()
-        print(poly1.print_object())
-        poly1.parameter_code = 'PRES_01'
-        poly1.calibration_date = '11-JUN-1995 05:35:46.82'
-        poly1.application_date = '11-JUN-1995 05:35:46.82'
-        poly1.number_coefficients = 2
-        poly1.coefficients = ['0.60000000D+01',  '0.15000001D+00']
-        print(poly1.print_object())
+def main():
+    poly1 = PolynomialCalHeader()
+    print(poly1.print_object())
+    poly1.parameter_code = 'PRES_01'
+    poly1.calibration_date = '11-JUN-1995 05:35:46.82'
+    poly1.application_date = '11-JUN-1995 05:35:46.82'
+    poly1.number_coefficients = 2
+    poly1.coefficients = ['0.60000000D+01',  '0.15000001D+00']
+    print(poly1.print_object())
 
-        poly2 = PolynomialCalHeader()
-        poly2.parameter_code = 'TEMP_01'
-        poly2.calibration_date = '11-JUN-1995 05:35:46.83'
-        poly2.application_date = '11-JUN-1995 05:35:46.83'
-        poly2.number_coefficients = 2
-        poly2.coefficients = ['0.00000000E+01',  '0.25000001E-03']
-        print(poly2.print_object())
+    poly2 = PolynomialCalHeader()
+    poly2.parameter_code = 'TEMP_01'
+    poly2.calibration_date = '11-JUN-1995 05:35:46.83'
+    poly2.application_date = '11-JUN-1995 05:35:46.83'
+    poly2.number_coefficients = 2
+    poly2.coefficients = ['0.00000000E+01',  '0.25000001E-03']
+    print(poly2.print_object())
 
 if __name__ == "__main__":
-
-    PolynomialCalHeader.main()
+    main()

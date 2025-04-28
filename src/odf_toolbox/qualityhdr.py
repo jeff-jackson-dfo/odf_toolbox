@@ -2,7 +2,6 @@ from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
 from typing import NoReturn
 from pydantic import BaseModel
-from icecream import ic
 class QualityHeader(BaseModel, BaseHeader):
     """
     A class to represent a Quality Header in an ODF object.
@@ -41,7 +40,7 @@ class QualityHeader(BaseModel, BaseHeader):
         self.quality_tests = quality_tests
         self.quality_comments = quality_comments
 
-    def log_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
+    def log_quality_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
         message = f"In Quality Header field {field.upper()} was changed from '{old_value}' to '{new_value}'"
         super().log_message(message)
 
