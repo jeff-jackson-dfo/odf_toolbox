@@ -32,13 +32,13 @@ class QualityHeader(BaseModel, BaseHeader):
 
     def __init__(self, 
                  quality_date: str = '',
-                 quality_tests: list = [],
-                 quality_comments: list = []
+                 quality_tests: list = None,
+                 quality_comments: list = None
                  ):
         super().__init__()
         self.quality_date = quality_date
-        self.quality_tests = quality_tests
-        self.quality_comments = quality_comments
+        self.quality_tests = quality_tests if quality_tests is not None else [] 
+        self.quality_comments = quality_comments if quality_comments is not None else [] 
 
     def log_quality_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
         message = f"In Quality Header field {field.upper()} was changed from '{old_value}' to '{new_value}'"

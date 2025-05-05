@@ -9,10 +9,10 @@ class HistoryHeader(BaseModel, BaseHeader):
     """        
     def __init__(self, 
                  creation_date: str = BaseHeader.sytm_null_value, 
-                 processes: list = []):
+                 processes: list = None):
         super().__init__()
         self.creation_date = creation_date
-        self.processes = processes
+        self.processes = processes if processes is not None else []
 
     def log_history_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
         message = f'In History Header field {field.upper()} was changed from "{old_value}" to "{new_value}"'

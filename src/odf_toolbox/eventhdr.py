@@ -27,7 +27,7 @@ class EventHeader(BaseModel, BaseHeader):
                  depth_off_bottom: float = BaseHeader.null_value, 
                  station_name: str = '', 
                  set_number: str = '', 
-                 event_comments: list = []
+                 event_comments: list = None
                  ) -> NoReturn:
         super().__init__()
         self.data_type = data_type
@@ -239,9 +239,10 @@ class EventHeader(BaseModel, BaseHeader):
     def event_comments(self, value: list) -> NoReturn:
         self._event_comments = value
     
-    def set_event_comment(self, event_comment: str, 
+    def set_event_comment(self, 
+                          event_comment: str, 
                           comment_number: int = 0) -> None:
-        event_comment = event_comment.strip("\'")
+        event_comment = event_comment.strip("\' ")
         number_of_comments = len(self.event_comments)
         if comment_number == 0 and number_of_comments >= 0:
             self._event_comments.append(f'{event_comment}')
@@ -298,7 +299,12 @@ class EventHeader(BaseModel, BaseHeader):
                     case 'SET_NUMBER':
                         self.set_number = value
                     case 'EVENT_COMMENTS':
-                        self.set_event_comment(value)
+                        if value is str:
+                            self._event_comments = value
+                        elif value is list:
+                            self._event_comments = value
+                        else:
+                            print('event_header.event_comments')
         return self
 
     def print_object(self) -> str:
@@ -382,6 +388,9 @@ class EventHeader(BaseModel, BaseHeader):
         
         for log_entry in BaseHeader.shared_log_list:
             print(log_entry)
+
+        event = EventHeader()
+        print(event.print_object())
 
 
 if __name__ == "__main__":

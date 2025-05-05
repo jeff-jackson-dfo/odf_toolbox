@@ -21,4 +21,13 @@ dependencies = [
 [tool.uv]
 # Ensure that the setuptools v60.0.0 is used whenever a package has a build dependency
 # on setuptools.
-build-constraint-dependencies = ["setuptools==60.0.0"]
+build-constraint-dependencies = ["setuptools==78.1.0", "wheel>=0.45.1"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+]
+
+[build-system]
+requires = ["setuptools>=78.1.0", "wheel>=0.45.1"]
+build-backend = "setuptools.build_meta"

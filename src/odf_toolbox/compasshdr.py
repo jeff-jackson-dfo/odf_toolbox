@@ -9,14 +9,14 @@ class CompassCalHeader(BaseModel, BaseHeader):
                  parameter_code: str = '',
                  calibration_date: str = '',
                  application_date: str = '',
-                 directions: list = [],
-                 corrections: list = []):
+                 directions: list = None,
+                 corrections: list = None):
         super().__init__()        
         self.parameter_code = parameter_code
         self.calibration_date = calibration_date
         self.application_date = application_date
-        self.directions = directions
-        self.corrections = corrections
+        self.directions = directions if directions is not None else []
+        self.corrections = corrections if corrections is not None else []
 
     def log_compass_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
         message = f"In Compass Cal Header field {field.upper()} was changed from '{old_value}' to '{new_value}'"

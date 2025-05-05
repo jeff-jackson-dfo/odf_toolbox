@@ -11,9 +11,9 @@ class GeneralCalHeader(BaseModel, BaseHeader):
                  calibration_date: str = '',
                  application_date: str = '',
                  number_coefficients: int = 0,
-                 coefficients: list = [],
+                 coefficients: list = None,
                  calibration_equation: str = '',
-                 calibration_comments: list = []
+                 calibration_comments: list = None
                  ):
         super().__init__()
         self.parameter_code = parameter_code
@@ -21,9 +21,9 @@ class GeneralCalHeader(BaseModel, BaseHeader):
         self.calibration_date = calibration_date
         self.application_date = application_date
         self.number_coefficients = number_coefficients
-        self.coefficients = coefficients
+        self.coefficients = coefficients if coefficients is not None else [] 
         self.calibration_equation = calibration_equation
-        self.calibration_comments = calibration_comments
+        self.calibration_comments = calibration_comments if calibration_comments is not None else []
 
     def log_general_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
         message = f"In General Cal Header field {field.upper()} was changed from '{old_value}' to '{new_value}'"

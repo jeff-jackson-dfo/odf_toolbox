@@ -1,3 +1,8 @@
+import glob
+import os
+from odf_toolbox.basehdr import BaseHeader
+from odf_toolbox.odfhdr import OdfHeader
+
 """
 UPDATE_91001: function to update ODF files for cruise 91001
 with the correct metadata.
@@ -49,13 +54,6 @@ with the correct metadata.
 
 """
 
-import glob
-import os
-from odf_toolbox.basehdr import BaseHeader
-from odf_toolbox.odfhdr import OdfHeader
-# import gsw
-from icecream import ic
-
 # Change to the drive's root folder
 os.chdir('\\')
 drive = os.getcwd()
@@ -72,7 +70,7 @@ path_to_revised = os.path.join(top_folder, 'Step_1_Update_Metadata')
 os.chdir(path_to_orig)
 
 # Find all ODF files in the current directory.
-files = glob.glob('*.ODF')
+files = glob.glob('CTD_91001*')
 
 # Query the user for his/her name so he/she may be identified in the
 # history header as the responsible data quality control person.
@@ -94,11 +92,13 @@ for file_name in files:
     # Read the ODF file
     odf.read_odf(file_name)
 
+    print(odf.event_header.print_object())
+
     # Add a new History Header to record the modifications that are made.
     odf.add_history()
     odf.add_to_log(f'{user} made the following modifications to this file:')
 
-    param_list = odf.data.get_parameter_list()
+    param_list = odf.data.parameter_list
     new_param_list = ['PRES_01', 'TEMP_01', 'CRAT_01', 'PSAL_01', 'NETR_01', 'FLOR_01', 'OTMP_01', 'OPPR_01', 'DOXY_01']
     
     # ic(odf.data.get_data_frame())
@@ -109,21 +109,23 @@ for file_name in files:
     # max_depth = gsw.z_from_p(max(A.Data.PRES), A.Event_Header.Initial_Latitude)
 
     # Update Cruise_Header
-    odf.cruise_header.set_organization('DFO BIO')
-    odf.cruise_header.set_platform('HUDSON')
-    odf.cruise_header.set_start_date('19-SEP-2014 00:00:00.00')
-    odf.cruise_header.set_end_date('08-OCT-2014 00:00:00.00')
-    odf.cruise_header.set_cruise_name('SCOTIAN SHELF AND SLOPE')
-    odf.cruise_header.set_cruise_description('ATLANTIC ZONE MONITORING PROGRAM (AZMP)')
+    odf.cruise_header.organization= 'DFO BIO'
+    odf.cruise_header.platform = 'HUDSON'
+    odf.cruise_header.start_date = '19-SEP-2014 00:00:00.00'
+    odf.cruise_header.end_date = '08-OCT-2014 00:00:00.00'
+    odf.cruise_header.cruise_name = 'SCOTIAN SHELF AND SLOPE'
+    odf.cruise_header.cruise_description = 'ATLANTIC ZONE MONITORING PROGRAM (AZMP)'
 
     # Update Event_Header
-    odf.event_header.set_set_number('999')
-    odf.event_header.set_event_comments('Location Antarctica', 1)
+    odf.event_header.set_number = '999'
+    odf.event_header.set_event_comment('Location Antarctica')
 
-    odf.instrument_header.set_model('SBE 911')
+    print(odf.event_header.print_object())
+
+    odf.instrument_header.model = 'SBE 911'
 
     # Update the Polynomial_Cal_Headers
-    odf.add_to_log('The PARAMETER_NAME field was not read in because the field name was incorrect. Added the correct field PARAMETER_CODE.')
+    odf.log_odf_message('The PARAMETER_NAME field was not read in because the field name was incorrect. Added the correct field PARAMETER_CODE.', 'base')
     # for i, pch in enumerate(odf.polynomial_cal_headers):
         # ic(i)
         # match i:
@@ -144,7 +146,7 @@ for file_name in files:
     # event_str = event_str.strip("\' ")
     # event_int = int(event_str)
     # if len(event_str) < 3:
-    #     odf.event_header.set_event_number(f"{event_int:03}")
+    #     odf.event_header.event_number(f"{event_int:03}")
 
     # Add history comments to document that the Slope and Offset values for the primary and secondary conductivity
     # channels were updated from their original acquisition values prior to reprocessing the CTD data files.
@@ -177,9 +179,9 @@ for file_name in files:
     #     odf.add_to_log(record)
 
     # Update the Record_Header and other headers to revise the metadata after modifications have been performed.
-    # odf.update_odf()
+    odf.update_odf()
     
-    odf_file_text = odf.print_object(file_version=2)
+    odf_file_text = odf.print_object(file_version = 2.0)
     # print(odf_file_text)
 
     os.chdir(path_to_revised)
