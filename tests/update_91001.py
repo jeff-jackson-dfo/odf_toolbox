@@ -2,6 +2,7 @@ import glob
 import os
 from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox.odfhdr import OdfHeader
+from odf_toolbox import odfutils
 
 """
 UPDATE_91001: function to update ODF files for cruise 91001
@@ -92,7 +93,7 @@ for file_name in files:
     # Read the ODF file
     odf.read_odf(file_name)
 
-    print(odf.event_header.print_object())
+    # print(odf.event_header.print_object())
 
     # Add a new History Header to record the modifications that are made.
     odf.add_history()
@@ -101,15 +102,14 @@ for file_name in files:
     param_list = odf.data.parameter_list
     new_param_list = ['PRES_01', 'TEMP_01', 'CRAT_01', 'PSAL_01', 'NETR_01', 'FLOR_01', 'OTMP_01', 'OPPR_01', 'DOXY_01']
     
-    # ic(odf.data.get_data_frame())
     odf = odf.fix_parameter_codes(new_param_list)
-    # ic(odf.data.get_data_frame())
 
     # min_depth = gsw.z_from_p(min(A.Data.PRES), A.Event_Header.Initial_Latitude)
     # max_depth = gsw.z_from_p(max(A.Data.PRES), A.Event_Header.Initial_Latitude)
 
     # Update Cruise_Header
     odf.cruise_header.organization= 'DFO BIO'
+    odf.cruise_header.chief_scientist = 'GLEN HARRISON'
     odf.cruise_header.platform = 'HUDSON'
     odf.cruise_header.start_date = '19-SEP-2014 00:00:00.00'
     odf.cruise_header.end_date = '08-OCT-2014 00:00:00.00'
@@ -119,26 +119,17 @@ for file_name in files:
     # Update Event_Header
     odf.event_header.set_number = '999'
     odf.event_header.set_event_comment('Location Antarctica')
-
-    print(odf.event_header.print_object())
+    odf.event_header.creation_date = odfutils.check_datetime(odf.event_header.creation_date)
+    odf.event_header.orig_creation_date = odfutils.check_datetime(odf.event_header.orig_creation_date)
+    odf.event_header.start_date_time = odfutils.check_datetime(odf.event_header.start_date_time)
+    odf.event_header.end_date_time = odfutils.check_datetime(odf.event_header.end_date_time)
 
     odf.instrument_header.model = 'SBE 911'
 
     # Update the Polynomial_Cal_Headers
-    odf.log_odf_message('The PARAMETER_NAME field was not read in because the field name was incorrect. Added the correct field PARAMETER_CODE.', 'base')
-    # for i, pch in enumerate(odf.polynomial_cal_headers):
-        # ic(i)
-        # match i:
-        #     pch.set 'PRES_01';
-        #     A.Polynomial_Cal_Header{2}.Parameter_Code = 'TEMP_01';
-        #     A.Polynomial_Cal_Header{3}.Parameter_Code = 'CRAT_01';
-        #     A.Polynomial_Cal_Header{4}.Parameter_Code = 'OTMP_01';
-        #     A.Polynomial_Cal_Header{5}.Parameter_Code = 'FLOR_01';
-        #     A.Polynomial_Cal_Header{6}.Parameter_Code = 'NETR_01';
-        #     A.Polynomial_Cal_Header{7}.Parameter_Code = 'OTMP_01';
-        #     A.Polynomial_Cal_Header{8}.Parameter_Code = 'OPPR_01';
+    odf.log_message('The PARAMETER_CODE field was not present in the POLYNOMIAL_CAL_HEADERS so it was added to replace the PARAMETER_NAME field that was present.')
 
-    # odf.update_parameter('SYTM_01', 'units', 'GMT')
+    # odf.update_parameter('SYTM_01', 'units', 'GMT')   
     # odf.update_parameter('SYTM_01', 'print_field_width', 45)
 
     # Make sure that the event numbers are 3-digit strings.

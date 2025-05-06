@@ -65,10 +65,10 @@ class EventHeader(BaseModel, BaseHeader):
            field.upper() == 'END_DATE_TIME' or \
            field.upper() == 'STATION_NAME' or \
            field.upper() == 'SET_NUMBER':
-           old_value = "''"
-           message = f"In Event Header field {field.upper()} was changed from {old_value} to '{new_value}'"
+            # old_value = "''"'
+           message = f'In Event Header field {field.upper()} was changed from "{old_value}" to "{new_value}"'
         else:    
-            message = f"In Event Header field {field.upper()} was changed from {old_value} to {new_value}"
+            message = f'In Event Header field {field.upper()} was changed from {old_value} to {new_value}'
         super().log_message(message)
 
     @property
@@ -258,7 +258,7 @@ class EventHeader(BaseModel, BaseHeader):
             for key, value in event_dict.items():
                 key = key.strip()
                 if str(value):
-                    value = value.strip()
+                    value = value.strip("'")
                 match key:
                     case 'DATA_TYPE':
                         self.data_type = value
@@ -299,12 +299,12 @@ class EventHeader(BaseModel, BaseHeader):
                     case 'SET_NUMBER':
                         self.set_number = value
                     case 'EVENT_COMMENTS':
-                        if value is str:
-                            self._event_comments = value
-                        elif value is list:
+                        if type(value) is str:
+                            self._event_comments = [value]
+                        elif type(value) is list:
                             self._event_comments = value
                         else:
-                            print('event_header.event_comments')
+                            print('event_header.event_comments is not a string or list.')
         return self
 
     def print_object(self) -> str:
@@ -320,19 +320,19 @@ class EventHeader(BaseModel, BaseHeader):
         if self.initial_latitude == BaseHeader.null_value:
             event_header_output += f"  INITIAL_LATITUDE = {self.initial_latitude}\n"
         else:
-            event_header_output += f"  INITIAL_LATITUDE = {self.initial_latitude:.2f}\n"
+            event_header_output += f"  INITIAL_LATITUDE = {self.initial_latitude:.6f}\n"
         if self.initial_longitude == BaseHeader.null_value:
             event_header_output += f"  INITIAL_LONGITUDE = {self.initial_longitude}\n"
         else:
-            event_header_output += f"  INITIAL_LONGITUDE = {self.initial_longitude:.2f}\n"
+            event_header_output += f"  INITIAL_LONGITUDE = {self.initial_longitude:.6f}\n"
         if self.end_latitude == BaseHeader.null_value:
             event_header_output += f"  END_LATITUDE = {self.end_latitude}\n"
         else:
-            event_header_output += f"  END_LATITUDE = {self.end_latitude:.2f}\n"
+            event_header_output += f"  END_LATITUDE = {self.end_latitude:.6f}\n"
         if self.end_longitude == BaseHeader.null_value:
             event_header_output += f"  END_LONGITUDE = {self.end_longitude}\n"
         else:
-            event_header_output += f"  END_LONGITUDE = {self.end_longitude:.2f}\n"
+            event_header_output += f"  END_LONGITUDE = {self.end_longitude:.6f}\n"
         if self.min_depth == BaseHeader.null_value:
             event_header_output += f"  MIN_DEPTH = {self.min_depth}\n"
         else:

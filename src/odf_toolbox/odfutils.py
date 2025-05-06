@@ -95,22 +95,18 @@ def check_datetime(value: str) -> str:
         value = "'17-NOV-1858 00:00:00.00'"
     else:
         sytm_format = "%d-%b-%Y %H:%M:%S.%f"
-
-        # checking if format matches the date
-        res = True
-
-        # using try-except to check for truth value
         try:
-            res = bool(datetime.datetime.strptime(value, sytm_format))
+            dt = datetime.datetime.strptime(value, sytm_format)
+            value = datetime.datetime.strftime(dt, sytm_format).upper()
+            value = f"{value[:-4]}"
         except ValueError:
-            res = False
-
+            value = "invalid date format"
     return value
 
 def check_string(value: str) -> str:
     assert isinstance(value, str), \
         f"Input value is not of type str: {value}"
-    value = check_datetime(value)
+    # value = check_datetime(value)
     # Check if this string value is actually an exponential number that uses the old unsupported exponent "D".
     # If it does then replace it with an "E".
     if re.search(r'[0-9]*.[0-9]*D[+-][0-9]*', value):

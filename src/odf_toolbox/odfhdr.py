@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import pandas as pd
 from icecream import ic
 import re
@@ -53,9 +53,9 @@ class OdfHeader(BaseModel, BaseHeader):
         self.odf_specification_version = odf_specification_version
         self.cruise_header = cruise_header if cruise_header is not None else CruiseHeader()
         self.event_header = event_header if event_header is not None else EventHeader()
-        self.meteo_header = meteo_header if meteo_header is not None else MeteoHeader()
+        self.meteo_header = meteo_header
         self.instrument_header = instrument_header if instrument_header is not None else InstrumentHeader()
-        self.quality_header = quality_header if quality_header is not None else QualityHeader()
+        self.quality_header = quality_header
         self.general_cal_headers = general_cal_headers if general_cal_headers is not None else []
         self.compass_cal_headers = compass_cal_headers if compass_cal_headers is not None else []
         self.polynomial_cal_headers = polynomial_cal_headers if polynomial_cal_headers is not None else []
@@ -408,7 +408,6 @@ class OdfHeader(BaseModel, BaseHeader):
             self.record_header.num_param = len(self.parameter_headers)
         if self.record_header.num_cycle != len(self.data):
             self.record_header.num_cycle = len(self.data)
-        self.file_specification = self.generate_file_spec()
 
     def write_odf(self, odf_file_path: str, version: float = 2) -> NoReturn:
         """ Write the ODF file to disk. """
@@ -418,10 +417,15 @@ class OdfHeader(BaseModel, BaseHeader):
         file1.close()
         print(f"ODF file written to {odf_file_path}\n")
 
+    @staticmethod
+    def generate_creation_date() -> str:
+        dt = datetime.now().strftime("%d-%b-%Y %H:%M:%S.%f").upper()
+        creation_date = dt[:-4]
+        return creation_date
+
     def add_history(self) -> NoReturn:
         nhh = HistoryHeader()
-        dt = datetime.datetime.now().strftime("%d-%b-%Y %H:%M:%S.%f").upper()
-        nhh.creation_date = dt[:-4]
+        nhh.creation_date = self.generate_creation_date()
         self.history_headers.append(nhh)
 
     def add_to_history(self, history_comment) -> NoReturn:
