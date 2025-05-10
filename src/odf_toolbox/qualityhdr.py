@@ -104,15 +104,22 @@ class QualityHeader(BaseModel, BaseHeader):
     def print_object(self) -> str:
         quality_header_output = "QUALITY_HEADER\n"
         quality_header_output += f"  QUALITY_DATE = '{odfutils.check_string(self.quality_date)}'\n"
-        for quality_test in self.quality_tests:
-            quality_header_output += f"  QUALITY_TESTS = '{quality_test}'\n"
-        for quality_comment in self.quality_comments:
-            quality_header_output += f"  QUALITY_COMMENTS = '{quality_comment}'\n"
+        if not self.quality_tests:
+            quality_header_output += "  QUALITY_TESTS = ''\n"
+        else:
+            for quality_test in self.quality_tests:
+                quality_header_output += f"  QUALITY_TESTS = '{quality_test}'\n"
+        if not self.quality_comments:
+            quality_header_output += "  QUALITY_COMMENTS = ''\n"
+        else:
+            for quality_comment in self.quality_comments:
+                quality_header_output += f"  QUALITY_COMMENTS = '{quality_comment}'\n"
         return quality_header_output
 
     def main():
 
         quality_header = QualityHeader()
+        print(quality_header.print_object())
         sytm = '01-JUL-2017 10:45:19.00'
         quality_header.quality_date = sytm
         quality_header.set_quality_test('Test 1')
