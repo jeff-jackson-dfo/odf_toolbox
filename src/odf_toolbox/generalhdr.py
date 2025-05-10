@@ -8,8 +8,8 @@ class GeneralCalHeader(BaseModel, BaseHeader):
     def __init__(self,
                  parameter_code: str = '',
                  calibration_type: str = '',
-                 calibration_date: str = '',
-                 application_date: str = '',
+                 calibration_date: str = BaseHeader.SYTM_NULL_VALUE,
+                 application_date: str = BaseHeader.SYTM_NULL_VALUE,
                  number_coefficients: int = 0,
                  coefficients: list = None,
                  calibration_equation: str = '',
@@ -171,8 +171,8 @@ def main():
     print(general.print_object())
     general.parameter_code = 'PAR'
     general.calibration_type = 'Linear'
-    general.calibration_date = '2024-10-28'
-    general.application_date = '2025-03-14'
+    general.calibration_date = '28-May-2020 00:00:00.00'
+    general.application_date = '14-Oct-2020 23:59:59.99'
     general.number_coefficients = 2
     general.coefficients = [0.75, 1.05834]
     general.calibration_equation = 'y = mx + b'

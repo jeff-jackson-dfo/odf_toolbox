@@ -7,8 +7,8 @@ class CompassCalHeader(BaseModel, BaseHeader):
     
     def __init__(self, 
                  parameter_code: str = '',
-                 calibration_date: str = '',
-                 application_date: str = '',
+                 calibration_date: str = BaseHeader.SYTM_NULL_VALUE,
+                 application_date: str = BaseHeader.SYTM_NULL_VALUE,
                  directions: list = None,
                  corrections: list = None):
         super().__init__()        
@@ -132,9 +132,9 @@ def main():
     compass_cal_header = CompassCalHeader()
     print(compass_cal_header.print_object())
     compass_cal_fields = ["PARAMETER_NAME = PARAMETER_CODE",
-                        "PARAMETER_CODE = SOG",
+                        "PARAMETER_CODE = SOG_01",
                         "CALIBRATION_DATE = 25-mar-2021 00:00:00.00",
-                        "APPLICATION_DATE = 25-Mar-2021 00:00:00.00",
+                        "APPLICATION_DATE = 27-jan-2022 00:00:00.00",
                         "DIRECTIONS = 0.0 90.0 180.0 270.0",
                         "CORRECTIONS = 0.0 0.0 0.0 0.0"]
     compass_cal_header.populate_object(compass_cal_fields)

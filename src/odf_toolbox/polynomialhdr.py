@@ -7,8 +7,8 @@ class PolynomialCalHeader(BaseModel, BaseHeader):
     
     def __init__(self,
                  parameter_code: str = '',
-                 calibration_date: str = '',
-                 application_date: str = '',
+                 calibration_date: str = BaseHeader.SYTM_NULL_VALUE,
+                 application_date: str = BaseHeader.SYTM_NULL_VALUE,
                  number_coefficients: int = 0,
                  coefficients: list = None
                  ):

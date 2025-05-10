@@ -389,10 +389,6 @@ class EventHeader(BaseModel, BaseHeader):
         for log_entry in BaseHeader.shared_log_list:
             print(log_entry)
 
-        event = EventHeader()
-        print(event.print_object())
-
-
 if __name__ == "__main__":
 
     EventHeader.main()

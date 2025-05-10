@@ -176,6 +176,7 @@ class CruiseHeader(BaseModel, BaseHeader):
 
 def main():
     cruise = CruiseHeader()
+    print(cruise.print_object())
     cruise.log_cruise_message('COUNTRY_INSTITUTE_CODE', cruise.country_institute_code, 1805)
     cruise.country_institute_code = 1805
     cruise.log_cruise_message('CHIEF_SCIENTIST', cruise.chief_scientist, 'Jeff Jackson')

@@ -85,6 +85,7 @@ class InstrumentHeader(BaseModel, BaseHeader):
 
 def main():
     instrument_header = InstrumentHeader()
+    print(instrument_header.print_object())
     instrument_header.instrument_type = 'CTD'
     instrument_header.model = 'SBE 9'
     instrument_header.serial_number = '12345'

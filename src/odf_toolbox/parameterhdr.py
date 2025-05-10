@@ -273,7 +273,7 @@ class ParameterHeader(BaseModel, BaseHeader):
                             self.minimum_value = BaseHeader.NULL_VALUE
                     case 'MAXIMUM_VALUE':
                         if str(value):
-                            self.minimum_value = value
+                            self.minimum_value =BaseHeader.SYTM_NULL_VALUE
                         elif float(value):
                             self.minimum_value = float(value)
                         else:
@@ -326,26 +326,44 @@ class ParameterHeader(BaseModel, BaseHeader):
 
 
 def main():
-    param = ParameterHeader()
-    param.type = 'DOUB'
-    param.name = 'Pressure'
-    param.units = 'decibars'
-    param.code = 'PRES_01'
-    param.wmo_code = 'PRES'
-    param.null_string = f'{BaseHeader.NULL_VALUE}'
-    param.print_field_width = 10
-    param.print_decimal_places = 3
-    param.angle_of_section = 0.0
-    param.magnetic_variation = 0.0
+    param1 = ParameterHeader()
+    param1.type = 'DOUB'
+    param1.name = 'Pressure'
+    param1.units = 'decibars'
+    param1.code = 'PRES_01'
+    param1.wmo_code = 'PRES'
+    param1.null_string = f'{BaseHeader.NULL_VALUE}'
+    param1.print_field_width = 10
+    param1.print_decimal_places = 3
+    param1.angle_of_section = 0.0
+    param1.magnetic_variation = 0.0
     depth = odfutils.check_string('0.00000000D+00')
-    param.depth = float(depth)
-    param.minimum_value = 2.177
-    param.maximum_value = 176.5
-    param.number_valid = 1064
-    param.number_null = 643
-    param.number_valid = 1064
-    print(param.print_object())
+    param1.depth = float(depth)
+    param1.minimum_value = 2.177
+    param1.maximum_value = 176.5
+    param1.number_valid = 1064
+    param1.number_null = 643
+    param1.number_valid = 1064
+    print(param1.print_object())
 
+    param2 = ParameterHeader()
+    param2.type = 'DOUB'
+    param2.name = 'SYTM'
+    param2.units = 'UTC'
+    param2.code = 'SYTM_01'
+    param2.wmo_code = 'SYTM'
+    param2.null_string = f'{BaseHeader.SYTM_NULL_VALUE}'
+    param2.print_field_width = 23
+    param2.print_decimal_places = 0
+    param2.angle_of_section = 0.0
+    param2.magnetic_variation = 0.0
+    param2.depth = 0.0
+    param2.minimum_value = '03-MAY-2025 00:47:41.73'
+    param2.maximum_value = '03-MAY-2025 01:54:07.73'
+    param2.number_valid = 1064
+    param2.number_null = 643
+    param2.number_valid = 1064
+    print(param2.print_object())
 
 if __name__ == "__main__":
     main()

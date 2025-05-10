@@ -31,7 +31,7 @@ class QualityHeader(BaseModel, BaseHeader):
     """
 
     def __init__(self, 
-                 quality_date: str = '',
+                 quality_date: str = BaseHeader.SYTM_NULL_VALUE,
                  quality_tests: list = None,
                  quality_comments: list = None
                  ):

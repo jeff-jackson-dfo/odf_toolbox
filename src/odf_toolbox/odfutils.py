@@ -100,7 +100,7 @@ def check_datetime(value: str) -> str:
             value = datetime.datetime.strftime(dt, BaseHeader.SYTM_FORMAT).upper()
             value = f"{value[:-4]}"
         except ValueError:
-            value = "invalid date format"
+            raise Exception(f"Invalid date format: {value}. Expected format: {BaseHeader.SYTM_FORMAT}")
     return value
 
 def check_string(value: str) -> str:
