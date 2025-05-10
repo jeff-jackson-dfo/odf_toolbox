@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from odf_toolbox.basehdr import BaseHeader
 import datetime
 import pandas
 import shlex
@@ -92,12 +93,11 @@ def check_long(value: float) -> float:
 
 def check_datetime(value: str) -> str:
     if value is None:
-        value = "'17-NOV-1858 00:00:00.00'"
+        value = BaseHeader.SYTM_NULL_VALUE
     else:
-        sytm_format = "%d-%b-%Y %H:%M:%S.%f"
         try:
-            dt = datetime.datetime.strptime(value, sytm_format)
-            value = datetime.datetime.strftime(dt, sytm_format).upper()
+            dt = datetime.datetime.strptime(value, BaseHeader.SYTM_FORMAT)
+            value = datetime.datetime.strftime(dt, BaseHeader.SYTM_FORMAT).upper()
             value = f"{value[:-4]}"
         except ValueError:
             value = "invalid date format"

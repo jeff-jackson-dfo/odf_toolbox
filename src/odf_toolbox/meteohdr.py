@@ -5,13 +5,13 @@ from pydantic import BaseModel
 class MeteoHeader(BaseModel, BaseHeader):
 
     def __init__(self, 
-                 air_temperature: float = BaseHeader.null_value, 
-                 atmospheric_pressure: float = BaseHeader.null_value,
-                 wind_speed: float = BaseHeader.null_value,
-                 wind_direction: float = BaseHeader.null_value,
-                 sea_state: int = BaseHeader.null_value,
-                 cloud_cover: int = BaseHeader.null_value,
-                 ice_thickness: float = BaseHeader.null_value,
+                 air_temperature: float = BaseHeader.NULL_VALUE, 
+                 atmospheric_pressure: float = BaseHeader.NULL_VALUE,
+                 wind_speed: float = BaseHeader.NULL_VALUE,
+                 wind_direction: float = BaseHeader.NULL_VALUE,
+                 sea_state: int = BaseHeader.NULL_VALUE,
+                 cloud_cover: int = BaseHeader.NULL_VALUE,
+                 ice_thickness: float = BaseHeader.NULL_VALUE,
                  meteo_comments: list = None
                  ):
         super().__init__()
@@ -110,7 +110,7 @@ class MeteoHeader(BaseModel, BaseHeader):
                 key = key.strip()
                 value = value.strip()
                 if value == -99.0:
-                    value = BaseHeader.null_value
+                    value = BaseHeader.NULL_VALUE
                 match key:
                     case 'AIR_TEMPERATURE':
                         self.air_temperature = float(value)
@@ -131,31 +131,31 @@ class MeteoHeader(BaseModel, BaseHeader):
 
     def print_object(self) -> str:
         meteo_header_output = "METEO_HEADER\n"
-        if self.air_temperature == BaseHeader.null_value:
+        if self.air_temperature == BaseHeader.NULL_VALUE:
             meteo_header_output += f"  AIR_TEMPERATURE = {self.air_temperature}\n"
         else:
             meteo_header_output += f"  AIR_TEMPERATURE = {self.air_temperature:.2f}\n"
-        if self.atmospheric_pressure == BaseHeader.null_value:
+        if self.atmospheric_pressure == BaseHeader.NULL_VALUE:
             meteo_header_output += f"  ATMOSPHERIC_PRESSURE = {self.atmospheric_pressure}\n"
         else:
             meteo_header_output += f"  ATMOSPHERIC_PRESSURE = {self.atmospheric_pressure:.2f}\n"
-        if self.wind_speed == BaseHeader.null_value:
+        if self.wind_speed == BaseHeader.NULL_VALUE:
             meteo_header_output += f"  WIND_SPEED = {self.wind_speed}\n"
         else:
             meteo_header_output += f"  WIND_SPEED = {self.wind_speed:.2f}\n"
-        if self.wind_direction == BaseHeader.null_value:
+        if self.wind_direction == BaseHeader.NULL_VALUE:
             meteo_header_output += f"  WIND_DIRECTION = {self.wind_direction}\n"
         else:
             meteo_header_output += f"  WIND_DIRECTION = {self.wind_direction:.2f}\n"
-        if self.sea_state == BaseHeader.null_value:
+        if self.sea_state == BaseHeader.NULL_VALUE:
             meteo_header_output += f"  SEA_STATE = {self.sea_state}\n"
         else:
             meteo_header_output += f"  SEA_STATE = {self.sea_state:.0f}\n"
-        if self.cloud_cover == BaseHeader.null_value:
+        if self.cloud_cover == BaseHeader.NULL_VALUE:
             meteo_header_output += f"  CLOUD_COVER = {self.cloud_cover}\n"
         else:
             meteo_header_output += f"  CLOUD_COVER = {self.cloud_cover:.0f}\n"
-        if self.cloud_cover == BaseHeader.null_value:
+        if self.cloud_cover == BaseHeader.NULL_VALUE:
             meteo_header_output += f"  ICE_THICKNESS = {self.ice_thickness}\n"
         else:
             meteo_header_output += f"  ICE_THICKNESS = {self.ice_thickness:.3f}\n"
@@ -180,7 +180,7 @@ class MeteoHeader(BaseModel, BaseHeader):
     def cloud_cover_percentage_to_wmo_code(cloud_cover_percentage: float) -> int:
         cloud_cover_code = None
         if cloud_cover_percentage < 0.0:
-           cloud_cover_code = BaseHeader.null_value
+           cloud_cover_code = BaseHeader.NULL_VALUE
         elif cloud_cover_percentage == 0.0:
             cloud_cover_code = 0
         elif cloud_cover_percentage > 0.0 and cloud_cover_percentage < 0.15:
@@ -208,7 +208,7 @@ class MeteoHeader(BaseModel, BaseHeader):
     def wave_height_meters_to_wmo_code(wave_height_meters: float) -> int:
         wave_code = None
         if wave_height_meters < 0.0:
-            wave_code = BaseHeader.null_value
+            wave_code = BaseHeader.NULL_VALUE
         elif wave_height_meters == 0.0:
             wave_code = 0
         elif wave_height_meters > 0.0 and wave_height_meters < 0.1:

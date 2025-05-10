@@ -1,4 +1,4 @@
-from odf_toolbox import BaseHeader
+from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox import odfutils
 from typing import NoReturn
 from pydantic import BaseModel
@@ -12,19 +12,19 @@ class EventHeader(BaseModel, BaseHeader):
                  event_number: str = '', 
                  event_qualifier1: str = '', 
                  event_qualifier2: str = '', 
-                 creation_date: str = BaseHeader.sytm_null_value, 
-                 orig_creation_date: str = BaseHeader.sytm_null_value,
-                 start_date_time: str = BaseHeader.sytm_null_value, 
-                 end_date_time: str = BaseHeader.sytm_null_value, 
-                 initial_latitude: float = BaseHeader.null_value, 
-                 initial_longitude: float = BaseHeader.null_value, 
-                 end_latitude: float = BaseHeader.null_value, 
-                 end_longitude: float = BaseHeader.null_value,
-                 min_depth: float = BaseHeader.null_value, 
-                 max_depth: float = BaseHeader.null_value, 
-                 sampling_interval: float = BaseHeader.null_value, 
-                 sounding: float = BaseHeader.null_value, 
-                 depth_off_bottom: float = BaseHeader.null_value, 
+                 creation_date: str = BaseHeader.SYTM_NULL_VALUE, 
+                 orig_creation_date: str = BaseHeader.SYTM_NULL_VALUE,
+                 start_date_time: str = BaseHeader.SYTM_NULL_VALUE, 
+                 end_date_time: str = BaseHeader.SYTM_NULL_VALUE, 
+                 initial_latitude: float = BaseHeader.NULL_VALUE, 
+                 initial_longitude: float = BaseHeader.NULL_VALUE, 
+                 end_latitude: float = BaseHeader.NULL_VALUE, 
+                 end_longitude: float = BaseHeader.NULL_VALUE,
+                 min_depth: float = BaseHeader.NULL_VALUE, 
+                 max_depth: float = BaseHeader.NULL_VALUE, 
+                 sampling_interval: float = BaseHeader.NULL_VALUE, 
+                 sounding: float = BaseHeader.NULL_VALUE, 
+                 depth_off_bottom: float = BaseHeader.NULL_VALUE, 
                  station_name: str = '', 
                  set_number: str = '', 
                  event_comments: list = None
@@ -317,36 +317,36 @@ class EventHeader(BaseModel, BaseHeader):
         event_header_output += f"  ORIG_CREATION_DATE = '{odfutils.check_datetime(self.orig_creation_date)}'\n"
         event_header_output += f"  START_DATE_TIME = '{odfutils.check_datetime(self.start_date_time)}'\n"
         event_header_output += f"  END_DATE_TIME = '{odfutils.check_datetime(self.end_date_time)}'\n"
-        if self.initial_latitude == BaseHeader.null_value:
+        if self.initial_latitude == BaseHeader.NULL_VALUE:
             event_header_output += f"  INITIAL_LATITUDE = {self.initial_latitude}\n"
         else:
             event_header_output += f"  INITIAL_LATITUDE = {self.initial_latitude:.6f}\n"
-        if self.initial_longitude == BaseHeader.null_value:
+        if self.initial_longitude == BaseHeader.NULL_VALUE:
             event_header_output += f"  INITIAL_LONGITUDE = {self.initial_longitude}\n"
         else:
             event_header_output += f"  INITIAL_LONGITUDE = {self.initial_longitude:.6f}\n"
-        if self.end_latitude == BaseHeader.null_value:
+        if self.end_latitude == BaseHeader.NULL_VALUE:
             event_header_output += f"  END_LATITUDE = {self.end_latitude}\n"
         else:
             event_header_output += f"  END_LATITUDE = {self.end_latitude:.6f}\n"
-        if self.end_longitude == BaseHeader.null_value:
+        if self.end_longitude == BaseHeader.NULL_VALUE:
             event_header_output += f"  END_LONGITUDE = {self.end_longitude}\n"
         else:
             event_header_output += f"  END_LONGITUDE = {self.end_longitude:.6f}\n"
-        if self.min_depth == BaseHeader.null_value:
+        if self.min_depth == BaseHeader.NULL_VALUE:
             event_header_output += f"  MIN_DEPTH = {self.min_depth}\n"
         else:
             event_header_output += f"  MIN_DEPTH = {self.min_depth:.2f}\n"
-        if self.max_depth == BaseHeader.null_value:
+        if self.max_depth == BaseHeader.NULL_VALUE:
             event_header_output += f"  MAX_DEPTH = {self.max_depth}\n"
         else:
             event_header_output += f"  MAX_DEPTH = {self.max_depth:.2f}\n"
         event_header_output += f"  SAMPLING_INTERVAL = {self.sampling_interval}\n"
-        if self.sounding == BaseHeader.null_value:
+        if self.sounding == BaseHeader.NULL_VALUE:
             event_header_output += f"  SOUNDING = {self.sounding}\n"
         else:
             event_header_output += f"  SOUNDING = {self.sounding:.2f}\n"
-        if self.depth_off_bottom == BaseHeader.null_value:
+        if self.depth_off_bottom == BaseHeader.NULL_VALUE:
             event_header_output += f"  DEPTH_OFF_BOTTOM = {self.depth_off_bottom}\n"
         else:
             event_header_output += f"  DEPTH_OFF_BOTTOM = {self.depth_off_bottom:.2f}\n"

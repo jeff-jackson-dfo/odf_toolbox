@@ -8,7 +8,7 @@ class HistoryHeader(BaseModel, BaseHeader):
     A class to represent a History Header in an ODF object.
     """        
     def __init__(self, 
-                 creation_date: str = BaseHeader.sytm_null_value, 
+                 creation_date: str = BaseHeader.SYTM_NULL_VALUE, 
                  processes: list = None):
         super().__init__()
         self.creation_date = creation_date

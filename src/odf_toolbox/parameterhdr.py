@@ -270,14 +270,14 @@ class ParameterHeader(BaseModel, BaseHeader):
                         elif float(value):
                             self.minimum_value = float(value)
                         else:
-                            self.minimum_value = BaseHeader.null_value
+                            self.minimum_value = BaseHeader.NULL_VALUE
                     case 'MAXIMUM_VALUE':
                         if str(value):
                             self.minimum_value = value
                         elif float(value):
                             self.minimum_value = float(value)
                         else:
-                            self.maximum_value = BaseHeader.null_value
+                            self.maximum_value = BaseHeader.NULL_VALUE
                     case 'NUMBER_VALID':
                         self.number_valid = int(float(value))
                     case 'NUMBER_NULL':
@@ -313,11 +313,11 @@ class ParameterHeader(BaseModel, BaseHeader):
             parameter_header_output += f"  MAXIMUM_VALUE = '{odfutils.check_datetime(self.maximum_value)}'\n"
         else:
             if self.minimum_value is None:
-                parameter_header_output += (f"  MINIMUM_VALUE = {BaseHeader.null_value}\n")
+                parameter_header_output += (f"  MINIMUM_VALUE = {BaseHeader.NULL_VALUE}\n")
             else:
                 parameter_header_output += (f"  MINIMUM_VALUE = {float(self.minimum_value):.4f}\n")
             if self.maximum_value is None:
-                parameter_header_output += (f"  MAXIMUM_VALUE = {BaseHeader.null_value}\n")
+                parameter_header_output += (f"  MAXIMUM_VALUE = {BaseHeader.NULL_VALUE}\n")
             else:
                 parameter_header_output += (f"  MAXIMUM_VALUE = {float(self.maximum_value):.4f}\n")
         parameter_header_output += f"  NUMBER_VALID = {self.number_valid}\n"
@@ -332,7 +332,7 @@ def main():
     param.units = 'decibars'
     param.code = 'PRES_01'
     param.wmo_code = 'PRES'
-    param.null_string = f'{BaseHeader.null_value}'
+    param.null_string = f'{BaseHeader.NULL_VALUE}'
     param.print_field_width = 10
     param.print_decimal_places = 3
     param.angle_of_section = 0.0

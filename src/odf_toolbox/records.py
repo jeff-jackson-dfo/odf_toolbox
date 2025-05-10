@@ -19,13 +19,13 @@ class DataRecords(BaseModel):
     """
 
     def __init__(self, 
-                 data_frame: pd.DataFrame = pd.DataFrame(),
+                 data_frame: pd.DataFrame = None,
                  parameter_list: list = None,
                  print_formats: dict = None
                  ):
-        self.data_frame = data_frame
-        self.parameter_list = parameter_list
-        self.print_formats = print_formats
+        self.data_frame = data_frame if data_frame is not None else pd.DataFrame()
+        self.parameter_list = parameter_list if parameter_list is not None else []
+        self.print_formats = print_formats if print_formats is not None else {}
 
     @property
     def data_frame(self) -> pd.DataFrame:

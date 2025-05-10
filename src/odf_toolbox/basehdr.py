@@ -29,9 +29,11 @@ class BaseHeader:
     # Shared log list to store the log entries for all instances of the class
     shared_log_list: ClassVar[list] = []
 
-    # Various null values
-    null_value: ClassVar[float] = -999.0
-    sytm_null_value: ClassVar[str] = '17-NOV-1858 00:00:00.00'
+    # Various constants
+    # Define the date format for SYTM
+    SYTM_FORMAT = "%d-%b-%Y %H:%M:%S.%f"
+    NULL_VALUE: ClassVar[float] = -999.0
+    SYTM_NULL_VALUE: ClassVar[str] = '17-NOV-1858 00:00:00.00'
 
     def __init__(self, config: LoggerConfig):
         self.config = config
