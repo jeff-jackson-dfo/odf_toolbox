@@ -6,20 +6,21 @@ from pydantic import BaseModel
 class PolynomialCalHeader(BaseModel, BaseHeader):
     
     def __init__(self,
-                 parameter_code: str = '',
-                 calibration_date: str = BaseHeader.SYTM_NULL_VALUE,
-                 application_date: str = BaseHeader.SYTM_NULL_VALUE,
-                 number_coefficients: int = 0,
+                 parameter_code: str = None,
+                 calibration_date: str = None,
+                 application_date: str = None,
+                 number_coefficients: int = None,
                  coefficients: list = None
                  ):
         super().__init__()
-        self.parameter_code = parameter_code
-        self.calibration_date = calibration_date
-        self.application_date = application_date
-        self.number_coefficients = number_coefficients
+        self.parameter_code = parameter_code if parameter_code is not None else ''
+        self.calibration_date = calibration_date if calibration_date is not None else BaseHeader.SYTM_NULL_VALUE
+        self.application_date = application_date if application_date is not None else BaseHeader.SYTM_NULL_VALUE
+        self.number_coefficients = number_coefficients if number_coefficients is not None else 0
         self.coefficients = coefficients if coefficients is not None else []
 
-    def log_poly_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
+    def log_poly_message(self, field: str, old_value: any, new_value: any) -> NoReturn:
+        assert isinstance(field, str), "Input argument 'field' must be a string."
         message = f"In Polynomial Cal Header field {field.upper()} was changed from '{old_value}' to '{new_value}'"
         super().log_message(message)
 
@@ -29,6 +30,7 @@ class PolynomialCalHeader(BaseModel, BaseHeader):
 
     @parameter_code.setter
     def parameter_code(self, value: str) -> NoReturn:
+        assert isinstance(value, str), "Input argument 'value' must be a string."
         value = value.strip("\' ")
         self._parameter_code = value
 
@@ -38,8 +40,9 @@ class PolynomialCalHeader(BaseModel, BaseHeader):
 
     @calibration_date.setter
     def calibration_date(self, value: str) -> NoReturn:
+        assert isinstance(value, str), "Input argument 'value' must be a string."
         value = value.strip("\' ")
-        self._calibration_date = value
+        self._calibration_date = odfutils.check_datetime(value)
 
     @property
     def application_date(self) -> str:
@@ -47,8 +50,9 @@ class PolynomialCalHeader(BaseModel, BaseHeader):
 
     @application_date.setter
     def application_date(self, value: str) -> NoReturn:
+        assert isinstance(value, str), "Input argument 'value' must be a string."
         value = value.strip("\' ")
-        self._application_date = value
+        self._application_date = odfutils.check_datetime(value)
 
     @property
     def number_coefficients(self) -> int:
@@ -56,6 +60,7 @@ class PolynomialCalHeader(BaseModel, BaseHeader):
 
     @number_coefficients.setter
     def number_coefficients(self, value: int) -> NoReturn:
+        assert isinstance(value, int), "Input argument 'value' must be a integer."
         self._number_coefficients = value
 
     @property
@@ -64,26 +69,23 @@ class PolynomialCalHeader(BaseModel, BaseHeader):
 
     @coefficients.setter
     def coefficients(self, coefficient_list: list):
+        assert isinstance(coefficient_list, list), "Input argument 'coefficient_list' must be a list."
+        for coef in coefficient_list:
+            assert isinstance(coef, float), "Input argument 'coefficient_list' must be a list of floats."
         self._coefficients = coefficient_list
 
-    def set_coefficient(self, coefficient_list: list, coefficient_number: int = 0):
-        number_coefficients = self.get_number_coefficients()
-        for idx, coefficient in enumerate(coefficient_list):
-            new_coefficient = odfutils.check_string(coefficient)
-            coefficient_list[idx] = odfutils.check_float(float(new_coefficient))
-        if coefficient_number == 0 and number_coefficients == 0:
-            self._coefficients = coefficient_list
-        elif coefficient_number == 0 and number_coefficients > 0:
-            self._coefficients.extend(coefficient_list)
-        elif coefficient_number <= number_coefficients and number_coefficients > 0:
-            if len(coefficient_list) == 1:
-                self._coefficients[coefficient_number] = coefficient_list.pop()
-        else:
-            raise ValueError("The 'coefficient_number' does not match the number of COEFFICIENTS.")
+    def set_coefficient(self, coefficient: float, coefficient_number: int = 0):
+        assert isinstance(coefficient, float), "Input argument 'coefficient' must be a float."
+        assert isinstance(coefficient_number, int), "Input argument 'coefficient_number' must be a integer."
+        assert coefficient_number >= 0, "Input argument 'coefficient_number' must be >= 0."
+        assert coefficient_number <= self.number_coefficients, "Input argument 'coefficient_number' must be <= the number of current coefficients."
+        if coefficient_number == 0:
+            self._coefficients.append(coefficient)
+        elif coefficient_number <= self.number_coefficients and self.number_coefficients > 0:
+            self._coefficients[coefficient_number - 1] = coefficient
 
     def populate_object(self, polynomial_cal_fields: list):
-        assert isinstance(polynomial_cal_fields, list), \
-               f"Input value is not of type list: {polynomial_cal_fields}"
+        assert isinstance(polynomial_cal_fields, list), f"Input argument 'polynomial_cal_fields' is not of type list."
         for header_line in polynomial_cal_fields:
             tokens = header_line.split('=', maxsplit=1)
             poly_dict = odfutils.list_to_dict(tokens)
@@ -109,29 +111,29 @@ class PolynomialCalHeader(BaseModel, BaseHeader):
 
     def print_object(self) -> str:
         polynomial_header_output = "POLYNOMIAL_CAL_HEADER\n"
-        polynomial_header_output += f"  PARAMETER_CODE = '{odfutils.check_string(self.parameter_code)}'\n"
+        polynomial_header_output += f"  PARAMETER_CODE = '{self.parameter_code}'\n"
         polynomial_header_output += (f"  CALIBRATION_DATE = "
                                      f"'{odfutils.check_datetime(self.calibration_date)}'\n")
         polynomial_header_output += (f"  APPLICATION_DATE = "
                                      f"'{odfutils.check_datetime(self.application_date)}'\n")
         polynomial_header_output += f"  NUMBER_COEFFICIENTS = {self.number_coefficients}\n"
-        coefficients_list = self.coefficients
         coefficients_print = ""
-        for coefficient in coefficients_list:
-            coefficient = float(odfutils.check_string(coefficient))
+        for coefficient in self.coefficients:
             coefficients_print = coefficients_print + "{:.8e}".format(coefficient) + " "
         polynomial_header_output += f"  COEFFICIENTS = {coefficients_print}\n"
         return polynomial_header_output
 
 
 def main():
+    print()
+    
     poly1 = PolynomialCalHeader()
     print(poly1.print_object())
     poly1.parameter_code = 'PRES_01'
     poly1.calibration_date = '11-JUN-1995 05:35:46.82'
     poly1.application_date = '11-JUN-1995 05:35:46.82'
     poly1.number_coefficients = 2
-    poly1.coefficients = ['0.60000000D+01',  '0.15000001D+00']
+    poly1.coefficients = [0.60000000e+01,  0.15000001e+00]
     print(poly1.print_object())
 
     poly2 = PolynomialCalHeader()
@@ -139,8 +141,14 @@ def main():
     poly2.calibration_date = '11-JUN-1995 05:35:46.83'
     poly2.application_date = '11-JUN-1995 05:35:46.83'
     poly2.number_coefficients = 2
-    poly2.coefficients = ['0.00000000E+01',  '0.25000001E-03']
+    poly2.coefficients = [0.0, 80.0]
+    poly2.log_poly_message('coefficient 2', poly2.coefficients[1], 9.750)
+    poly2.set_coefficient(9.750, 2)
     print(poly2.print_object())
 
+    for log_entry in BaseHeader.shared_log_list:
+        print(log_entry)
+    print()
+    
 if __name__ == "__main__":
     main()

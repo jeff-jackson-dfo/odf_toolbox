@@ -31,8 +31,8 @@ class OdfHeader(BaseModel, BaseHeader):
     """
 
     def __init__(self,
-                 file_specification: str = '',
-                 odf_specification_version: float = 2.0,
+                 file_specification: str = None,
+                 odf_specification_version: float = None,
                  cruise_header: CruiseHeader = None,
                  event_header: EventHeader = None,
                  meteo_header: MeteoHeader = None,
@@ -44,13 +44,14 @@ class OdfHeader(BaseModel, BaseHeader):
                  history_headers: list = None,
                  parameter_headers: list = None,
                  record_header: RecordHeader = None,
-                 data: DataRecords = None):
+                 data: DataRecords = None
+                 ):
         """
         Method that initializes an OdfHeader class object.
         """
         super().__init__()
-        self.file_specification = file_specification
-        self.odf_specification_version = odf_specification_version
+        self.file_specification = file_specification if file_specification is not None else ''
+        self.odf_specification_version = odf_specification_version if odf_specification_version is not None else 2.0
         self.cruise_header = cruise_header if cruise_header is not None else CruiseHeader()
         self.event_header = event_header if event_header is not None else EventHeader()
         self.meteo_header = meteo_header
@@ -65,6 +66,8 @@ class OdfHeader(BaseModel, BaseHeader):
         self.data = data if data is not None else DataRecords()
 
     def log_odf_message(self, message: str, type: str = 'self'):
+        assert isinstance(message, str), "Input argument 'message' must be a string."
+        assert isinstance(type, str), "Input argument 'type' must be a string."
         if type == "self":
             super().log_message(f"In ODF Header field {message}")
         elif type == "base":
@@ -72,26 +75,11 @@ class OdfHeader(BaseModel, BaseHeader):
 
     @property
     def file_specification(self) -> str:
-        """
-        Returns the file specification from the ODF_HEADER of an OdfHeader class object.
-
-        Returns
-        -------
-        file_specification (str) :
-            The file name and possibly path of an OdfHeader object (default is an empty string).
-        """
         return self._file_specification
 
     @file_specification.setter
     def file_specification(self, value: str) -> NoReturn:
-        """
-        Sets the file specification in the ODF_HEADER of an OdfHeader class object.
-
-        Parameters
-        ----------
-        value : str
-            The file name and possibly path of the OdfHeader object (default is an empty string).
-        """
+        assert isinstance(value, str), "Input argument 'value' must be a string."
         value = value.strip("\' ")
         self._file_specification = value
 
@@ -101,6 +89,7 @@ class OdfHeader(BaseModel, BaseHeader):
 
     @odf_specification_version.setter
     def odf_specification_version(self, value: float) -> NoReturn:
+        assert isinstance(value, float), "Input argument 'value' must be a float."
         self._odf_specification_version = value
 
     @property
@@ -109,6 +98,7 @@ class OdfHeader(BaseModel, BaseHeader):
 
     @cruise_header.setter
     def cruise_header(self, value: CruiseHeader) -> NoReturn:
+        assert isinstance(value, CruiseHeader), "Input argument 'value' must be a CruiseHeader object."
         self._cruise_header = value
 
     @property
@@ -117,6 +107,7 @@ class OdfHeader(BaseModel, BaseHeader):
 
     @event_header.setter
     def event_header(self, value: EventHeader) -> NoReturn:
+        assert isinstance(value, EventHeader), "Input argument 'value' must be a EventHeader object."
         self._event_header = value
 
     @property
@@ -125,7 +116,10 @@ class OdfHeader(BaseModel, BaseHeader):
 
     @meteo_header.setter
     def meteo_header(self, value: MeteoHeader) -> NoReturn:
-        self._meteo_header = value
+        if type(value) is MeteoHeader or value == None:
+            self._meteo_header = value
+        else:
+            raise ValueError("Input parameter 'value' is not a MeteoHeader object.")
 
     @property
     def instrument_header(self) -> InstrumentHeader:
@@ -133,6 +127,7 @@ class OdfHeader(BaseModel, BaseHeader):
 
     @instrument_header.setter
     def instrument_header(self, value: InstrumentHeader) -> NoReturn:
+        assert isinstance(value, InstrumentHeader), "Input argument 'value' must be a InstrumentHeader object."        
         self._instrument_header = value
 
     @property
@@ -141,7 +136,8 @@ class OdfHeader(BaseModel, BaseHeader):
 
     @quality_header.setter
     def quality_header(self, value: QualityHeader) -> NoReturn:
-        self._quality_header = value
+        if type(value) is QualityHeader:
+            self._quality_header = value
 
     @property
     def general_cal_headers(self) -> list:
@@ -149,6 +145,7 @@ class OdfHeader(BaseModel, BaseHeader):
 
     @general_cal_headers.setter
     def general_cal_headers(self, value: list) -> NoReturn:
+        assert isinstance(value, list), "Input argument 'value' must be a list."        
         self._general_cal_headers = value
 
     @property
@@ -157,6 +154,7 @@ class OdfHeader(BaseModel, BaseHeader):
 
     @compass_cal_headers.setter
     def compass_cal_headers(self, value: list) -> NoReturn:
+        assert isinstance(value, list), "Input argument 'value' must be a list."        
         self._compass_cal_headers = value
 
     @property
@@ -165,6 +163,7 @@ class OdfHeader(BaseModel, BaseHeader):
 
     @polynomial_cal_headers.setter
     def polynomial_cal_headers(self, value: list) -> NoReturn:
+        assert isinstance(value, list), "Input argument 'value' must be a list."        
         self._polynomial_cal_headers = value
 
     @property
@@ -173,6 +172,7 @@ class OdfHeader(BaseModel, BaseHeader):
 
     @history_headers.setter
     def history_headers(self, value: list) -> NoReturn:
+        assert isinstance(value, list), "Input argument 'value' must be a list."        
         self._history_headers = value
 
     @property
@@ -181,6 +181,7 @@ class OdfHeader(BaseModel, BaseHeader):
 
     @parameter_headers.setter
     def parameter_headers(self, value: list) -> NoReturn:
+        assert isinstance(value, list), "Input argument 'value' must be a list."        
         self._parameter_headers = value
 
     @property
@@ -189,6 +190,7 @@ class OdfHeader(BaseModel, BaseHeader):
 
     @record_header.setter
     def record_header(self, value: RecordHeader) -> NoReturn:
+        assert isinstance(value, RecordHeader), "Input argument 'value' must be a RecordHeader object."        
         self._record_header = value
 
     @property
@@ -197,18 +199,11 @@ class OdfHeader(BaseModel, BaseHeader):
 
     @data.setter
     def data(self, value: DataRecords) -> NoReturn:
+        assert isinstance(value, DataRecords), "Input argument 'value' must be a DataRecords object."        
         self._data = value
 
     def populate_object(self, odf_dict: dict):
-        """
-        Populates the ODF_HEADER of an OdfHeader class object.
-
-        Parameters
-        ----------
-        odf_dict : dict
-            key, value pairs containing the info for the ODF_HEADER.
-
-        """
+        assert isinstance(odf_dict, dict), "Input argument 'value' must be a dict."        
         for key, value in odf_dict.items():
             match key.strip():
                 case 'FILE_SPECIFICATION':
@@ -217,22 +212,17 @@ class OdfHeader(BaseModel, BaseHeader):
                     self._odf_specification_version = value.strip()
         return self
 
-    def print_object(self, file_version: float = 2) -> str:
-        """
-        Prints the ODF_HEADER of the OdfHeader object
-
-        Args:
-            file_version : float, optional
-        """
+    def print_object(self, file_version: float = 2.0) -> str:
+        assert isinstance(file_version, float), "Input argument 'file_version' must be a float."
 
         # Add the modifications done to the odfHeader instance before outputting it.
         self.add_log_to_history()
 
         odf_output = ""
-        if file_version == 2:
+        if file_version == 2.0:
             self.odf_specification_version = 2.0
             odf_output = "ODF_HEADER,\n"
-            odf_output += f"  FILE_SPECIFICATION = '{odfutils.check_string(self.file_specification)}',\n"
+            odf_output += f"  FILE_SPECIFICATION = '{self.file_specification}',\n"
             odf_output += odfutils.add_commas(self.cruise_header.print_object())
             odf_output += odfutils.add_commas(self.event_header.print_object())
             if self.meteo_header is not None:
@@ -256,7 +246,7 @@ class OdfHeader(BaseModel, BaseHeader):
         elif file_version >= 3:
             self.odf_specification_version = 3.0
             odf_output = "ODF_HEADER\n"
-            odf_output += f"  FILE_SPECIFICATION = '{odfutils.check_string(self.file_specification)}'\n"
+            odf_output += f"  FILE_SPECIFICATION = '{self.file_specification}'\n"
             odf_output += (f"  ODF_SPECIFICATION_VERSION = {self.odf_specification_version}\n")
             odf_output += self.cruise_header.print_object()
             odf_output += self.event_header.print_object()
@@ -282,24 +272,7 @@ class OdfHeader(BaseModel, BaseHeader):
 
     # def read_header(odf: Type[newOdfHeader], lines: list) -> newOdfHeader:
     def read_odf(self, odf_file_path: str):
-        """
-        Reads an ODF file and puts it into an OdfHeader class object.
-
-        Parameters
-        ----------
-        odf_file_path : str
-            The full path and filename to the ODF file to be read.
-
-        Returns
-        -------
-        odf_object : OdfHeader object
-            the modified OdfHeader object now containing the information from the ODF file that was read.
-
-        Args:
-            odf_file_path:
-            file_path:
-        """
-
+        assert isinstance(odf_file_path, str), "Input argument 'odf_file_path' must be a string."
         file_lines = odfutils.read_file_lines(odf_file_path)
 
         text_to_find = "_HEADER"
@@ -409,7 +382,10 @@ class OdfHeader(BaseModel, BaseHeader):
         if self.record_header.num_cycle != len(self.data):
             self.record_header.num_cycle = len(self.data)
 
-    def write_odf(self, odf_file_path: str, version: float = 2) -> NoReturn:
+    def write_odf(self, odf_file_path: str, version: float = 2.0) -> NoReturn:
+        assert isinstance(odf_file_path, str), "Input argument 'odf_file_path' must be a string."
+        assert isinstance(version, float), "Input argument 'version' must be a float."
+
         """ Write the ODF file to disk. """
         odf_file_text = self.print_object(file_version = version)
         file1 = open(odf_file_path, "w")
@@ -440,13 +416,15 @@ class OdfHeader(BaseModel, BaseHeader):
         for log_entry in self.shared_log_list:
             self.add_to_history(log_entry)
 
-    def add_to_log(self, message) -> NoReturn:
+    def add_to_log(self, message: str) -> NoReturn:
+        assert isinstance(message, str), "Input argumnet 'message' must be a string."
         # Access the log records stored in the custom handler
         self.shared_log_list.append(message)
 
-    def update_parameter(self, parameter_code: str, attribute: str, value) -> NoReturn:
-        codes = self.data.get_parameter_list()
-        assert isinstance(codes, list), f"Input value is not of type list: {codes}"
+    def update_parameter(self, parameter_code: str, attribute: str, value: any) -> NoReturn:
+        assert isinstance(parameter_code, str), "Input argumnet 'parameter_code' must be a string."
+        assert isinstance(attribute, str), "Input argumnet 'attribute' must be a string."
+        codes = self.data.parameter_list
         if isinstance(value, str):
             eval(f"self.parameter_headers[codes.index(parameter_code)].set_{attribute}('{value}')")
         else:
@@ -475,6 +453,7 @@ class OdfHeader(BaseModel, BaseHeader):
         return file_spec
 
     def fix_parameter_codes(self, new_codes: list = None) -> Self:
+        assert isinstance(new_codes, list), "Input argument 'new_codes' must be a list."
 
         # Get the list of parameter names and the data frame in case names need to be fixed.
         df = self.data.data_frame
@@ -517,6 +496,8 @@ class OdfHeader(BaseModel, BaseHeader):
         return self
     
     def fix_polynomial_codes(self, old_codes: list, new_codes: list) -> Self:
+        assert isinstance(old_codes, list), "Input argument 'old_codes' must be a list."
+        assert isinstance(new_codes, list), "Input argument 'new_codes' must be a list."
 
         for i, pch in enumerate(self.polynomial_cal_headers):
 
@@ -534,18 +515,14 @@ class OdfHeader(BaseModel, BaseHeader):
         return self
 
     def is_parameter_code(self, code: str) -> bool:
-        """
-        IS_PARAMETER_CODE: Check if a parameter code is in the ODF object.
-        """
+        assert isinstance(code, str), "Input argument 'code' must be a string."
         codes = self.get_parameter_codes()
         return code in codes
 
     @staticmethod
     def null2empty(df: pd.DataFrame) -> pd.DataFrame:
-        """
-        null2empty: replaces numeric null values (-99) with None values in the input Pandas data frame.
-        """
-        new_df = df.replace(BaseHeader.null_value, None, inplace=False)
+        assert isinstance(df, pd.DataFrame), "Input argument 'df' must be a Pandas DataFrame."
+        new_df = df.replace(BaseHeader.NULL_VALUE, None, inplace=False)
         return new_df
                 
 
@@ -570,11 +547,11 @@ def main():
     # odf.cruise_header.set_organization('DFO BIO')
     # odf.cruise_header.set_chief_scientist('GLEN HARRISON')
     csdt = odf.cruise_header.start_date
-    odf.cruise_header.start_date = '01-APR-2022 00:00:00'
-    odf.cruise_header.log_cruise_message("START_DATE", csdt, '01-APR-2022 00:00:00')
+    odf.cruise_header.start_date = '01-APR-2022 00:00:00.00'
+    odf.cruise_header.log_cruise_message("START_DATE", csdt, '01-APR-2022 00:00:00.00')
     cedt = odf.cruise_header.end_date
-    odf.cruise_header.end_date = '31-OCT-2022 00:00:00'
-    odf.cruise_header.log_cruise_message("END_DATE", cedt, '31-OCT-2022 00:00:00')
+    odf.cruise_header.end_date = '31-OCT-2022 00:00:00.00'
+    odf.cruise_header.log_cruise_message("END_DATE", cedt, '31-OCT-2022 00:00:00.00')
     platform = odf.cruise_header.platform
     odf.cruise_header.platform = "LATALANTE"
     odf.cruise_header.log_cruise_message("PLATFORM", platform, "LATALANTE")

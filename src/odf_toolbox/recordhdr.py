@@ -21,7 +21,8 @@ class RecordHeader(BaseModel, BaseHeader):
         self.num_cycle = num_cycle
         self.num_param = num_param
 
-    def log_record_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
+    def log_record_message(self, field: str, old_value: any, new_value: any) -> NoReturn:
+        assert isinstance(field, str), "Input argument 'field' must be a string."
         message = f"In Record Header field {field.upper()} was changed from {old_value} to {new_value}"
         super().log_message(message)
 
@@ -31,6 +32,7 @@ class RecordHeader(BaseModel, BaseHeader):
 
     @num_calibration.setter
     def num_calibration(self, value: int) -> NoReturn:
+        assert isinstance(value, int), "Input argument 'value' must be an integer."
         self._num_calibration = value
 
     @property
@@ -39,6 +41,7 @@ class RecordHeader(BaseModel, BaseHeader):
 
     @num_swing.setter
     def num_swing(self, value: int) -> NoReturn:
+        assert isinstance(value, int), "Input argument 'value' must be an integer."
         self._num_swing = value
 
     @property
@@ -47,6 +50,7 @@ class RecordHeader(BaseModel, BaseHeader):
 
     @num_history.setter
     def num_history(self, value: int) -> NoReturn:
+        assert isinstance(value, int), "Input argument 'value' must be an integer."
         self._num_history = value
 
     @property
@@ -55,6 +59,7 @@ class RecordHeader(BaseModel, BaseHeader):
 
     @num_cycle.setter
     def num_cycle(self, value: int) -> NoReturn:
+        assert isinstance(value, int), "Input argument 'value' must be an integer."
         self._num_cycle = value
 
     @property
@@ -63,9 +68,11 @@ class RecordHeader(BaseModel, BaseHeader):
 
     @num_param.setter
     def num_param(self, value: int) -> NoReturn:
+        assert isinstance(value, int), "Input argument 'value' must be an integer."
         self._num_param = value
 
     def populate_object(self, record_fields: list) -> NoReturn:
+        assert isinstance(record_fields, list), "Input argument 'record_fields' must be a list."
         for record_line in record_fields:
             tokens = record_line.split('=', maxsplit=1)
             record_dict = odfutils.list_to_dict(tokens)
@@ -94,7 +101,9 @@ class RecordHeader(BaseModel, BaseHeader):
         return record_header_output
 
 def main():
+    print()
     record = RecordHeader()
+    print(record.print_object())
     record_fields = ["NUM_CALIBRATION = 1",
                     "NUM_HISTORY = 3",
                     "NUM_SWING = 0",
@@ -107,6 +116,7 @@ def main():
     print(record.print_object())
     for log_entry in BaseHeader.shared_log_list:
         print(log_entry)
+    print()
 
 if __name__ == "__main__":
     main()

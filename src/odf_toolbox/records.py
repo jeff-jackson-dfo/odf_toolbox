@@ -33,6 +33,7 @@ class DataRecords(BaseModel):
 
     @data_frame.setter
     def data_frame(self, dataframe: pd.DataFrame) -> NoReturn:
+        assert isinstance(dataframe, pd.DataFrame), f"Input value is not of type pandas DataFrame: {dataframe}"
         self._data_frame = dataframe
 
     @property
@@ -41,6 +42,9 @@ class DataRecords(BaseModel):
 
     @parameter_list.setter
     def parameter_list(self, parameters: list) -> NoReturn:
+        parameters = odfutils.check_list(parameters)
+        for parameter in parameters:
+            parameter = odfutils.check_string(parameter)
         self._parameter_list = parameters
 
     @property
@@ -49,6 +53,10 @@ class DataRecords(BaseModel):
 
     @print_formats.setter
     def print_formats(self, formats: dict) -> NoReturn:
+        assert isinstance(formats, dict), f"Input value is not of type dict: {formats}"
+        for key, value in formats.items():
+            key = odfutils.check_string(key)
+            value = odfutils.check_string(value)
         self._print_formats = formats
 
     def __len__(self):

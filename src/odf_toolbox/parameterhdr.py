@@ -3,56 +3,14 @@ from odf_toolbox import odfutils
 from typing import NoReturn
 from pydantic import BaseModel
 class ParameterHeader(BaseModel, BaseHeader):
-    """
-    A class to represent a Parameter Header in an ODF object.
-
-    Attributes:
-    -----------
-    _type : string
-        the data type of the parameter
-    _name : string
-        the name of the parameter
-    _units : string
-        the units of the parameter
-    _code : string
-        the code of the parameter
-    _wmo_code : string
-        the wmo code of the parameter
-    _null_value : string
-        the null value of the parameter
-    _print_field_order : integer
-        the order of the parameter within the ODF object
-    _print_field_width : integer
-        the print width for the parameter's values
-    _print_decimal_places : integer
-        the number of decimal places for the parameter's values
-    _angle_of_section : float
-    _magnetic_variation : float
-    _depth : float
-    _minimum_value : not restricted but normally float or str (datetime)
-        the minimum value of the parameter
-    _maximum_value : not restricted but normally float or str (datetime)
-        the maximum value of the parameter
-    _number_valid : integer
-        the number of valid parameter values
-    _number_null : integer
-        the number of null parameter values
-
-    Methods:
-    -------
-    __init__ :
-        initialize a ParameterHeader class object
-    __str__ : str
-        returns a ParameterHeader class object as a string
-    """
-
+    """ A class to represent a Parameter Header in an ODF object. """
     def __init__(self,
-                 type: str = '',
-                 name: str = '',
-                 units: str = '',
-                 code: str = '',
-                 wmo_code: str = '',
-                 null_string: str = '',
+                 type: str = None,
+                 name: str = None,
+                 units: str = None,
+                 code: str = None,
+                 wmo_code: str = None,
+                 null_string: str = None,
                  print_field_order: int = None,
                  print_field_width: int = None,
                  print_decimal_places: int = None,
@@ -64,14 +22,13 @@ class ParameterHeader(BaseModel, BaseHeader):
                  number_valid: int = None,
                  number_null: int = None
                 ):
-
         super().__init__()
-        self._type = type
-        self._name = name
-        self._units = units
-        self._code = code
-        self._wmo_code = wmo_code
-        self._null_string = null_string
+        self._type = type if type is not None else ''
+        self._name = name if name is not None else ''
+        self._units = units if units is not None else ''
+        self._code = code if code is not None else ''
+        self._wmo_code = wmo_code if wmo_code is not None else ''
+        self._null_string = null_string if null_string is not None else ''
         self._print_field_order = print_field_order
         self._print_field_width = print_field_width
         self._print_decimal_places = print_decimal_places
@@ -84,6 +41,9 @@ class ParameterHeader(BaseModel, BaseHeader):
         self._number_null = number_null
 
     def log_parameter_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
+        assert isinstance(field, str), "Input argument 'field' must be a string."
+        assert isinstance(old_value, str), "Input argument 'old_value' must be a string."
+        assert isinstance(new_value, str), "Input argument 'new_value' must be a string."
         message = f"In Parameter Header field {field.upper()} was changed from '{old_value}' to '{new_value}'"
         super().log_message(message)
 
@@ -97,6 +57,7 @@ class ParameterHeader(BaseModel, BaseHeader):
 
     @type.setter
     def type(self, value: str) -> NoReturn:
+        assert isinstance(value, str), "Input argument 'value' must be a string."
         value = value.strip("\' ")
         self._type = value
 
@@ -106,6 +67,7 @@ class ParameterHeader(BaseModel, BaseHeader):
 
     @name.setter
     def name(self, value: str) -> NoReturn:
+        assert isinstance(value, str), "Input argument 'value' must be a string."
         value = value.strip("\' ")
         self._name = value
 
@@ -115,6 +77,7 @@ class ParameterHeader(BaseModel, BaseHeader):
 
     @units.setter
     def units(self, value: str) -> NoReturn:
+        assert isinstance(value, str), "Input argument 'value' must be a string."
         value = value.strip("\' ")
         self._units = value
 
@@ -124,6 +87,7 @@ class ParameterHeader(BaseModel, BaseHeader):
 
     @code.setter
     def code(self, value: str) -> NoReturn:
+        assert isinstance(value, str), "Input argument 'value' must be a string."
         value = value.strip("\' ")
         self._code = value
 
@@ -133,6 +97,7 @@ class ParameterHeader(BaseModel, BaseHeader):
 
     @wmo_code.setter
     def wmo_code(self, value: str) -> NoReturn:
+        assert isinstance(value, str), "Input argument 'value' must be a string."
         value = value.strip("\' ")
         self._wmo_code = value
 
@@ -142,9 +107,8 @@ class ParameterHeader(BaseModel, BaseHeader):
 
     @null_string.setter
     def null_string(self, value: str) -> NoReturn:
+        assert isinstance(value, str), "Input argument 'value' must be a string."
         value = value.strip("\' ")
-        # if self.type == 'SYTM':
-        #     value = '17-NOV-1858 00:00:00.00'
         self._null_string = value
 
     @property
@@ -153,6 +117,7 @@ class ParameterHeader(BaseModel, BaseHeader):
 
     @print_field_order.setter
     def print_field_order(self, value: int) -> NoReturn:
+        assert isinstance(value, int), "Input argument 'value' must be a integer."
         self._print_field_order = value
 
     @property
@@ -161,6 +126,7 @@ class ParameterHeader(BaseModel, BaseHeader):
 
     @print_field_width.setter
     def print_field_width(self, value: int) -> NoReturn:
+        assert isinstance(value, int), "Input argument 'value' must be a integer."
         self._print_field_width = value
 
     @property
@@ -169,6 +135,7 @@ class ParameterHeader(BaseModel, BaseHeader):
 
     @print_decimal_places.setter
     def print_decimal_places(self, value: int) -> NoReturn:
+        assert isinstance(value, int), "Input argument 'value' must be a integer."
         self._print_decimal_places = value
 
     @property
@@ -177,6 +144,7 @@ class ParameterHeader(BaseModel, BaseHeader):
 
     @angle_of_section.setter
     def angle_of_section(self, value: float) -> NoReturn:
+        assert isinstance(value, float), "Input argument 'value' must be a float."
         self._angle_of_section = value
 
     @property
@@ -185,6 +153,7 @@ class ParameterHeader(BaseModel, BaseHeader):
 
     @magnetic_variation.setter
     def magnetic_variation(self, value: float) -> NoReturn:
+        assert isinstance(value, float), "Input argument 'value' must be a float."
         self._magnetic_variation = value
 
     @property
@@ -193,6 +162,7 @@ class ParameterHeader(BaseModel, BaseHeader):
 
     @depth.setter
     def depth(self, value: float) -> NoReturn:
+        assert isinstance(value, float), "Input argument 'value' must be a float."
         self._depth = value
 
     @property
@@ -217,6 +187,7 @@ class ParameterHeader(BaseModel, BaseHeader):
 
     @number_valid.setter
     def number_valid(self, value: int) -> NoReturn:
+        assert isinstance(value, int), "Input argument 'value' must be a integer."
         self._number_valid = value
 
     @property
@@ -225,9 +196,11 @@ class ParameterHeader(BaseModel, BaseHeader):
 
     @number_null.setter
     def number_null(self, value: int) -> NoReturn:
+        assert isinstance(value, int), "Input argument 'value' must be a integer."
         self._number_null = value
 
     def populate_object(self, parameter_fields: list) -> NoReturn:
+        assert isinstance(parameter_fields, list), "Input argument 'parameter_fields' must be a list."
         for header_line in parameter_fields:
             tokens = header_line.split('=', maxsplit=1)
             parameter_dict = odfutils.list_to_dict(tokens)
@@ -261,21 +234,25 @@ class ParameterHeader(BaseModel, BaseHeader):
                     case 'MAGNETIC_VARIATION':
                         self.magnetic_variation = float(value)
                     case 'DEPTH':
-                        new_value = odfutils.check_string(value)
-                        value = float(new_value)
-                        self.depth = value
+                        self.depth = float(value)
                     case 'MINIMUM_VALUE':
                         if str(value):
-                            self.minimum_value = value
+                            if self.type == 'SYTM':
+                                self.minimum_value = odfutils.check_datetime(value)
+                            else:
+                                self.minimum_value = BaseHeader.SYTM_NULL_VALUE
                         elif float(value):
-                            self.minimum_value = float(value)
+                            self.minimum_value = value
                         else:
                             self.minimum_value = BaseHeader.NULL_VALUE
                     case 'MAXIMUM_VALUE':
                         if str(value):
-                            self.minimum_value =BaseHeader.SYTM_NULL_VALUE
+                            if self.type == 'SYTM':
+                                self.maximum_value = odfutils.check_datetime(value)
+                            else:
+                                self.maximum_value = BaseHeader.SYTM_NULL_VALUE
                         elif float(value):
-                            self.minimum_value = float(value)
+                            self.minimum_value = value
                         else:
                             self.maximum_value = BaseHeader.NULL_VALUE
                     case 'NUMBER_VALID':
@@ -315,17 +292,19 @@ class ParameterHeader(BaseModel, BaseHeader):
             if self.minimum_value is None:
                 parameter_header_output += (f"  MINIMUM_VALUE = {BaseHeader.NULL_VALUE}\n")
             else:
-                parameter_header_output += (f"  MINIMUM_VALUE = {float(self.minimum_value):.4f}\n")
+                parameter_header_output += (f"  MINIMUM_VALUE = {self.minimum_value}\n")
             if self.maximum_value is None:
                 parameter_header_output += (f"  MAXIMUM_VALUE = {BaseHeader.NULL_VALUE}\n")
             else:
-                parameter_header_output += (f"  MAXIMUM_VALUE = {float(self.maximum_value):.4f}\n")
+                parameter_header_output += (f"  MAXIMUM_VALUE = {self.maximum_value}\n")
         parameter_header_output += f"  NUMBER_VALID = {self.number_valid}\n"
         parameter_header_output += f"  NUMBER_NULL = {self.number_null}\n"
         return parameter_header_output
 
 
 def main():
+    print()
+    
     param1 = ParameterHeader()
     param1.type = 'DOUB'
     param1.name = 'Pressure'
@@ -364,6 +343,6 @@ def main():
     param2.number_null = 643
     param2.number_valid = 1064
     print(param2.print_object())
-
+    
 if __name__ == "__main__":
     main()

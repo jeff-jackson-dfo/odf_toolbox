@@ -4,23 +4,25 @@ from typing import NoReturn
 from pydantic import BaseModel
 
 class InstrumentHeader(BaseModel, BaseHeader):
-    """
-    A class to represent an Instrument Header in an ODF object.
-    """
+    """ A class to represent an Instrument Header in an ODF object. """
     def __init__(self, 
-                 instrument_type: str = '', 
-                 model: str = '', 
-                 serial_number: str = '', 
-                 description: str = ''
+                 instrument_type: str = None, 
+                 model: str = None, 
+                 serial_number: str = None, 
+                 description: str = None
                  ) -> NoReturn:
         super().__init__()
-        self.instrument_type = instrument_type
-        self.model = model
-        self.serial_number = serial_number
-        self.description = description
+        self.instrument_type = instrument_type if instrument_type is not None else ''
+        self.model = model if model is not None else ''
+        self.serial_number = serial_number if serial_number is not None else ''
+        self.description = description if description is not None else ''
 
-    def log_instrument_message(self, field: str, old_value: any, new_value: any) -> NoReturn:
-        old_value = "''"
+    def log_instrument_message(self, field: str, old_value: str, new_value: str) -> NoReturn:
+        assert isinstance(field, str), "Input argument 'field' must be a string."
+        assert isinstance(old_value, str), "Input argument 'old_value' must be a string."
+        assert isinstance(new_value, str), "Input argument 'new_value' must be a string."
+        if old_value == "":
+            old_value = "''"
         message = f"In Instrument Header field {field.upper()} was changed from {old_value} to '{new_value}'"
         super().log_message(message)
 
@@ -30,6 +32,7 @@ class InstrumentHeader(BaseModel, BaseHeader):
 
     @instrument_type.setter
     def instrument_type(self, value: str) -> NoReturn:
+        assert isinstance(value, str), "Input argument 'value' must be a string."
         self._instrument_type = value
 
     @property
@@ -38,6 +41,7 @@ class InstrumentHeader(BaseModel, BaseHeader):
 
     @model.setter
     def model(self, value: str) -> NoReturn:
+        assert isinstance(value, str), "Input argument 'value' must be a string."
         self._model = value
 
     @property
@@ -46,6 +50,7 @@ class InstrumentHeader(BaseModel, BaseHeader):
 
     @serial_number.setter
     def serial_number(self, value: str) -> NoReturn:
+        assert isinstance(value, str), "Input argument 'value' must be a string."
         self._serial_number = value
 
     @property
@@ -54,9 +59,11 @@ class InstrumentHeader(BaseModel, BaseHeader):
 
     @description.setter
     def description(self, value: str) -> NoReturn:
+        assert isinstance(value, str), "Input argument 'value' must be a string."
         self._description = value
 
     def populate_object(self, instrument_fields: list):
+        assert isinstance(instrument_fields, list), "Input argument 'instrument_fields' must be a list."
         for header_line in instrument_fields:
             tokens = header_line.split('=', maxsplit=1)
             instrument_dict = odfutils.list_to_dict(tokens)
@@ -76,14 +83,16 @@ class InstrumentHeader(BaseModel, BaseHeader):
     
     def print_object(self) -> str:
         instrument_header_output = "INSTRUMENT_HEADER\n"
-        instrument_header_output += f"  INST_TYPE = '{odfutils.check_string(self.instrument_type)}'\n"
-        instrument_header_output += f"  MODEL = '{odfutils.check_string(self.model)}'\n"
-        instrument_header_output += f"  SERIAL_NUMBER = '{odfutils.check_string(self.serial_number)}'\n"
-        instrument_header_output += f"  DESCRIPTION = '{odfutils.check_string(self.description)}'\n"
+        instrument_header_output += f"  INST_TYPE = '{self.instrument_type}'\n"
+        instrument_header_output += f"  MODEL = '{self.model}'\n"
+        instrument_header_output += f"  SERIAL_NUMBER = '{self.serial_number}'\n"
+        instrument_header_output += f"  DESCRIPTION = '{self.description}'\n"
         return instrument_header_output
 
 
 def main():
+    print()
+
     instrument_header = InstrumentHeader()
     print(instrument_header.print_object())
     instrument_header.instrument_type = 'CTD'
@@ -94,7 +103,7 @@ def main():
     print(instrument_header.print_object())
     for log_entry in BaseHeader.shared_log_list:
         print(log_entry)
-
+    print()
 
 if __name__ == "__main__":
     main()

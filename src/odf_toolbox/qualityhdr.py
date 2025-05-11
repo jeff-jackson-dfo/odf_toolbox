@@ -50,6 +50,8 @@ class QualityHeader(BaseModel, BaseHeader):
 
     @quality_date.setter
     def quality_date(self, value: str) -> NoReturn:
+        value = odfutils.check_string(value)
+        value = odfutils.check_datetime(value)
         self._quality_date = value.upper()
 
     @property
@@ -58,9 +60,12 @@ class QualityHeader(BaseModel, BaseHeader):
 
     @quality_tests.setter
     def quality_tests(self, quality_tests: list) -> NoReturn:
+        quality_tests = odfutils.check_list(quality_tests)
         self._quality_tests = quality_tests
 
     def set_quality_test(self, quality_test: str, test_number: int = 0) -> NoReturn:
+        quality_test = odfutils.check_string(quality_test)
+        test_number = odfutils.check_int(test_number)
         number_of_tests = len(self.quality_tests)
         if test_number == 0 and number_of_tests >= 0:
             self._quality_tests.append(quality_test)
@@ -75,9 +80,14 @@ class QualityHeader(BaseModel, BaseHeader):
 
     @quality_comments.setter
     def quality_comments(self, quality_comments: list) -> NoReturn:
+        quality_comments = odfutils.check_list(quality_comments)
+        for x, quality_comment in enumerate(quality_comments):
+            quality_comment = odfutils.check_string(quality_comment)
         self._quality_comments = quality_comments
 
     def set_quality_comment(self, quality_comment: str, comment_number: int = 0) -> NoReturn:
+        quality_comment = odfutils.check_string(quality_comment)
+        comment_number = odfutils.check_int(comment_number)
         number_of_comments = len(self.quality_comments)
         if comment_number == 0 and number_of_comments >= 0:
             self._quality_comments.append(quality_comment)
@@ -121,7 +131,7 @@ class QualityHeader(BaseModel, BaseHeader):
         quality_header = QualityHeader()
         print(quality_header.print_object())
         sytm = '01-JUL-2017 10:45:19.00'
-        quality_header.quality_date = sytm
+        quality_header.quality_date = '01-JUL-2017 10:45:19.00'
         quality_header.set_quality_test('Test 1')
         quality_header.set_quality_test('Test 2')
         quality_header.quality_comments = ['Comment 1', 'Comment 2']

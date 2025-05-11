@@ -8,7 +8,7 @@ from icecream import ic
 
 def read_file_lines(file_with_path: str):
     assert isinstance(file_with_path, str), \
-        f"Input value is not of type str: {file_with_path}"
+        f"Input argument 'file_with_path' is not of type str: {file_with_path}"
     try:
         with open(file_with_path, 'r') as file:
             lines = list(file_line.strip() for file_line in file.readlines())
@@ -20,23 +20,23 @@ def read_file_lines(file_with_path: str):
 
 def find_lines_with_text(odf_file_lines: list, separator: str) -> list:
     assert isinstance(odf_file_lines, list), \
-        f"Input value is not of type list: {odf_file_lines}"
+        f"Input argument 'odf_file_lines' is not of type list: {odf_file_lines}"
     assert isinstance(separator, str), \
-        f"Input value is not of type str: {separator}"
+        f"Input argument 'separator' is not of type str: {separator}"
     matching_lines = [(text_index, text_line) for text_index, text_line in enumerate(odf_file_lines)
                       if separator in text_line]
     return matching_lines
 
 def split_lines_into_dict(lines: list) -> dict:
     assert isinstance(lines, list), \
-        f"Input value is not of type list: {lines}"
+        f"Input argument 'lines' is not of type list: {lines}"
     return list_to_dict(lines)
 
 def search_dictionaries(search_text: str, dictionaries: list):
     assert isinstance(search_text, str), \
-        f"Input value is not of type str: {search_text}"
+        f"Input argument 'search_text' is not of type str: {search_text}"
     assert isinstance(dictionaries, list), \
-        f"Input value is not of type list: {dictionaries}"
+        f"Input argument 'dictionaries' is not of type list: {dictionaries}"
     matching_results = []
     for string_index, dictionary in enumerate(dictionaries):
         for key, value in dictionary.items():
@@ -46,7 +46,7 @@ def search_dictionaries(search_text: str, dictionaries: list):
 
 def split_lines_after_data(all_data_lines: list) -> pandas.DataFrame:
     assert isinstance(all_data_lines, list), \
-        f"Input value is not of type list: {all_data_lines}"
+        f"Input argument 'all_data_lines' is not of type list: {all_data_lines}"
     result_lines = []
     for data_line in all_data_lines:
         # Split each line by all whitespace characters
@@ -63,32 +63,22 @@ def get_current_date_time() -> str:
     dts = dt.strftime("%d-%b-%Y %H:%M:%S.%f").upper()
     return f"'{dts[:-4]}'"
 
-def check_value(value):
-    value_type = type(value)
-    if value_type == str:  
-        check_string(value)
-    elif value_type == int:
-        check_int(value)
-    elif value_type == float:
-        check_float(value)
-
 def check_float(value: float) -> float:
     if value is None:
-        value = -99.0
-    assert isinstance(value, float), \
-        f"Input value is not of type float: {value}"
+        value = BaseHeader.NULL_VALUE
+    assert isinstance(value, float), f"Input value is not of type float: {value}"
     return value
 
 def check_int(value: int) -> int:
     if value is None:
-        value = -99
-    assert isinstance(value, int), \
-        f"Input value is not of type int: {value}"
+        value = int(BaseHeader.NULL_VALUE)
+    assert isinstance(value, int), f"Input value is not of type int: {value}"
     return value
 
-def check_long(value: float) -> float:
+def check_list(value: list) -> list:
     if value is None:
-        value = -999.0
+        value = []
+    assert isinstance(value, list), f"Input value is not of type list: {value}"
     return value
 
 def check_datetime(value: str) -> str:
@@ -106,7 +96,6 @@ def check_datetime(value: str) -> str:
 def check_string(value: str) -> str:
     assert isinstance(value, str), \
         f"Input value is not of type str: {value}"
-    # value = check_datetime(value)
     # Check if this string value is actually an exponential number that uses the old unsupported exponent "D".
     # If it does then replace it with an "E".
     if re.search(r'[0-9]*.[0-9]*D[+-][0-9]*', value):
@@ -178,16 +167,16 @@ if __name__ == "__main__":
     # ret = check_datetime('23-MAY-2010 16:00:02.88')
     # print(ret)
 
-    # check_value(None)
-    # check_value(57.5)
-    # check_value(100)
-    # check_value('Nice melons!')
-
     coef = '0.60000000D+01'
     coef = check_string(coef)
     new_coef = check_float(float(coef))
     ic(new_coef)
     
+    ic(check_int(3))
+    ic(check_float(5.675))
+    ic(check_float('melons'))
+
+
     # text_lines = "This is line 1\nThis is line\nThis is the last line\n"
     # print(text_lines)
     # print(type(text_lines))
