@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odf_toolbox.basehdr import BaseHeader
-import datetime
+from datetime import datetime
 import pandas
 import shlex
 import re
@@ -32,36 +32,34 @@ def split_lines_into_dict(lines: list) -> dict:
         f"Input argument 'lines' is not of type list: {lines}"
     return list_to_dict(lines)
 
-def search_dictionaries(search_text: str, dictionaries: list):
-    assert isinstance(search_text, str), \
-        f"Input argument 'search_text' is not of type str: {search_text}"
-    assert isinstance(dictionaries, list), \
-        f"Input argument 'dictionaries' is not of type list: {dictionaries}"
-    matching_results = []
-    for string_index, dictionary in enumerate(dictionaries):
-        for key, value in dictionary.items():
-            if search_text.lower() in key.lower() or search_text.lower() in value.lower():
-                matching_results.append((string_index + 1, dictionary))
-    return matching_results
+# def search_dictionaries(search_text: str, dictionaries: list):
+#     assert isinstance(search_text, str), \
+#         f"Input argument 'search_text' is not of type str: {search_text}"
+#     assert isinstance(dictionaries, list), \
+#         f"Input argument 'dictionaries' is not of type list: {dictionaries}"
+#     matching_results = []
+#     for string_index, dictionary in enumerate(dictionaries):
+#         for key, value in dictionary.items():
+#             if search_text.lower() in key.lower() or search_text.lower() in value.lower():
+#                 matching_results.append((string_index + 1, dictionary))
+#     return matching_results
 
-def split_lines_after_data(all_data_lines: list) -> pandas.DataFrame:
-    assert isinstance(all_data_lines, list), \
-        f"Input argument 'all_data_lines' is not of type list: {all_data_lines}"
-    result_lines = []
-    for data_line in all_data_lines:
-        # Split each line by all whitespace characters
-        parts = data_line.split()
-        result_lines.append(parts)
+# def split_lines_after_data(all_data_lines: list) -> pandas.DataFrame:
+#     assert isinstance(all_data_lines, list), \
+#         f"Input argument 'all_data_lines' is not of type list: {all_data_lines}"
+#     result_lines = []
+#     for data_line in all_data_lines:
+#         # Split each line by all whitespace characters
+#         parts = data_line.split()
+#         result_lines.append(parts)
 
-    # Convert the list of lists to a Pandas DataFrame
-    df = pandas.DataFrame(result_lines)
+#     # Convert the list of lists to a Pandas DataFrame
+#     df = pandas.DataFrame(result_lines)
 
-    return df
+#     return df
 
 def get_current_date_time() -> str:
-    dt = datetime.datetime.now()
-    dts = dt.strftime("%d-%b-%Y %H:%M:%S.%f").upper()
-    return f"'{dts[:-4]}'"
+    return datetime.now().strftime(BaseHeader.SYTM_FORMAT)[:-4].upper()
 
 def check_float(value: float) -> float:
     if value is None:
@@ -86,8 +84,8 @@ def check_datetime(value: str) -> str:
         value = BaseHeader.SYTM_NULL_VALUE
     else:
         try:
-            dt = datetime.datetime.strptime(value, BaseHeader.SYTM_FORMAT)
-            value = datetime.datetime.strftime(dt, BaseHeader.SYTM_FORMAT).upper()
+            dt = datetime.strptime(value, BaseHeader.SYTM_FORMAT)
+            value = datetime.strftime(dt, BaseHeader.SYTM_FORMAT).upper()
             value = f"{value[:-4]}"
         except ValueError:
             raise Exception(f"Invalid date format: {value}. Expected format: {BaseHeader.SYTM_FORMAT}")

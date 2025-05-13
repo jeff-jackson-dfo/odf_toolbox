@@ -31,7 +31,7 @@ class BaseHeader:
 
     # Various constants
     # Define the date format for SYTM
-    SYTM_FORMAT = "%d-%b-%Y %H:%M:%S.%f"
+    SYTM_FORMAT: ClassVar[str] = "%d-%b-%Y %H:%M:%S.%f"
     NULL_VALUE: ClassVar[float] = -999.0
     SYTM_NULL_VALUE: ClassVar[str] = '17-NOV-1858 00:00:00.00'
 

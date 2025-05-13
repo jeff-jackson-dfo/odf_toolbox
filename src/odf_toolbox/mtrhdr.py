@@ -2,29 +2,23 @@ from datetime import datetime
 import pandas as pd
 import os
 from typing import NoReturn, ClassVar
-from pydantic import BaseModel
 
 from odf_toolbox.lookup_parameter import lookup_parameter
 from odf_toolbox.basehdr import BaseHeader
 from odf_toolbox.odfhdr import OdfHeader
 from odf_toolbox.parameterhdr import ParameterHeader
 from odf_toolbox.historyhdr import HistoryHeader
+from odf_toolbox import odfutils
 
 class MtrHeader(OdfHeader):
     """
     Mtr Class: subclass of OdfHeader.
-
-    This class is responsible for storing the metadata and data associated 
-    with a moored thermograph (MTR).
+    This class is responsible for storing the metadata and data associated with a moored thermograph (MTR).
     """
     date_format: ClassVar[str] = r'%Y-%m-%d'
     time_format: ClassVar[str] = r'%H:%M:%S'
-    sytm_format: ClassVar[str] = r'%d-%b-%Y %H:%M:%S.%f'
 
     def __init__(self) -> NoReturn:
-        """
-        Method that initializes an Mtr class object.
-        """
         super().__init__()
 
     def get_date_format(self) -> str:
@@ -32,14 +26,6 @@ class MtrHeader(OdfHeader):
     
     def get_time_format(self) -> str:
         return MtrHeader.time_format
-
-    def get_sytm_format(self) -> str:
-        return MtrHeader.sytm_format
-
-    def generate_creation_date(self) -> str:
-        """ Generate a creation date in SYTM format. """
-        creation_date = datetime.now().strftime(MtrHeader.sytm_format)[:-4].upper()
-        return creation_date
 
     def start_date_time(self, df: pd.Series) -> datetime:
         """ Retrieve the first date-time value from the data frame. """
@@ -76,7 +62,7 @@ class MtrHeader(OdfHeader):
         df['datetimes'] = df['dates'] + ' ' + df['times']
         df = df.drop(columns=['date', 'time', 'dates', 'times'], axis=1)
         df['datetimes'] = pd.to_datetime(df['datetimes'])
-        df['sytm'] = df['datetimes'].apply(lambda x: datetime.strftime(x, MtrHeader.sytm_format)).str.upper()
+        df['sytm'] = df['datetimes'].apply(lambda x: datetime.strftime(x, BaseHeader.SYTM_FORMAT)).str.upper()
         df = df.drop('datetimes', axis=1)
         df['sytm'] = df['sytm'].str[:-4]
         df['sytm'] = df['sytm'].apply(lambda x: "'" + str(x) + "'")
@@ -92,17 +78,18 @@ class MtrHeader(OdfHeader):
             number_null = int(df[column].isnull().sum())
             number_valid = int(number_of_rows - number_null)
             if column == 'sytm':
-                parameter_info = lookup_parameter('SYTM')
+                # parameter_info = lookup_parameter('oracle', 'SYTM')
+                parameter_info = lookup_parameter('sqlite', 'SYTM')
                 parameter_header.type = 'SYTM'
                 parameter_header.name = parameter_info.get('description')
                 parameter_header.units = parameter_info.get('units')
                 parameter_header.code = 'SYTM_01'
-                parameter_header.null_string = '17-NOV-1858 00:00:00.00'
+                parameter_header.null_string = BaseHeader.SYTM_NULL_VALUE
                 parameter_header.print_field_width = parameter_info.get('print_field_width')
                 parameter_header.print_decimal_places = parameter_info.get('print_decimal_places')
-                parameter_header.angle_of_section = BaseHeader.null_value
-                parameter_header.magnetic_variation = BaseHeader.null_value
-                parameter_header.depth = BaseHeader.null_value
+                parameter_header.angle_of_section = BaseHeader.NULL_VALUE
+                parameter_header.magnetic_variation = BaseHeader.NULL_VALUE
+                parameter_header.depth = BaseHeader.NULL_VALUE
                 min_date = df[column].iloc[0].strip("\'")
                 max_date = df[column].iloc[-1].strip("\'")
                 parameter_header.minimum_value = min_date
@@ -110,19 +97,21 @@ class MtrHeader(OdfHeader):
                 parameter_header.number_valid = number_valid
                 parameter_header.number_null = number_null
                 parameter_list.append('SYTM_01')
-                print_formats['SYTM_01'] = (parameter_header.print_field_width)
+                print_formats['SYTM_01'] = (f"{parameter_header.print_field_width}."
+                                            f"{parameter_header.print_decimal_places}")
             elif column == 'temperature':
-                parameter_info = lookup_parameter('TE90')
+                # parameter_info = lookup_parameter('oracle', 'TE90')
+                parameter_info = lookup_parameter('sqlite', 'TE90')
                 parameter_header.type = 'DOUB'        
                 parameter_header.name = parameter_info.get('description')
                 parameter_header.units = parameter_info.get('units')
                 parameter_header.code = 'TE90_01'
-                parameter_header.null_string = BaseHeader.null_value
+                parameter_header.null_string = str(BaseHeader.NULL_VALUE)
                 parameter_header.print_field_width = parameter_info.get('print_field_width')
                 parameter_header.print_decimal_places = parameter_info.get('print_decimal_places')
-                parameter_header.angle_of_section = BaseHeader.null_value
-                parameter_header.magnetic_variation = BaseHeader.null_value
-                parameter_header.depth = BaseHeader.null_value
+                parameter_header.angle_of_section = BaseHeader.NULL_VALUE
+                parameter_header.magnetic_variation = BaseHeader.NULL_VALUE
+                parameter_header.depth = BaseHeader.NULL_VALUE
                 min_temp = df[column].min()
                 max_temp = df[column].max()
                 parameter_header.minimum_value = min_temp
@@ -151,7 +140,7 @@ class MtrHeader(OdfHeader):
         mtr_dict = dict()
 
         # Read the data lines from the MTR file.
-        dfmtr = pd.read_table(mtrfile, sep=',', header=None, encoding='iso8859_1', skiprows=8)
+        dfmtr = pd.read_table(mtrfile, sep = ',', header = None, encoding = 'iso8859_1', skiprows = 8)
         
         # rename the columns
         dfmtr.columns = ['date', 'time', 'temperature']
@@ -159,7 +148,7 @@ class MtrHeader(OdfHeader):
         mtr_dict['df'] = dfmtr
 
         # Get the instrument type and gauge (serial number) from the MTR file.
-        with open(mtrfile, 'r', encoding='iso8859_1') as f:
+        with open(mtrfile, 'r', encoding = 'iso8859_1') as f:
             for i in range(8):
                 line = f.readline()
                 if 'Source Device:' in line:
@@ -178,7 +167,7 @@ class MtrHeader(OdfHeader):
         Read a Metadata file and return a pandas DataFrame.
         """
         # read the file
-        dfmeta = pd.read_table(metafile, encoding='iso8859_1')
+        dfmeta = pd.read_table(metafile, encoding = 'iso8859_1')
 
         # Change some column types.
         dfmeta['LFA'].astype(int)
@@ -187,7 +176,7 @@ class MtrHeader(OdfHeader):
         dfmeta['Soak Days'].astype(int)
 
         # Drop some columns.
-        dfmeta.drop(columns=['Date.1', 'Latitude', 'Longitude', 'Depth'], inplace=True)
+        dfmeta.drop(columns=['Date.1', 'Latitude', 'Longitude', 'Depth'], inplace = True)
 
         # Rename some columns.
         dfmeta.rename(columns={'Date': 'date', 'Time': 'time', 'LFA': 'lfa', 
@@ -196,7 +185,7 @@ class MtrHeader(OdfHeader):
                             'Latitude (degrees)': 'latitude', 
                             'Longitude (degrees)': 'longitude',
                             'Depth (m)': 'depth', 'Temp': 'temperature'},
-                            inplace=True)
+                            inplace = True)
 
         # Replace all NaN values with 12:00 in times as this is not important 
         # other than to have a time.
@@ -266,10 +255,10 @@ def main():
     mtr.event_header.data_type = 'MTR'
     mtr.event_header.event_qualifier1 = gauge
     mtr.event_header.event_qualifier2 = str(mtr.sampling_interval(df))
-    mtr.event_header.creation_date = mtr.generate_creation_date()
-    mtr.event_header.orig_creation_date = mtr.generate_creation_date()
-    mtr.event_header.start_date_time = mtr.start_date_time(df).strftime(mtr.get_sytm_format())[:-4].upper()
-    mtr.event_header.end_date_time = mtr.end_date_time(df).strftime(mtr.get_sytm_format())[:-4].upper()
+    mtr.event_header.creation_date = odfutils.get_current_date_time()
+    mtr.event_header.orig_creation_date = odfutils.get_current_date_time()
+    mtr.event_header.start_date_time = mtr.start_date_time(df).strftime(BaseHeader.SYTM_FORMAT)[:-4].upper()
+    mtr.event_header.end_date_time = mtr.end_date_time(df).strftime(BaseHeader.SYTM_FORMAT)[:-4].upper()
     mtr.event_header.initial_latitude = meta['latitude'].iloc[0]
     mtr.event_header.initial_longitude = meta['longitude'].iloc[0]
     mtr.event_header.end_latitude = meta['latitude'].iloc[0]
@@ -286,7 +275,7 @@ def main():
     mtr.instrument_header.description = 'Temperature data logger'
 
     history_header = HistoryHeader()
-    history_header.creation_date = mtr.generate_creation_date()
+    history_header.creation_date = odfutils.get_current_date_time()
     history_header.set_process(f'Initial file creation by {operator}')
     mtr.history_headers.append(history_header)
 
@@ -295,14 +284,14 @@ def main():
     mtr = mtr.populate_parameter_headers(new_df)
 
     for x, column in enumerate(new_df.columns):
-        code = mtr.parameter_headers[x].get_code()
+        code = mtr.parameter_headers[x].code
         new_df.rename(columns={column: code}, inplace=True)
 
     mtr.update_odf()
 
     file_spec = mtr.generate_file_spec()
     odf_file_path = os.path.join(top_folder, file_spec + '.ODF')
-    mtr.write_odf(odf_file_path, version=2)
+    mtr.write_odf(odf_file_path, version = 2.0)
         
 
 if __name__ == "__main__":

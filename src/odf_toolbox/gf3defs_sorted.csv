@@ -1,0 +1,253 @@
+﻿Code,Description,Units,Field Width,Decimal Places
+412E,Irradiance 412nm,uW/cm**2/nm,10,5
+412E,Irradiance 412nm,uW/cm**2/nm,13,5
+412ESDEV,Irradiance 412nm standard deviation,uW/cm**2/nm,10,5
+412ESDEV,Irradiance 412nm standard deviation,uW/cm**2/nm,13,5
+412L,Radiance 412nm,uW/cm**2/nm/sr,10,5
+412L,Radiance 412nm,uW/cm**2/nm/sr,13,5
+412LSDEV,Radiance 412nm standard deviation,uW/cm**2/nm/sr,10,5
+412LSDEV,Radiance 412nm standard deviation,uW/cm**2/nm/sr,13,5
+443E,Irradiance 443nm,uW/cm**2/nm,10,5
+443E,Irradiance 443nm,uW/cm**2/nm,13,5
+443ESDEV,Irradiance 443nm standard deviation,uW/cm**2/nm,10,5
+443ESDEV,Irradiance 443nm standard deviation,uW/cm**2/nm,13,5
+443L,Radiance 443nm,uW/cm**2/nm/sr,10,5
+443L,Radiance 443nm,uW/cm**2/nm/sr,13,5
+443LSDEV,Radiance 443nm standard deviation,uW/cm**2/nm/sr,10,5
+443LSDEV,Radiance 443nm standard deviation,uW/cm**2/nm/sr,13,5
+490E,Irradiance 490nm,uW/cm**2/nm,10,5
+490E,Irradiance 490nm,uW/cm**2/nm,13,5
+490ESDEV,Irradiance 490nm standard deviation,uW/cm**2/nm,10,5
+490ESDEV,Irradiance 490nm standard deviation,uW/cm**2/nm,13,5
+490L,Radiance 490nm,uW/cm**2/nm/sr,10,5
+490L,Radiance 490nm,uW/cm**2/nm/sr,13,5
+490LSDEV,Radiance 490nm standard deviation,uW/cm**2/nm/sr,10,5
+490LSDEV,Radiance 490nm standard deviation,uW/cm**2/nm/sr,13,5
+510E,Irradiance 510nm,uW/cm**2/nm,10,5
+510E,Irradiance 510nm,uW/cm**2/nm,13,5
+510ESDEV,Irradiance 510nm standard deviation,uW/cm**2/nm,10,5
+510ESDEV,Irradiance 510nm standard deviation,uW/cm**2/nm,13,5
+510L,Radiance 510nm,uW/cm**2/nm/sr,10,5
+510L,Radiance 510nm,uW/cm**2/nm/sr,13,5
+510LSDEV,Radiance 510nm standard deviation,uW/cm**2/nm/sr,10,5
+510LSDEV,Radiance 510nm standard deviation,uW/cm**2/nm/sr,13,5
+555E,Irradiance 555nm,uW/cm**2/nm,10,5
+555E,Irradiance 555nm,uW/cm**2/nm,13,5
+555ESDEV,Irradiance 555nm standard deviation,uW/cm**2/nm,10,5
+555ESDEV,Irradiance 555nm standard deviation,uW/cm**2/nm,13,5
+555L,Radiance 555nm,uW/cm**2/nm/sr,10,5
+555L,Radiance 555nm,uW/cm**2/nm/sr,13,5
+555LSDEV,Radiance 555nm standard deviation,uW/cm**2/nm/sr,10,5
+555LSDEV,Radiance 555nm standard deviation,uW/cm**2/nm/sr,13,5
+669E,Irradiance 669nm,uW/cm**2/nm,10,5
+669E,Irradiance 669nm,uW/cm**2/nm,13,5
+669ESDEV,Irradiance 669nm standard deviation,uW/cm**2/nm,10,5
+669ESDEV,Irradiance 669nm standard deviation,uW/cm**2/nm,13,5
+669L,Radiance 669nm,uW/cm**2/nm/sr,10,5
+669L,Radiance 669nm,uW/cm**2/nm/sr,13,5
+669LSDEV,Radiance 669nm standard deviation,uW/cm**2/nm/sr,10,5
+669LSDEV,Radiance 669nm standard deviation,uW/cm**2/nm/sr,13,5
+683E,Irradiance 683nm,uW/cm**2/nm,10,5
+683E,Irradiance 683nm,uW/cm**2/nm,13,5
+683ESDEV,Irradiance 683nm standard deviation,uW/cm**2/nm,10,5
+683ESDEV,Irradiance 683nm standard deviation,uW/cm**2/nm,13,5
+683L,Radiance 683nm,uW/cm**2/nm/sr,10,5
+683L,Radiance 683nm,uW/cm**2/nm/sr,13,5
+683LSDEV,Radiance 683nm standard deviation,uW/cm**2/nm/sr,10,5
+683LSDEV,Radiance 683nm standard deviation,uW/cm**2/nm/sr,13,5
+ABSH,Absolute Humidity,g/m**3,10,3
+ALKY,Total Alkalinity,mmol/m**3,10,3
+ALPO,Alpha - 0,m**3/kg,10,3
+ALTB,Height/Altitude above Bottom,metres,10,2
+ALTS,Height/Altitude above Mean Sea Level,metres,10,3
+AMON,Ammonium (NH4-N) Content,mmol/m**3,10,3
+ATMP,Atmospheric pressure,hPa,10,2
+ATMS,Atmospheric Pressure at Sea Level,hpa,10,3
+ATP_,Adenosine Triphosphate content,mg/m**3,10,5
+ATRK,Along Track Displacement,metres,10,3
+ATTU,Attenuance (ADCP),/m,10,3
+AUTH,Authority,none,50,-99
+BAC_,Bacteria Counts,10**6/L,10,3
+BATH,Bathymetric Depth,metres,10,3
+BATT,Battery Voltage,volts,10,3
+BEAM,ADCP Echo Intensity,none,6,1
+BIOV,Organism Volume,mL,8,3
+BNO7,Best NODC7 number,none,12,0
+CALK,Carbonate Alkalinity,mmol/m**3,10,3
+CAL_,Detail data: Calorimetric bomb,cal/mg,10,5
+CDOM,Fluorescence of CDOM (Coloured Dissolved Organic Matter),mg/m**3,10,3
+CDOMSDEV,Fluorescence of CDOM (Coloured Dissolved Organic Matter) standard deviation,mg/m**3,10,3
+CDOMSDEV,Fluorescence of CDOM (Coloured Dissolved Organic Matter) standard deviation,mg/m**3,10,3
+CDWT,Detail data: Calculated dry weight derived using a regression,mg/m³,10,5
+CHLR,Chlorinity (parts/thousand),g/kg,10,3
+CHLS,Chlorosity,kg/m**3,10,3
+CMET,Method used for sample collection,none,50,-99
+CMNT,Comments,none,1000,-99
+CMTM,CMCTD Time YYJJJHHMMSSss,GMT,10,3
+CNDC,Electrical Conductivity,mhos/m,10,5
+CNTR,Counter,none,10,3
+CNTS,Number of Organisms Counted,none,4,0
+COLL,Detail data: Name of the collector for the data,none,30,-99
+COND,Conductivity,mmHo,10,5
+CORG,Organic Carbon Content,mmol/m**3,10,3
+CPCT,Identifies the Percentage of Specified Plankton,%,6,3
+CPHL,Chlorophyll-a Content,mg/m**3,10,3
+CRAT,Conductivity Ratio,none,10,5
+CTAX,Collector Taxonomic Identifier,none,20,-99
+CTOT,Total Carbon (C) Content,mmol/m**3,10,3
+DCHG,Discharge,m**3/s,9,2
+DENS,Sea Density,kg/m**3,10,4
+DEPH,Sensor Depth below Sea Surface,metres,10,2
+DEWT,Dew Point Temperature,degrees C,10,3
+DOC_,Dissolved Organic Carbon content,mmol/m**3,10,3
+DON_,Dissolved Organic Nitrogen content,mmol/m**3,10,3
+DOXY,Dissolved Oxygen,ml/l,10,3
+DPDT,Lowering Rate,metres/sec,10,3
+DRDP,Depth of Drogue,metres,10,3
+DRWT,Dry Weight of Organisms,g,10,5
+DRYT,Dry Bulb Temperature,degrees C,10,3
+DYNH,Geopotential Dynamic Height,m,10,3
+ERRV,Error Velocity (ADCP),m/s,10,4
+EWCM,East (magnetic) Component of Current,m/s,10,3
+EWCT,East (true) Component of Current,m/s,10,4
+FFFF,Quality Control Flag,code,10,3
+FLOR,Fluorescence,mg/m**3,10,3
+FLORSDEV,Fluorescence standard deviation,mg/m**3,10,3
+FLORSDEV,Fluorescence standard deviation,mg/m**3,10,3
+FLU_,Fluorescence,%,10,3
+GDIR,Gust Wind Direction,degrees,10,3
+GEAR,Gear used for sample collection,none,50,-99
+GEOP,Geopotential,none,10,3
+GSPD,Gust Wind Speed,m/s,10,3
+HCDM,Horizontal Current Direction (magnetic),degrees,10,3
+HCDT,Horizontal Current Direction (true),degrees,10,3
+HCSP,Horizontal Current Speed,m/s,10,3
+HEAD,Heading,True degrees,6,1
+HEAD,Heading,True degrees,6,1
+HGHT,Height/Altitude above Sea Surface,metres,10,3
+HSUL,Hydrogen Sulphide (H2S-S) Content,mmol/m**3,10,3
+IDEN,Data identifier,none,10,0
+LATD,Latitude (North +ve),degrees,10,4
+LCHL,Chlorophyll-a Content from cells > 5um,mg/m**3,10,3
+LHIS,Life History or Development Stage ,none,50,-99
+LOND,Longitude (East +ve),degrees,10,4
+LPHA,Phaeopigment content from cells > 5um,mg/m**3,10,3
+MAGN,Magnetic Variation From True North,degrees,10,3
+MNSV,Retention Filter Size,microns,6,0
+MNSZ,Minimum size of organisms,microns,6,0
+MODF,Additional taxonomic information,none,50,-99
+MXSV,Largest Sieve Used,microns,6,0
+MXSZ,Maximum size of organisms,microns,6,0
+NETR,Net Solar Radiation,watts/m**2,10,3
+NONE,No WMO assigned,none,10,3
+NORG,Organic Nitrogen Content,mmol/m**3,10,3
+NSCM,North (magnetic) Component of Current,m/s,10,3
+NSCT,North (true) Component of Current,m/s,10,4
+NTOT,Total Nitrogen (N) Content,mmol/**3,10,3
+NTRA,Nitrate (NO3-N) Content,mmol/m**3,10,3
+NTRI,Nitrite (NO2-N) Content,mmol/m**3,10,3
+NTRZ,Nitrate + Nitrite Content,mmol/m**3,10,3
+NUM_,Number of scans averaged,none,10,0
+OCUR,Oxygen Sensor Current,uA,10,3
+OPPR,Oxygen Partial Pressure,none,10,3
+OSAT,Oxygen Saturation,%,10,3
+OTMP,Oxygen Sensor Temperature,degrees C,10,3
+OXV_,Raw oxygen voltage,volts,10,3
+OXYG,Dissolved Oxygen,umol/kg,10,3
+PCGD,Percent Good Signal Return (ADCP),%,5,0
+PGDP,Percent Good Pings,%,10,3
+PHA_,Phaeopigment content,mg/m**3,10,3
+PHOS,Phosphate (PO4-P) Content,mmol/m**3,10,3
+PHPH,Hydrogen Ion Concentration (pH),none,10,3
+PHY_,Phytoplankton Counts,10**3cells/L,10,3
+PIM_,Bottle sample particulate inorganic matter,g/m**3,10,3
+PLT_,Percentage of the incident surface light remaining at the sampled depth,%,10,3
+POC_,Particulate Organic Carbon content,mmol/m**3,10,3
+POM_,Bottle sample particulate organic matter,g/m**3,10,3
+PON_,Particulate Organic Nitrogen content,mmol/m**3,10,3
+POTM,Potential Temperature,degrees C,10,4
+POTT,Potential Air Temperature,degrees C,10,4
+PPR_,Primary Production,mgC/m**3/h,10,2
+PPTR,PIPE Internal Pointer,none,10,3
+PRES,Sea Pressure (sea surface - 0),decibars,10,2
+PROC,Identifies the state of the sample analysis,none,50,-99
+PRP_,Production primaire à partir d`incubations,mgC/m**3/h,10,3
+PRSN,Indicates presence (1) or absence (0) of organisms if not counted,none,3,0
+PRSV,Method used for sample preservation,none,50,-99
+PSAL,Practical Salinity,psu,10,4
+PSAR,Photosynthetic Active Radiation,ueinsteins/s/m**2,10,3
+PTCH,Pitch Angle,degrees,6,1
+PTCHSDEV,Pitch Angle standard deviation,degrees,10,3
+PTCHSDEV,Pitch Angle standard deviation,degrees,6,1
+PVAR,PIPE Variable,none,10,3
+QCFF,Quality flag: QCFF,none,5,0
+QQQQ,Quality Control Flag (GTSPP),none,10,3
+RANG,Distance of Object from Reference Point,metres,10,3
+REFR,Reference,none,10,3
+RELH,Relative Humidity,%,10,3
+RELP,Relative Total Pressure,decibars,10,3
+ROLL,Roll Angle,degrees,6,1
+ROLLSDEV,Roll Angle standard deviation,degrees,10,3
+ROLLSDEV,Roll Angle standard deviation,degrees,6,1
+RPOT,Redox Potential,mV,10,3
+SDEV,Standard deviation of preceding parameter,same as preceding parameter,10,3
+SECC,SECCHI disc depth,m,10,1
+SEX_,Sex,none,50,-99
+SIGO,Sigma-0,kg/m**3,10,4
+SIGP,Sigma-Theta,kg/m**3,10,4
+SIGT,Sigma-T,kg/m**3,10,4
+SLCA,Silicate (SIO4-SI) Content,mmol/m**3,10,3
+SNCN,Scan Counter,none,10,3
+SPAR,Surface Photosynthetic Active Radiation,ueinsteins/s/m**2,10,3
+SPARSDEV,Surface Photosynthetic Active Radiation standard deviation,ueinsteins/s/m**2,10,3
+SPARSDEV,Surface Photosynthetic Active Radiation standard deviation,ueinsteins/s/m**2,10,3
+SPEH,Specific Humidity,g/kg,10,3
+SPFR,Fraction of Sample,none,6,4
+SPVA,Specific Volume Anomoly,m**3/kg,10,3
+SPVO,Specific Volume,m**3/kg,10,3
+SSAL,Salinity,g/kg or o/oo,10,3
+STOR,Description of sample storage between collection and analysis,none,50,-99
+STRA,Stress Amplitude,Pa,10,3
+STRD,Stress Direction,degrees T,10,3
+STRU,Stress (U Component),Pa,10,3
+STRV,Stress (V Component),Pa,10,3
+SVEL,Sound Velocity,m/s,10,3
+SYTM,PIPE Time Format DD-MMM-YYYY HH:MM:SS.ss,GMT,23,0
+TAXN,Taxonomic Name,none,50,-99
+TE90,Temperature (ITS-90 scale),degrees C,10,4
+TEMP,Temperature (IPTS-68 Scale),degrees C,10,4
+TEXT,Plain Language Text,none,10,3
+TILT,Tilt Angle,degrees,6,1
+TILTSDEV,Tilt Angle standard deviation,degrees,10,3
+TILTSDEV,Tilt Angle standard deviation,degrees,6,1
+TLENBSEQ,Frequency data: Sequential number attached to bugs having a given total length,,4,0
+TLENCNTP,Frequency data: Percentage of bugs having a given total length,%,6,1
+TLENCOLL,Frequency data: Name of the collector,,30,-99
+TLENLBIN,Frequency data: Bug total length lower frequency bin,mm,7,3
+TLENQQQQ,Frequency data: Quality control code of bugs having a given total length,,1,0
+TLENTLEN,Frequency data: Bug total length,mm,7,3
+TLENUBIN,Frequency data: Bug total length upper frequency bin,mm,7,3
+TOFF,CMCTD Time Offset,s,10,3
+TOTP,Total Pressure (Atmosphere + Sea Pressure),decibars,10,3
+TPHS,Total Phosphorous (P) Content,mmol/m**3,10,3
+TRAN,Light Transmission,%,10,3
+TRPH,Trophic Descriptor,none,50,-99
+TSM_,Bottle sample total suspended matter,g/m**3,10,3
+TSN_,Taxonomic Serial Number,none,12,0
+TURB,OBS Turbidity,FTU,10,4
+UNKN,Unknown WMO Code,none,10,3
+URE_,Urea content,mmol/m**3,10,3
+VAIS,Brunt Vaissala Frequency,hertz,10,3
+VCSP,Vertical Current Speed (positive up),m/s,10,4
+VMET,Method used to determine the volume of water,none,50,-99
+VOLT,Sensor Volts,volts,10,4
+WDIR,Wind Direction relative to North (T),degrees,10,3
+WETECOBB,"Turbidity, WET Labs ECO BB",m^-1/sr,10,4
+WETT,Wet Bulb Temperature,degrees C,10,3
+WSPD,Horizontal Wind Speed,m/s,10,3
+WSPE,Eastward (true) Component of Wind Speed,m/s,10,3
+WSPN,Northward (True) Component of Wind Speed,m/s,10,3
+WTWT,Wet Weight of Organisms,g,10,5
+WVER,Vertical  Wind Speed,m/s,10,3
+ZNTH,Zenith Angle of Object From Reference,degrees,10,3
+ZOO_,Zooplankton counts,none,15,3
