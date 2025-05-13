@@ -144,8 +144,8 @@ def main():
     poly2.parameter_code = 'TEMP_01'
     poly2.calibration_date = '11-JUN-1995 05:35:46.83'
     poly2.application_date = '11-JUN-1995 05:35:46.83'
-    poly2.number_coefficients = 2
-    poly2.coefficients = [0.0, 80.0]
+    poly2.number_coefficients = 4
+    poly2.coefficients = [0.0, 80.0, 0.60000000e+01,  0.15000001e+00]
     poly2.log_poly_message('coefficient 2', poly2.coefficients[1], 9.750)
     poly2.set_coefficient(9.750, 2)
     print(poly2.print_object())

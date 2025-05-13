@@ -245,7 +245,7 @@ class ParameterHeader(BaseModel, BaseHeader):
                     case 'MINIMUM_VALUE':
                         if str(value):
                             if self.type == 'SYTM':
-                                self.minimum_value = odfutils.check_datetime(value)
+                                self.minimum_value = odfutils.check_datetime(value.strip("'"))
                             else:
                                 self.minimum_value = BaseHeader.SYTM_NULL_VALUE
                         elif float(value):
@@ -255,7 +255,7 @@ class ParameterHeader(BaseModel, BaseHeader):
                     case 'MAXIMUM_VALUE':
                         if str(value):
                             if self.type == 'SYTM':
-                                self.maximum_value = odfutils.check_datetime(value)
+                                self.maximum_value = odfutils.check_datetime(value.strip("'"))
                             else:
                                 self.maximum_value = BaseHeader.SYTM_NULL_VALUE
                         elif float(value):
