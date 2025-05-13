@@ -146,7 +146,7 @@ class CruiseHeader(BaseModel, BaseHeader):
                 value = value.strip()
                 match key:
                     case 'COUNTRY_INSTITUTE_CODE':
-                        self.country_institute_code = value
+                        self.country_institute_code = int(value)
                     case 'CRUISE_NUMBER':
                         self.cruise_number = value
                     case 'ORGANIZATION':

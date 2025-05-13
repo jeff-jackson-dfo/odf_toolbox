@@ -100,9 +100,9 @@ def check_string(value: str) -> str:
     # If it does then replace it with an "E".
     if re.search(r'[0-9]*.[0-9]*D[+-][0-9]*', value):
         value = re.sub('D', 'E', value)
-    if value is None:
+    elif value is None:
         value = ''
-    if not value:
+    elif not value:
         value = ''
     return value
 
@@ -161,21 +161,19 @@ def add_commas(lines: str) -> str:
     lines_with_commas = lines_with_commas.replace("' ,", "',")
     return lines_with_commas
 
-
-if __name__ == "__main__":
-
+def main():
+    
     # ret = check_datetime('23-MAY-2010 16:00:02.88')
     # print(ret)
 
     coef = '0.60000000D+01'
     coef = check_string(coef)
-    new_coef = check_float(float(coef))
+    new_coef = float(coef)
     ic(new_coef)
     
     ic(check_int(3))
     ic(check_float(5.675))
-    ic(check_float('melons'))
-
+    # ic(check_float('melons'))
 
     # text_lines = "This is line 1\nThis is line\nThis is the last line\n"
     # print(text_lines)
@@ -204,3 +202,7 @@ if __name__ == "__main__":
 
     # print("\nDataFrame with lines after '--DATA--' split by whitespace:")
     # print(lines_after_data_df)
+
+
+if __name__ == "__main__":
+    main()

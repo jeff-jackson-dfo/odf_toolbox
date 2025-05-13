@@ -132,12 +132,16 @@ class OdfHeader(BaseModel, BaseHeader):
 
     @property
     def quality_header(self) -> QualityHeader:
-        return self._quality_header
+        return self.quality_header
 
     @quality_header.setter
     def quality_header(self, value: QualityHeader) -> NoReturn:
         if type(value) is QualityHeader:
             self._quality_header = value
+        elif value is None:
+            self._quality_header = None
+        else:
+            raise ValueError("Input parameter 'value' is not a QualityHeader object.")
 
     @property
     def general_cal_headers(self) -> list:
@@ -228,8 +232,8 @@ class OdfHeader(BaseModel, BaseHeader):
             if self.meteo_header is not None:
                 odf_output += odfutils.add_commas(self.meteo_header.print_object())
             odf_output += odfutils.add_commas(self.instrument_header.print_object())
-            if self.quality_header is not None:
-                odf_output += odfutils.add_commas(self.quality_header.print_object())
+            # if self.quality_header is not None:
+            #     odf_output += odfutils.add_commas(self.quality_header.print_object())
             for general in self.general_cal_headers:
                 odf_output += odfutils.add_commas(general.print_object())
             for poly in self.polynomial_cal_headers:

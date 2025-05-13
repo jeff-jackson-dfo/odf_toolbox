@@ -70,7 +70,7 @@ class PolynomialCalHeader(BaseModel, BaseHeader):
     @coefficients.setter
     def coefficients(self, coefficient_list: list):
         assert isinstance(coefficient_list, list), "Input argument 'coefficient_list' must be a list."
-        for coef in coefficient_list:
+        for x, coef in enumerate(coefficient_list):
             assert isinstance(coef, float), "Input argument 'coefficient_list' must be a list of floats."
         self._coefficients = coefficient_list
 
@@ -106,6 +106,9 @@ class PolynomialCalHeader(BaseModel, BaseHeader):
                         self._number_coefficients = value
                     case 'COEFFICIENTS':
                         coefficient_list = value.split()
+                        for i, coef in enumerate(coefficient_list):
+                            if isinstance(coef, str):
+                                coefficient_list[i] = odfutils.check_string(coef)
                         self._coefficients = coefficient_list
         return self
 
@@ -119,7 +122,8 @@ class PolynomialCalHeader(BaseModel, BaseHeader):
         polynomial_header_output += f"  NUMBER_COEFFICIENTS = {self.number_coefficients}\n"
         coefficients_print = ""
         for coefficient in self.coefficients:
-            coefficients_print = coefficients_print + "{:.8e}".format(coefficient) + " "
+            coefficient = float(coefficient)
+            coefficients_print = f"{coefficients_print} {coefficient:.8e}"
         polynomial_header_output += f"  COEFFICIENTS = {coefficients_print}\n"
         return polynomial_header_output
 

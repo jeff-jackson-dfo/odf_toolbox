@@ -161,7 +161,12 @@ class ParameterHeader(BaseModel, BaseHeader):
         return self._depth
 
     @depth.setter
-    def depth(self, value: float) -> NoReturn:
+    def depth(self, value: any) -> NoReturn:
+        if type(value) is str:
+            value = odfutils.check_string(value)
+            value = float(value)
+        else:
+            value = float(value)
         assert isinstance(value, float), "Input argument 'value' must be a float."
         self._depth = value
 
@@ -234,6 +239,8 @@ class ParameterHeader(BaseModel, BaseHeader):
                     case 'MAGNETIC_VARIATION':
                         self.magnetic_variation = float(value)
                     case 'DEPTH':
+                        if type(value) is str:
+                            value = odfutils.check_string(value)
                         self.depth = float(value)
                     case 'MINIMUM_VALUE':
                         if str(value):
@@ -317,7 +324,10 @@ def main():
     param1.angle_of_section = 0.0
     param1.magnetic_variation = 0.0
     depth = odfutils.check_string('0.00000000D+00')
-    param1.depth = float(depth)
+    print(depth)
+    depth = float(depth)
+    print(depth)
+    param1.depth = depth
     param1.minimum_value = 2.177
     param1.maximum_value = 176.5
     param1.number_valid = 1064
