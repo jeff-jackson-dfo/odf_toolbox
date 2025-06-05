@@ -10,7 +10,7 @@ from odf_toolbox.parameterhdr import ParameterHeader
 from odf_toolbox.historyhdr import HistoryHeader
 from odf_toolbox import odfutils
 
-class MtrHeader(OdfHeader):
+class ThermographHeader(OdfHeader):
     """
     Mtr Class: subclass of OdfHeader.
     This class is responsible for storing the metadata and data associated with a moored thermograph (MTR).
@@ -22,32 +22,32 @@ class MtrHeader(OdfHeader):
         super().__init__()
 
     def get_date_format(self) -> str:
-        return MtrHeader.date_format
+        return ThermographHeader.date_format
     
     def get_time_format(self) -> str:
-        return MtrHeader.time_format
+        return ThermographHeader.time_format
 
     def start_date_time(self, df: pd.Series) -> datetime:
         """ Retrieve the first date-time value from the data frame. """
-        start_date = datetime.strptime(df['date'].iloc[0], MtrHeader.date_format)
-        start_time = datetime.strptime(df['time'].iloc[0], MtrHeader.time_format).time()
+        start_date = datetime.strptime(df['date'].iloc[0], ThermographHeader.date_format)
+        start_time = datetime.strptime(df['time'].iloc[0], ThermographHeader.time_format).time()
         start_date_time = datetime.combine(start_date, start_time)
         return start_date_time
 
     def end_date_time(self, df: pd.Series) -> datetime:
         """ Retrieve the last date-time value from the data frame. """
-        end_date = datetime.strptime(df['date'].iloc[-1], MtrHeader.date_format)
-        end_time = datetime.strptime(df['time'].iloc[-1], MtrHeader.time_format).time()
+        end_date = datetime.strptime(df['date'].iloc[-1], ThermographHeader.date_format)
+        end_time = datetime.strptime(df['time'].iloc[-1], ThermographHeader.time_format).time()
         end_date_time = datetime.combine(end_date, end_time)
         return end_date_time
 
     def sampling_interval(self, df: pd.Series) -> int:
         """ Compute the time interval between the first two date-time values. """
-        date1 = datetime.strptime(df['date'].iloc[0], MtrHeader.date_format)
-        time1 = datetime.strptime(df['time'].iloc[0], MtrHeader.time_format).time()
+        date1 = datetime.strptime(df['date'].iloc[0], ThermographHeader.date_format)
+        time1 = datetime.strptime(df['time'].iloc[0], ThermographHeader.time_format).time()
         datetime1 = datetime.combine(date1, time1)
-        date2 = datetime.strptime(df['date'].iloc[1], MtrHeader.date_format)
-        time2 = datetime.strptime(df['time'].iloc[1], MtrHeader.time_format).time()
+        date2 = datetime.strptime(df['date'].iloc[1], ThermographHeader.date_format)
+        time2 = datetime.strptime(df['time'].iloc[1], ThermographHeader.time_format).time()
         datetime2 = datetime.combine(date2, time2)
         time_interval = datetime2 - datetime1
         time_interval = time_interval.seconds
@@ -55,9 +55,9 @@ class MtrHeader(OdfHeader):
 
     def create_sytm(self, df: pd.DataFrame) -> pd.DataFrame:
         """ Updated the data frame with the proper SYTM column. """
-        df['dates'] = df['date'].apply(lambda x: datetime.strptime(x, MtrHeader.date_format).date())
+        df['dates'] = df['date'].apply(lambda x: datetime.strptime(x, ThermographHeader.date_format).date())
         df['dates'] = df['dates'].astype("string")
-        df['times'] = df['time'].apply(lambda x: datetime.strptime(x, MtrHeader.time_format).time())
+        df['times'] = df['time'].apply(lambda x: datetime.strptime(x, ThermographHeader.time_format).time())
         df['times'] = df['times'].astype("string")
         df['datetimes'] = df['dates'] + ' ' + df['times']
         df = df.drop(columns=['date', 'time', 'dates', 'times'], axis=1)
@@ -66,6 +66,56 @@ class MtrHeader(OdfHeader):
         df = df.drop('datetimes', axis=1)
         df['sytm'] = df['sytm'].str[:-4]
         df['sytm'] = df['sytm'].apply(lambda x: "'" + str(x) + "'")
+        return df
+    
+    @staticmethod
+    def check_datetime_format(date_string, format):
+        try:
+            datetime.strptime(date_string, format)
+            return True
+        except ValueError:
+            return False
+
+    def fix_datetime(self, df: pd.DataFrame) -> pd.DataFrame:
+        """ Fix the date and time columns in the data frame. """
+
+        # Replace all NaN values with 12:00 in times as this is not important other than to have a time.
+        df['time'] = df['time'].fillna('12:00')
+
+        # Add a datetime column.
+        df['date'] = df['date'].astype("string")
+        df['time'] = df['time'].astype("string")
+        datetimes = []
+
+        for i in range(len(df)):
+            date_str = df['date'].iloc[i]
+            time_str = df['time'].iloc[i]
+            datetime_str = ''
+
+            # Check the date format.
+            if ThermographHeader.check_datetime_format(df['date'][i], r"%d/%m/%Y"):
+                meta_date_format = r"%d/%m/%Y"
+            elif ThermographHeader.check_datetime_format(df['date'][i], "%d-%m-%Y"):
+                meta_date_format = "%d-%m-%Y"
+            elif ThermographHeader.check_datetime_format(df['date'][i], "%b-%d-%y"):
+                meta_date_format = "%b-%d-%y"
+            elif ThermographHeader.check_datetime_format(df['date'][i], "%d-%b-%y"):
+                meta_date_format = "%d-%b-%y"
+
+            datetime_str = date_str + ' ' + time_str
+            datetimes.append(datetime.strptime(datetime_str, ThermographHeader.date_format))
+
+        df['datetime'] = datetimes
+
+        # Check if the date and time columns are in the correct format.
+        if not self.check_datetime_format(df['date'].iloc[0], ThermographHeader.date_format):
+            raise ValueError(f"Date format is incorrect. Expected format: {ThermographHeader.date_format}")
+        if not self.check_datetime_format(df['time'].iloc[0], ThermographHeader.time_format):
+            raise ValueError(f"Time format is incorrect. Expected format: {ThermographHeader.time_format}")
+
+        # Convert the date and time columns to datetime objects.
+        df['date'] = pd.to_datetime(df['date'], format=ThermographHeader.date_format)
+        df['time'] = pd.to_datetime(df['time'], format=ThermographHeader.time_format).dt.time
         return df
 
     def populate_parameter_headers(self, df: pd.DataFrame):
@@ -97,8 +147,7 @@ class MtrHeader(OdfHeader):
                 parameter_header.number_valid = number_valid
                 parameter_header.number_null = number_null
                 parameter_list.append('SYTM_01')
-                print_formats['SYTM_01'] = (f"{parameter_header.print_field_width}."
-                                            f"{parameter_header.print_decimal_places}")
+                print_formats['SYTM_01'] = (f"{parameter_header.print_field_width}")
             elif column == 'temperature':
                 # parameter_info = lookup_parameter('oracle', 'TE90')
                 parameter_info = lookup_parameter('sqlite', 'TE90')
@@ -133,9 +182,7 @@ class MtrHeader(OdfHeader):
     
     @staticmethod
     def read_mtr(mtrfile: str) -> dict:
-        """
-        Read an MTR data file and return a pandas DataFrame.
-        """
+        """ Read an MTR data file and return a pandas DataFrame. """
         
         mtr_dict = dict()
 
@@ -159,6 +206,8 @@ class MtrHeader(OdfHeader):
         
         mtr_dict['inst_model'] = inst_model
         mtr_dict['gauge'] = gauge
+        mtr_dict['filename'] = mtrfile
+
         return mtr_dict
 
     @staticmethod
@@ -187,28 +236,15 @@ class MtrHeader(OdfHeader):
                             'Depth (m)': 'depth', 'Temp': 'temperature'},
                             inplace = True)
 
-        # Replace all NaN values with 12:00 in times as this is not important 
-        # other than to have a time.
-        dfmeta['time'] = dfmeta['time'].fillna('12:00')
+        # Fix the date and time columns.
+        dfmeta = ThermographHeader.fix_datetime(dfmeta)
 
-        # Add a datetime column.
-        dfmeta['date'] = dfmeta['date'].astype("string")
-        dfmeta['time'] = dfmeta['time'].astype("string")
-        datetime_str = ''
-        datetimes = []
-        date_format = '%B-%d-%y %H:%M'
-        for i in range(len(dfmeta)):
-            date_str = dfmeta['date'].iloc[i]
-            time_str = dfmeta['time'].iloc[i]
-            datetime_str = date_str + ' ' + time_str
-            datetimes.append(datetime.strptime(datetime_str, date_format))
-        dfmeta['datetime'] = datetimes
         return dfmeta
 
 def main():
 
     # Generate an empty MTR object.
-    mtr = MtrHeader()
+    mtr = ThermographHeader()
 
     # operator = input('Enter the name of the operator: ')
     operator = 'Jeff Jackson'
@@ -292,7 +328,7 @@ def main():
     file_spec = mtr.generate_file_spec()
     odf_file_path = os.path.join(top_folder, file_spec + '.ODF')
     mtr.write_odf(odf_file_path, version = 2.0)
-        
+    
 
 if __name__ == "__main__":
     main()

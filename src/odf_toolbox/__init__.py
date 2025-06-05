@@ -14,7 +14,8 @@ from odf_toolbox.recordhdr import RecordHeader
 from odf_toolbox.records import DataRecords
 from odf_toolbox import odfutils
 from odf_toolbox import remove_parameter
-from odf_toolbox.mtrhdr import MtrHeader
+from odf_toolbox.thermograph import ThermographHeader
+from odf_toolbox.multinet import MultinetHeader
 
 __all__ = ['BaseHeader', 'CompassCalHeader', 'CruiseHeader', 'EventHeader',
            'GeneralCalHeader', 'HistoryHeader', 'InstrumentHeader', 
