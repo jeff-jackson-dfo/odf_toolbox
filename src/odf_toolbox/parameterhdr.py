@@ -211,61 +211,65 @@ class ParameterHeader(BaseModel, BaseHeader):
             parameter_dict = odfutils.list_to_dict(tokens)
             for key, value in parameter_dict.items():
                 key = key.strip()
-                value = value.strip()
+                value = value.strip("'")
                 match key:
                     case 'TYPE':
-                        self.type = value
+                        self._type = value
                     case 'NAME':
-                        self.name = value
+                        self._name = value
                     case 'UNITS':
-                        self.units = value
+                        self._units = value
                     case 'CODE':
-                        self.code = value
+                        self._code = value
                     case 'WMO_CODE':
-                        self.wmo_code = value
+                        self._wmo_code = value
                         # If there was no code field in the ODF file being read then assign it the same value as WMO_CODE.
-                        if self.code == "":
-                            self.code = value
+                        if self._code == "":
+                            self._code = value
                     case 'NULL_VALUE':
-                        self.null_string = value
+                        self._null_string = value
                     case 'PRINT_FIELD_ORDER':
-                        self.print_field_order = int(float(value))
+                        self._print_field_order = int(float(value))
                     case 'PRINT_FIELD_WIDTH':
-                        self.print_field_width = int(float(value))
+                        self._print_field_width = int(float(value))
                     case 'PRINT_DECIMAL_PLACES':
-                        self.print_decimal_places = int(float(value))
+                        self._print_decimal_places = int(float(value))
                     case 'ANGLE_OF_SECTION':
-                        self.angle_of_section = float(value)
+                        self._angle_of_section = float(value)
                     case 'MAGNETIC_VARIATION':
-                        self.magnetic_variation = float(value)
+                        self._magnetic_variation = float(value)
                     case 'DEPTH':
                         if type(value) is str:
                             value = odfutils.check_string(value)
-                        self.depth = float(value)
+                        self._depth = float(value)
                     case 'MINIMUM_VALUE':
-                        if str(value):
-                            if self.type == 'SYTM':
-                                self.minimum_value = odfutils.check_datetime(value.strip("'"))
+                        if self._type == 'SYTM':
+                            if value != '':                               
+                                self._minimum_value = odfutils.check_datetime(value.strip("'"))
                             else:
-                                self.minimum_value = BaseHeader.SYTM_NULL_VALUE
-                        elif float(value):
-                            self.minimum_value = value
+                                self._minimum_value = BaseHeader.SYTM_NULL_VALUE
+                        elif (self._type == 'INTE') | (self._type == 'SING'):
+                            self._minimum_value = int(value)
+                        elif self._type == 'DOUB':
+                            self._minimum_value = float(value)
                         else:
-                            self.minimum_value = BaseHeader.NULL_VALUE
+                            self._minimum_value = BaseHeader.NULL_VALUE
                     case 'MAXIMUM_VALUE':
-                        if str(value):
-                            if self.type == 'SYTM':
-                                self.maximum_value = odfutils.check_datetime(value.strip("'"))
+                        if self._type == 'SYTM':
+                            if value != '':                               
+                                self._maximum_value = odfutils.check_datetime(value.strip("'"))
                             else:
-                                self.maximum_value = BaseHeader.SYTM_NULL_VALUE
-                        elif float(value):
-                            self.minimum_value = value
+                                self._maximum_value = BaseHeader.SYTM_NULL_VALUE
+                        elif (self._type == 'INTE') | (self._type == 'SING'):
+                            self._maximum_value = int(value)
+                        elif self._type == 'DOUB':
+                            self._maximum_value = float(value)
                         else:
-                            self.maximum_value = BaseHeader.NULL_VALUE
+                            self._maximum_value = BaseHeader.NULL_VALUE
                     case 'NUMBER_VALID':
-                        self.number_valid = int(float(value))
+                        self._number_valid = int(float(value))
                     case 'NUMBER_NULL':
-                        self.number_null = int(float(value))
+                        self._number_null = int(float(value))
         return self
 
     def print_object(self, file_version: float = 2.0) -> str:

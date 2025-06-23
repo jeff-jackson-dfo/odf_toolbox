@@ -115,7 +115,7 @@ class QualityHeader(BaseModel, BaseHeader):
                 value = value.strip("\' ")
                 match key:
                     case 'QUALITY_DATE':
-                        self.quality_date = value
+                        self._quality_date = value
                     case 'QUALITY_TESTS':
                         self.add_quality_test(value)
                     case 'QUALITY_COMMENTS':

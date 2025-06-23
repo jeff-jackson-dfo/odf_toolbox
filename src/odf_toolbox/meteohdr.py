@@ -126,24 +126,24 @@ class MeteoHeader(BaseModel, BaseHeader):
                     value = BaseHeader.NULL_VALUE
                 match key:
                     case 'AIR_TEMPERATURE':
-                        self.air_temperature = float(value)
+                        self._air_temperature = float(value)
                     case 'ATMOSPHERIC_PRESSURE':
-                        self.atmospheric_pressure = float(value)
+                        self._atmospheric_pressure = float(value)
                     case 'WIND_SPEED':
-                        self.wind_speed = float(value)
+                        self._wind_speed = float(value)
                     case 'WIND_DIRECTION':
-                        self.wind_direction = float(value)
+                        self._wind_direction = float(value)
                     case 'SEA_STATE':
-                        self.sea_state = int(float(value))
+                        self._sea_state = int(float(value))
                     case 'CLOUD_COVER':
-                        self.cloud_cover = int(float(value))
+                        self._cloud_cover = int(float(value))
                     case 'ICE_THICKNESS':
-                        self.ice_thickness = float(value)
+                        self._ice_thickness = float(value)
                     case 'METEO_COMMENTS':
                         if type(value) is str:
-                            self.meteo_comments = [value]
+                            self._meteo_comments = [value]
                         elif type(value) is list:
-                            self.meteo_comments = value
+                            self._meteo_comments = value
                         else:
                             print('meteo_header.meteo_comments is not a string or list.')
 

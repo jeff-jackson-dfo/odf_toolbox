@@ -66,7 +66,7 @@ class HistoryHeader(BaseModel, BaseHeader):
                 value = value.strip("' ")
                 match key:
                     case 'CREATION_DATE':
-                        self.creation_date = value
+                        self._creation_date = value
                     case 'PROCESS':
                         self.add_process(value)
 

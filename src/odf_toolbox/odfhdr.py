@@ -80,7 +80,7 @@ class OdfHeader(BaseModel, BaseHeader):
     @file_specification.setter
     def file_specification(self, value: str) -> NoReturn:
         assert isinstance(value, str), "Input argument 'value' must be a string."
-        value = value.strip("\' ")
+        value = value.strip("'")
         self._file_specification = value
 
     @property
@@ -132,7 +132,7 @@ class OdfHeader(BaseModel, BaseHeader):
 
     @property
     def quality_header(self) -> QualityHeader:
-        return self.quality_header
+        return self._quality_header
 
     @quality_header.setter
     def quality_header(self, value: QualityHeader) -> NoReturn:
@@ -226,7 +226,7 @@ class OdfHeader(BaseModel, BaseHeader):
         if file_version == 2.0:
             self.odf_specification_version = 2.0
             odf_output = "ODF_HEADER,\n"
-            odf_output += f"  FILE_SPECIFICATION = '{self.file_specification}',\n"
+            odf_output += f"  FILE_SPECIFICATION = {self.file_specification},\n"
             odf_output += odfutils.add_commas(self.cruise_header.print_object())
             odf_output += odfutils.add_commas(self.event_header.print_object())
             if self.meteo_header is not None:
@@ -250,7 +250,7 @@ class OdfHeader(BaseModel, BaseHeader):
         elif file_version >= 3:
             self.odf_specification_version = 3.0
             odf_output = "ODF_HEADER\n"
-            odf_output += f"  FILE_SPECIFICATION = '{self.file_specification}'\n"
+            odf_output += f"  FILE_SPECIFICATION = {self.file_specification}\n"
             odf_output += (f"  ODF_SPECIFICATION_VERSION = {self.odf_specification_version}\n")
             odf_output += self.cruise_header.print_object()
             odf_output += self.event_header.print_object()
@@ -536,7 +536,8 @@ def main():
 
     my_path = 'C:\\DEV\\GitHub\\odf_toolbox\\tests\\'
     # my_file = 'CTD_2000037_102_1_DN.ODF'
-    my_file = 'CTD_91001_1_1_DN.ODF'
+    # my_file = 'CTD_91001_1_1_DN.ODF'
+    my_file = 'CTD_BCD2024669_001_01_DN.ODF'
     # my_file = 'CTD_SCD2022277_002_01_DN.ODF'
     # my_file = 'file_with_leading_spaces.ODF'
     # my_file = 'file_with_null_data_values.ODF'
@@ -570,6 +571,7 @@ def main():
     # Remove the CRAT_01 parameter.
     # from odf_toolbox.remove_parameter import remove_parameter
     # odf = remove_parameter(odf, 'CRAT_01')
+    # odf = remove_parameter(odf, 'UNKN_01')
 
     # for meteo_comment in odf.meteo_header.get_meteo_comments():
     #     ic(meteo_comment)
@@ -590,7 +592,7 @@ def main():
 
     for j, parameter_header in enumerate(parameter_headers):
 
-        parameter_code = parameter_header.code
+        parameter_code = parameter_header.code.strip("'")
         try:
             parameter_code_short, sensor_number = parameter_code.split("_")
         except ValueError:
@@ -641,7 +643,7 @@ def main():
     # odf_file_text = odf.print_object(file_version=3.0)
     spec = odf.generate_file_spec()
     out_file = f"{spec}.ODF"
-    odf.write_odf(my_path + out_file, version = 2.0)
+    odf.write_odf(my_path + out_file, version = 3.0)
 
 
 if __name__ == '__main__':    
