@@ -601,8 +601,7 @@ def main():
 
         if data.loc[:, parameter_code].isnull().all():
 
-            # Suggest removing parameter columns that only contain 
-            # null values.
+            # Suggest removing parameter columns that only contain null values.
             print(f'Should the data for {parameter_code} be deleted from '
                     'the ODF structure since it only contains NULL values?')
 

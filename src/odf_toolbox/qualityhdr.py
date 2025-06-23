@@ -74,6 +74,11 @@ class QualityHeader(BaseModel, BaseHeader):
         else:
             raise ValueError("The 'quality_test' number does not match the number of QUALITY_TESTS lines.")
 
+    def add_quality_test(self, quality_test: str) -> NoReturn:
+        assert isinstance(quality_test, str), "Input argument 'quality_test' must be a string."
+        quality_test = quality_test.strip("' ")
+        self._quality_tests.append(quality_test)
+
     @property
     def quality_comments(self):
         return self._quality_comments
@@ -96,7 +101,12 @@ class QualityHeader(BaseModel, BaseHeader):
         else:
             raise ValueError("The 'quality_comment' number does not match the number of QUALITY_COMMENTS lines.")
 
-    def populate_object(self, quality_fields: list):
+    def add_quality_comment(self, quality_comment: str) -> NoReturn:
+        assert isinstance(quality_comment, str), "Input argument 'quality_comment' must be a string."
+        quality_comment = quality_comment.strip("' ")
+        self._quality_comments.append(quality_comment)
+
+    def populate_object(self, quality_fields: list) -> NoReturn:
         for header_line in quality_fields:
             tokens = header_line.split('=', maxsplit=1)
             quality_dict = odfutils.list_to_dict(tokens)
@@ -107,9 +117,9 @@ class QualityHeader(BaseModel, BaseHeader):
                     case 'QUALITY_DATE':
                         self.quality_date = value
                     case 'QUALITY_TESTS':
-                        self.set_quality_test(value)
+                        self.add_quality_test(value)
                     case 'QUALITY_COMMENTS':
-                        self.set_quality_comment(value)
+                        self.add_quality_comment(value)
 
     def print_object(self) -> str:
         quality_header_output = "QUALITY_HEADER\n"

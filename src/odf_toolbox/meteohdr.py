@@ -140,7 +140,12 @@ class MeteoHeader(BaseModel, BaseHeader):
                     case 'ICE_THICKNESS':
                         self.ice_thickness = float(value)
                     case 'METEO_COMMENTS':
-                        self.meteo_comments = value
+                        if type(value) is str:
+                            self.meteo_comments = [value]
+                        elif type(value) is list:
+                            self.meteo_comments = value
+                        else:
+                            print('meteo_header.meteo_comments is not a string or list.')
 
     def print_object(self) -> str:
         meteo_header_output = "METEO_HEADER\n"
