@@ -232,8 +232,8 @@ class OdfHeader(BaseModel, BaseHeader):
             if self.meteo_header is not None:
                 odf_output += odfutils.add_commas(self.meteo_header.print_object())
             odf_output += odfutils.add_commas(self.instrument_header.print_object())
-            # if self.quality_header is not None:
-            #     odf_output += odfutils.add_commas(self.quality_header.print_object())
+            if self.quality_header is not None:
+                odf_output += odfutils.add_commas(self.quality_header.print_object())
             for general in self.general_cal_headers:
                 odf_output += odfutils.add_commas(general.print_object())
             for poly in self.polynomial_cal_headers:
@@ -534,14 +534,17 @@ def main():
 
     odf = OdfHeader()
 
-    my_path = 'C:\\DEV\\GitHub\\odf_toolbox\\tests\\'
+    my_path = 'C:\\DEV\\GitHub\\odf_toolbox\\'
+    
+    # Test file(s) to read in.
     # my_file = 'CTD_2000037_102_1_DN.ODF'
     # my_file = 'CTD_91001_1_1_DN.ODF'
     my_file = 'CTD_BCD2024669_001_01_DN.ODF'
     # my_file = 'CTD_SCD2022277_002_01_DN.ODF'
     # my_file = 'file_with_leading_spaces.ODF'
     # my_file = 'file_with_null_data_values.ODF'
-    odf.read_odf(my_path + "ODF\\" + my_file)
+    
+    odf.read_odf(my_path + "tests\\ODF\\" + my_file)
 
     # Add a new History Header to record the modifications that are made.
     odf.add_history()
@@ -643,8 +646,8 @@ def main():
     # odf_file_text = odf.print_object(file_version=3.0)
     spec = odf.generate_file_spec()
     out_file = f"{spec}.ODF"
-    odf.write_odf(my_path + out_file, version = 3.0)
+    odf.write_odf(my_path + 'tests_output\\' + out_file, version = 3.0)
 
 
 if __name__ == '__main__':    
-    main()  
+    main()
