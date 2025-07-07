@@ -248,9 +248,9 @@ class ParameterHeader(BaseModel, BaseHeader):
                                 self._minimum_value = odfutils.check_datetime(value.strip("'"))
                             else:
                                 self._minimum_value = BaseHeader.SYTM_NULL_VALUE
-                        elif (self._type == 'INTE') | (self._type == 'SING'):
+                        elif (self._type == 'INTE'):
                             self._minimum_value = int(value)
-                        elif self._type == 'DOUB':
+                        elif (self._type == 'SING') | (self._type == 'DOUB'):
                             self._minimum_value = float(value)
                         else:
                             self._minimum_value = BaseHeader.NULL_VALUE

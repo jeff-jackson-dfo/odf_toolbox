@@ -8,6 +8,7 @@ dependencies = [
     "boltons>=25.0.0",
     "dotenv>=0.9.9",
     "icecream>=2.1.4",
+    "ipython>=9.4.0",
     "netcdf4>=1.7.2",
     "openpyxl>=3.1.5",
     "oracledb>=3.0.0",
