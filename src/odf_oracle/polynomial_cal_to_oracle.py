@@ -33,10 +33,10 @@ def polynomial_cal_to_oracle(odfobj: OdfHeader, connection, infile: str):
         elif type(odfobj.polynomial_cal_headers) is collections.OrderedDict:
 
             # Get the information from the current POLYNOMIAL_CAL_HEADER.
-            param = odfobj.polynomial_cal_headers[0].get_parameter_code()
-            cdt = odfobj.polynomial_cal_headers[0].get_calibration_date()
-            adt = odfobj.polynomial_cal_headers[0].get_application_date()
-            coef = odfobj.polynomial_cal_headers[0].get_coefficients()
+            param = odfobj.polynomial_cal_headers[0].parameter_code
+            cdt = odfobj.polynomial_cal_headers[0].calibration_date
+            adt = odfobj.polynomial_cal_headers[0].application_date
+            coef = odfobj.polynomial_cal_headers[0].coefficients
             caldate = sytm_to_timestamp(cdt, 'datetime')
             appdate = sytm_to_timestamp(adt, 'datetime')
             pch = []
@@ -72,11 +72,11 @@ def polynomial_cal_to_oracle(odfobj: OdfHeader, connection, infile: str):
             for i, polynomial_cal_header in enumerate(odfobj.polynomial_cal_headers):
 
                 # Get the information from the current POLYNOMIAL_CAL_HEADER.
-                param = polynomial_cal_header.get_parameter_code()
-                cdt = polynomial_cal_header.get_calibration_date()
-                adt = polynomial_cal_header.get_application_date()
-                ncoef = polynomial_cal_header.get_number_coefficients()
-                coeffs = polynomial_cal_header.get_coefficients()
+                param = polynomial_cal_header.parameter_code
+                cdt = polynomial_cal_header.calibration_date
+                adt = polynomial_cal_header.application_date
+                ncoef = polynomial_cal_header.number_coefficients
+                coeffs = polynomial_cal_header.coefficients
                 caldate = sytm_to_timestamp(cdt, 'datetime')
                 appdate = sytm_to_timestamp(adt, 'datetime')
                 pch = []

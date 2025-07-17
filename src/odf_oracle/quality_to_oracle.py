@@ -1,7 +1,8 @@
 from odf_toolbox.odfhdr import OdfHeader
 from odf_oracle.sytm_to_timestamp import sytm_to_timestamp
+from typing import NoReturn
 
-def quality_to_oracle(odfobj: OdfHeader, connection, infile: str):
+def quality_to_oracle(odfobj: OdfHeader, connection, infile: str) -> NoReturn:
     """
     Load the ODF object's quality header information into Oracle.
 
@@ -33,14 +34,15 @@ def quality_to_oracle(odfobj: OdfHeader, connection, infile: str):
         # Create a cursor to the open connection.
         with connection.cursor() as cursor:
 
+            # Get the quality date and time from the ODF object.
+            qdate = odfobj.quality_header.quality_date
+
             # Execute the Insert SQL statement.
             cursor.execute(
                 "INSERT INTO ODF_QUALITY (QUALITY_DATE, ODF_FILENAME) "
-                "VALUES (TO_TIMESTAMP(:qdate, 'YYYY-MM-DD "
-                "HH24:MI:SS.FF'), :fname)",
+                "VALUES (TO_TIMESTAMP(:qdate, 'YYYY-MM-DD HH24:MI:SS.FF'), :fname)",
                 {
-                    'qdate': sytm_to_timestamp(
-                        odfobj.quality_header.get_quality_date(), 'datetime'),
+                    'qdate': sytm_to_timestamp(qdate, 'datetime'),
                     'fname': infile
                 }
                 )

@@ -34,10 +34,10 @@ def instrument_to_oracle(odfobj: OdfHeader, connection, infile: str) -> None:
                 "DESCRIPTION, ODF_FILENAME) VALUES ("
                 ":itype, :imodel, :snum, :description, :fname)",
                 {
-                    'itype': odfobj.instrument_header.get_instrument_type(),
-                    'imodel': odfobj.instrument_header.get_model(),
-                    'snum': odfobj.instrument_header.get_serial_number(),
-                    'description': odfobj.instrument_header.get_description(),
+                    'itype': odfobj.instrument_header.instrument_type,
+                    'imodel': odfobj.instrument_header.model,
+                    'snum': odfobj.instrument_header.serial_number,
+                    'description': odfobj.instrument_header.description,
                     'fname': infile
                 }
             )

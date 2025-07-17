@@ -211,7 +211,7 @@ class ParameterHeader(BaseModel, BaseHeader):
             parameter_dict = odfutils.list_to_dict(tokens)
             for key, value in parameter_dict.items():
                 key = key.strip()
-                value = value.strip("'")
+                value = value.strip("' ")
                 match key:
                     case 'TYPE':
                         self._type = value

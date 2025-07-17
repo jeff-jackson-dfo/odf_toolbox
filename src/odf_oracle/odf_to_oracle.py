@@ -1,8 +1,5 @@
 import os
-# import platform
-import oracledb
 import glob
-from icecream import ic
 from dotenv import load_dotenv
 
 from odf_toolbox.odfhdr import OdfHeader
@@ -75,9 +72,9 @@ def odf_to_oracle(wildcard: str, user: str, password: str, oracle_host: str,
       odf.read_odf(filename)
 
       # Change all null values to empty strings.
-      df = odf.null2empty(odf.data.get_data_frame())
-      odf.data.set_data_frame(df)
-
+      df = odf.null2empty(odf.data.data_frame)
+      odf.data.data_frame = df
+      
       # # Load the Cruise_Header and Event_Header information into Oracle.
       odf_file = cruise_event_to_oracle(odf, connection, filename)
 
@@ -130,37 +127,15 @@ def main():
   userpwd = os.environ.get("ODF_ARCHIVE_PASSWORD")
   oracle_host = os.environ.get("ORACLE_HOST")
   oracle_service_name = os.environ.get("ORACLE_SERVICE_NAME")
-  # hoststr = f"{oracle_host}:{str(port)}/{oracle_service_name}"
-
-  # oracledb.init_oracle_client()
-  # connection = oracledb.connect(username + '/' + userpwd + '@' + hoststr)
-  # cursor = connection.cursor()
-  # for row in cursor.execute("select distinct cruise_number from ODF_CRUISE_EVENT where cruise_number like 'HUD2016%'"):
-  #   ic(row)
-  # cursor.close()
-  # connection.close()
-
-  # Test Oracle database connection
-  # with oracledb.connect(user = username, 
-  #                       password = userpwd, 
-  #                       host = oracle_host, 
-  #                       port = 1521,
-  #                       service_name = oracle_service_name
-  #                       ) as connection:    
-    # with connection.cursor() as cursor:
-    #   for row in cursor.execute("select distinct cruise_number from ODF_CRUISE_EVENT where cruise_number like 'HUD2016%'"):
-    #     ic(row)
-
-    #   for row in cursor.execute("select * from NLS_SESSION_PARAMETERS"):
-    #     ic(row)
-
+  
   odf_to_oracle(wildcard = '*.ODF', 
                 user = username, 
                 password = userpwd, 
                 oracle_host = oracle_host,
                 oracle_service_name = oracle_service_name,
-                mypath = r'C:\\DEV\\GitHub\\odf_toolbox\\tests\\LOAD_TO_ORACLE\\')
-
+                mypath = r'C:\\DEV\\LOAD_TO_ODF_ARCHIVE\\')
+                # mypath = r'C:\\DEV\\TEMP\\TEST\\')
+                # mypath = r'C:\\DEV\\GitHub\\odf_toolbox\\tests\\LOAD_TO_ORACLE\\')
 
 if __name__ == "__main__":
   main()

@@ -1,6 +1,4 @@
 import collections
-from icecream import ic
-
 from odf_toolbox.odfhdr import OdfHeader
 from odf_oracle.sytm_to_timestamp import sytm_to_timestamp
 
@@ -40,11 +38,11 @@ def compass_cal_to_oracle(odfobj: OdfHeader, connection, infile: str) -> None:
             compass_cal_header = odfobj.compass_cal_headers[0]
 
             # Get the information from the current COMPASS_CAL_HEADER.
-            param = compass_cal_header.get_parameter_code()
-            cdt = compass_cal_header.get_calibration_date()
-            adt = compass_cal_header.get_application_date()
-            dlist = compass_cal_header.get_directions()
-            clist = compass_cal_header.get_corrections()
+            param = compass_cal_header.parameter_code
+            cdt = compass_cal_header.calibration_date
+            adt = compass_cal_header.application_date
+            dlist = compass_cal_header.directions
+            clist = compass_cal_header.corrections
             caldate = sytm_to_timestamp(cdt, 'datetime')
             appdate = sytm_to_timestamp(adt, 'datetime')
             cch = []
@@ -79,11 +77,11 @@ def compass_cal_to_oracle(odfobj: OdfHeader, connection, infile: str) -> None:
             for compass_cal_header in odfobj.compass_cal_headers:
 
                 # Get the information from the current COMPASS_CAL_HEADER.
-                param = compass_cal_header.get_parameter_code()
-                cdt = compass_cal_header.get_calibration_date()
-                adt = compass_cal_header.get_application_date()
-                dlist = compass_cal_header.get_directions()
-                clist = compass_cal_header.get_corrections()
+                param = compass_cal_header.parameter_code
+                cdt = compass_cal_header.calibration_date
+                adt = compass_cal_header.application_date
+                dlist = compass_cal_header.directions
+                clist = compass_cal_header.corrections
                 caldate = sytm_to_timestamp(cdt, 'datetime')
                 appdate = sytm_to_timestamp(adt, 'datetime')
                 cch = []

@@ -30,7 +30,7 @@ def meteo_comments_to_oracle(odfobj: OdfHeader, connection, infile):
         with connection.cursor() as cursor:
 
             # Loop through the Meteo_Header.Meteo_Comments.
-            meteo_comments = odfobj.meteo_header.get_meteo_comments()
+            meteo_comments = odfobj.meteo_header.meteo_comments
 
             if type(meteo_comments) is list:
 

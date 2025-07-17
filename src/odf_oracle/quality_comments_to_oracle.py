@@ -28,7 +28,7 @@ def quality_comments_to_oracle(odfobj: OdfHeader, connection, infile: str):
         with connection.cursor() as cursor:
 
             # Loop through the Quality_Header.Quality_Comments.
-            quality_comments = odfobj.quality_header.get_quality_comments()
+            quality_comments = odfobj.quality_header.quality_comments
             
             if type(quality_comments) is list:
 

@@ -23,7 +23,7 @@ def event_comments_to_oracle(odfobj: OdfHeader, connection, infile: str) -> None
     with connection.cursor() as cursor:
 
         # Get the Event_Comments.
-        event_comments = odfobj.event_header.get_event_comments()
+        event_comments = odfobj.event_header.event_comments
         
         if type(event_comments) is list:
 

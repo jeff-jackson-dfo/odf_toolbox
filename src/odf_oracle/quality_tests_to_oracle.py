@@ -28,7 +28,7 @@ def quality_tests_to_oracle(odfobj: OdfHeader, connection, infile: str):
         with connection.cursor() as cursor:
 
             # Loop through the Quality_Header.Quality_Tests.
-            quality_tests = odfobj.quality_header.get_quality_tests()
+            quality_tests = odfobj.quality_header.quality_tests
             if type(quality_tests) is list:
                 
                 for q, quality_test in enumerate(quality_tests):

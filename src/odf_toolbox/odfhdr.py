@@ -1,6 +1,6 @@
 from datetime import datetime
 import pandas as pd
-from icecream import ic
+# from icecream import ic
 import re
 
 from odf_toolbox.basehdr import BaseHeader
@@ -116,7 +116,7 @@ class OdfHeader(BaseModel, BaseHeader):
 
     @meteo_header.setter
     def meteo_header(self, value: MeteoHeader) -> NoReturn:
-        if type(value) is MeteoHeader or value == None:
+        if type(value) is MeteoHeader or value is None:
             self._meteo_header = value
         else:
             raise ValueError("Input parameter 'value' is not a MeteoHeader object.")
@@ -428,7 +428,7 @@ class OdfHeader(BaseModel, BaseHeader):
     def update_parameter(self, parameter_code: str, attribute: str, value: any) -> NoReturn:
         assert isinstance(parameter_code, str), "Input argumnet 'parameter_code' must be a string."
         assert isinstance(attribute, str), "Input argumnet 'attribute' must be a string."
-        codes = self.data.parameter_list
+        # codes = self.data.parameter_list
         if isinstance(value, str):
             eval(f"self.parameter_headers[codes.index(parameter_code)].set_{attribute}('{value}')")
         else:
@@ -515,6 +515,7 @@ class OdfHeader(BaseModel, BaseHeader):
                 if poly_code in pnames:
                     self.polynomial_cal_headers[i].parameter_code = new_codes[i]
             except Exception as e:
+                print(e)
                 print(f"Item {poly_code} not found in old_codes list.")
         return self
 
@@ -599,7 +600,7 @@ def main():
         try:
             parameter_code_short, sensor_number = parameter_code.split("_")
         except ValueError:
-            parameter_code_short = parameter_code
+            # parameter_code_short = parameter_code
             sensor_number = 1
             continue
         sensor_number = float(sensor_number)          
@@ -611,9 +612,9 @@ def main():
                     'the ODF structure since it only contains NULL values?')
 
         # Loop through the data records. 
-        for r in range(0, nrows):
+        # for r in range(0, nrows):
             # ic(type(data.loc[r].iloc[j]))
-            value = data.loc[r].iloc[j]
+            # value = data.loc[r].iloc[j]
             # print(f'row {r}, column {j} has value {value} with type {type(value)}')
 
         # if f"Q{parameter_code}" in parameter_codes:

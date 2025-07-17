@@ -26,7 +26,7 @@ def general_cal_equation_to_oracle(general_cal_header: GeneralCalHeader,
     with connection.cursor() as cursor:
 
         # Loop through the General_Cal_Header.General_Cal_Equation.
-        calibration_equation = general_cal_header.get_calibration_equation()
+        calibration_equation = general_cal_header.calibration_equation
 
         # Check to see if the GENERAL_CAL_HEADER contains any CALIBRATION_EQUATION(s).
         if calibration_equation is None:

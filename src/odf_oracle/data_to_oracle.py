@@ -37,6 +37,8 @@ def data_to_oracle(odfobj: OdfHeader, connection, infile: str):
         parameter_headers = odfobj.parameter_headers
         parameter_codes = odfobj.get_parameter_codes()
 
+        print(parameter_codes)
+
         # Check if there is SYTM column.
         if 'SYTM_01' in parameter_codes or 'SYTM' in parameter_codes:
             sytm_present = 1
@@ -46,7 +48,7 @@ def data_to_oracle(odfobj: OdfHeader, connection, infile: str):
             sytm_present = 0
 
         # Retrieve the data from the input ODF structure.
-        data = odfobj.data.get_data_frame()
+        data = odfobj.data.data_frame
 
         # Get the number of data rows and columns.
         nrows, ncols = data.shape
@@ -58,9 +60,12 @@ def data_to_oracle(odfobj: OdfHeader, connection, infile: str):
         # Check to see if the ODF file contains at least one QF channel.
         for j, parameter_header in enumerate(parameter_headers):
 
-            parameter_code = parameter_header.get_code()
+            parameter_code = parameter_header.code
             parameter_code_short, sensor_number = parameter_code.split("_")
-            sensor_number = float(sensor_number)
+            if sensor_number == '':
+                sensor_number = 1
+            else:
+                sensor_number = float(sensor_number)
 
             # If the current column is a QF column then skip this column as 
             # the associate value from a QF column is assigned in the data row.

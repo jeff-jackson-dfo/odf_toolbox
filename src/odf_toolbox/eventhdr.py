@@ -282,7 +282,7 @@ class EventHeader(BaseModel, BaseHeader):
             for key, value in event_dict.items():
                 key = key.strip()
                 if str(value):
-                    value = value.strip("'")
+                    value = value.strip("' ")
                 match key:
                     case 'DATA_TYPE':
                         self.data_type = value

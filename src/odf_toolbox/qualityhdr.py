@@ -19,14 +19,6 @@ class QualityHeader(BaseModel, BaseHeader):
     -------
     __init__ :
         initialize a QualityHeader class object
-    get_quality_date : string
-    set_quality_date : None
-    get_quality_tests : list of strings
-    set_quality_tests : None
-    add_quality_tests : None
-    get_quality_comments : list of strings
-    set_quality_comments : None
-    add_quality_comments : None
 
     """
 
@@ -36,7 +28,7 @@ class QualityHeader(BaseModel, BaseHeader):
                  quality_comments: list = None
                  ):
         super().__init__()
-        self.quality_date = quality_date
+        self.quality_date = quality_date if quality_date is not None else BaseHeader.SYTM_NULL_VALUE
         self.quality_tests = quality_tests if quality_tests is not None else [] 
         self.quality_comments = quality_comments if quality_comments is not None else [] 
 
@@ -55,7 +47,7 @@ class QualityHeader(BaseModel, BaseHeader):
         self._quality_date = value.upper()
 
     @property
-    def quality_tests(self):
+    def quality_tests(self) -> list:
         return self._quality_tests
 
     @quality_tests.setter
@@ -80,7 +72,7 @@ class QualityHeader(BaseModel, BaseHeader):
         self._quality_tests.append(quality_test)
 
     @property
-    def quality_comments(self):
+    def quality_comments(self) -> list:
         return self._quality_comments
 
     @quality_comments.setter

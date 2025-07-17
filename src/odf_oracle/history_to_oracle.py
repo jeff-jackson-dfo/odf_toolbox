@@ -39,8 +39,8 @@ def history_to_oracle(odfobj: OdfHeader, connection, infile: str):
             for h, history_header in enumerate(odfobj.history_headers):
 
                 # Loop through the HISTORY_HEADER's PROCESS lines.
-                process_list = history_header.get_process()
-                cdt = history_header.get_creation_date()
+                process_list = history_header.processes
+                cdt = history_header.creation_date
                 cdate = sytm_to_timestamp(cdt, 'datetime')
                 hp = []
                 if type(process_list) is list:

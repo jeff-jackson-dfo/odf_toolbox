@@ -43,9 +43,14 @@ def compare_xmlcons(df: pd.DataFrame) -> pd.DataFrame:
         # Create a boolean Series indicating where the 'SerialNumber' value differs from the previous row
         category_changes = filtered_df['SerialNumber'].ne(filtered_df['SerialNumber'].shift())
         rows_with_category_changes = filtered_df[category_changes]
-        print(rows_with_category_changes)
+        # print(rows_with_category_changes)
         df_sensor_changes = pd.concat([df_sensor_changes, rows_with_category_changes], ignore_index=True)
     return df_sensor_changes
+
+def transform_to_wide_format(df: pd.DataFrame) -> pd.DataFrame:
+    # Pivot the DataFrame to wide format
+    df_wide = df.pivot(index='Event', columns='SensorName', values='SerialNumber')
+    return df_wide
 
 def main():
 
@@ -86,6 +91,12 @@ def main():
     df_sensor_changes = compare_xmlcons(df_sensors)
     df_sensor_changes = df_sensor_changes.sort_values(by=['Event', 'Index']).reset_index(drop=True)
     df_sensor_changes.to_excel("LAT2025146_CTD_Sensor_Changes.xlsx", index=False)
+
+    # Transform the DataFrame to wide format
+    df_sensor_changes['SensorName'] = df_sensor_changes['Sensor'] + '_' + df_sensor_changes['Index'].astype(str)
+    df_sensor_changes_condensed = df_sensor_changes[['Event', 'SensorName', 'SerialNumber']]
+    df_wide = transform_to_wide_format(df_sensor_changes_condensed)
+    df_wide.to_excel("LAT2025146_CTD_Sensor_Changes_Wide.xlsx", index=True)
 
 if __name__ == "__main__":
     main()

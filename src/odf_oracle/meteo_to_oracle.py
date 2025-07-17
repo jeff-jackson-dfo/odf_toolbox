@@ -35,13 +35,13 @@ def meteo_to_oracle(odfobj: OdfHeader, connection, infile: str) -> None:
                 "CLOUD_COVER, ICE_THICKNESS, ODF_FILENAME) "
                 "VALUES (:at, :ap, :ws, :wd, :ss, :cc, :ice, :fname)",
                 {
-                    'at': odfobj.meteo_header.get_air_temperature(),
-                    'ap': odfobj.meteo_header.get_atmospheric_pressure(),
-                    'ws': odfobj.meteo_header.get_wind_speed(),
-                    'wd': odfobj.meteo_header.get_wind_direction(),
-                    'ss': odfobj.meteo_header.get_sea_state(),
-                    'cc': odfobj.meteo_header.get_cloud_cover(),
-                    'ice': odfobj.meteo_header.get_ice_thickness(),
+                    'at': odfobj.meteo_header.air_temperature,
+                    'ap': odfobj.meteo_header.atmospheric_pressure,
+                    'ws': odfobj.meteo_header.wind_speed,
+                    'wd': odfobj.meteo_header.wind_direction,
+                    'ss': odfobj.meteo_header.sea_state,
+                    'cc': odfobj.meteo_header.cloud_cover,
+                    'ice': odfobj.meteo_header.ice_thickness,
                     'fname': infile
                 }
                 )

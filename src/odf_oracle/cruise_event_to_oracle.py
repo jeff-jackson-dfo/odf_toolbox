@@ -1,7 +1,6 @@
 from odf_toolbox import OdfHeader
 from odf_oracle.sytm_to_timestamp import sytm_to_timestamp
 from odf_oracle.fix_null import fix_null
-from icecream import ic
 
 def cruise_event_to_oracle(odfobj: OdfHeader, connection, infile: str) -> str:
     """
@@ -24,7 +23,7 @@ def cruise_event_to_oracle(odfobj: OdfHeader, connection, infile: str) -> str:
 
     # Check the Country Institute Code.
     country_institute_code = \
-        str(odfobj.cruise_header.get_country_institute_code())
+        str(odfobj.cruise_header.country_institute_code)
     if len(country_institute_code) != 4:
         country_institute_code = '1810'
 
@@ -34,7 +33,7 @@ def cruise_event_to_oracle(odfobj: OdfHeader, connection, infile: str) -> str:
         # Check to see if the current ODF file is from a groundfish (AZMP Ecosystem
         # Trawl Survey). If it is then do not create the ODF filename to be stored 
         # in the database from the ODF metadata but instead use the input filename.
-        cruise_description = odfobj.cruise_header.get_cruise_description()
+        cruise_description = odfobj.cruise_header.cruise_description
         set_number = '0'
         if 'TRAWL' in cruise_description.upper():
             # Drop the extension.
@@ -45,9 +44,10 @@ def cruise_event_to_oracle(odfobj: OdfHeader, connection, infile: str) -> str:
             # if set_number != odfobj.event_header.get_set_number():
             #     odfobj.event_header.set_set_number(set_number)
         else:
-            odf_filename = odfobj.get_file_specification()
+            odf_filename = odfobj.file_specification.strip("'")
+            print(f'odf_filename: {odf_filename}')
             # Make the set number 0 for non-trawl surveys.
-            odfobj.event_header.set_set_number(set_number)
+            odfobj.event_header.set_number = set_number
 
         # ic(sytm_to_timestamp(odfobj.cruise_header.get_start_date(), 'date'))
         # ic(sytm_to_timestamp(odfobj.event_header.get_start_date_time(), 'datetime'))
@@ -76,40 +76,40 @@ def cruise_event_to_oracle(odfobj: OdfHeader, connection, infile: str) -> str:
             {
                 'ccode': int(country_institute_code[0:2]),
                 'icode': int(country_institute_code[2:4]),
-                'cnum': odfobj.cruise_header.get_cruise_number(),
-                'org': odfobj.cruise_header.get_organization(),
-                'cs': odfobj.cruise_header.get_chief_scientist(),
+                'cnum': odfobj.cruise_header.cruise_number,
+                'org': odfobj.cruise_header.organization,
+                'cs': odfobj.cruise_header.chief_scientist,
                 'sdate': sytm_to_timestamp(
-                    odfobj.cruise_header.get_start_date(), 'date'),
+                    odfobj.cruise_header.start_date, 'date'),
                 'edate': sytm_to_timestamp(
-                    odfobj.cruise_header.get_end_date(), 'date'),
-                'plat': odfobj.cruise_header.get_platform(),
-                'aop': odfobj.cruise_header.get_area_of_operation(),
-                'cdes': odfobj.cruise_header.get_cruise_description(),
-                'dt': odfobj.event_header.get_data_type(),
-                'enum': odfobj.event_header.get_event_number(),
-                'eq1': odfobj.event_header.get_event_qualifier1(),
-                'eq2': odfobj.event_header.get_event_qualifier2(),
+                    odfobj.cruise_header.end_date, 'date'),
+                'plat': odfobj.cruise_header.platform,
+                'aop': odfobj.cruise_header.area_of_operation,
+                'cdes': odfobj.cruise_header.cruise_description,
+                'dt': odfobj.event_header.data_type,
+                'enum': odfobj.event_header.event_number,
+                'eq1': odfobj.event_header.event_qualifier1,
+                'eq2': odfobj.event_header.event_qualifier2,
                 'cdate': sytm_to_timestamp(
-                    odfobj.event_header.get_creation_date(), 'datetime'),
+                    odfobj.event_header.creation_date, 'datetime'),
                 'odate': sytm_to_timestamp(
-                    odfobj.event_header.get_orig_creation_date(), 'datetime'),
+                    odfobj.event_header.orig_creation_date, 'datetime'),
                 'sdt': sytm_to_timestamp(
-                    odfobj.event_header.get_start_date_time(), 'datetime'),
+                    odfobj.event_header.start_date_time, 'datetime'),
                 'edt': sytm_to_timestamp(
-                    odfobj.event_header.get_end_date_time(), 'datetime'),
-                'ilat': fix_null(float(odfobj.event_header.get_initial_latitude())),
+                    odfobj.event_header.end_date_time, 'datetime'),
+                'ilat': fix_null(float(odfobj.event_header.initial_latitude)),
                 'ilon': fix_null(float(
-                    odfobj.event_header.get_initial_longitude())),
-                'elat': fix_null(float(odfobj.event_header.get_end_latitude())),
-                'elon': fix_null(float(odfobj.event_header.get_end_longitude())),
-                'mind': fix_null(float(odfobj.event_header.get_min_depth())),
-                'maxd': fix_null(float(odfobj.event_header.get_max_depth())),
+                    odfobj.event_header.initial_longitude)),
+                'elat': fix_null(float(odfobj.event_header.end_latitude)),
+                'elon': fix_null(float(odfobj.event_header.end_longitude)),
+                'mind': fix_null(float(odfobj.event_header.min_depth)),
+                'maxd': fix_null(float(odfobj.event_header.max_depth)),
                 'sint': fix_null(float(
-                    odfobj.event_header.get_sampling_interval())),
-                'snd': fix_null(float(odfobj.event_header.get_sounding())),
-                'dob': fix_null(float(odfobj.event_header.get_depth_off_bottom())),
-                'stn': odfobj.event_header.get_station_name(),
+                    odfobj.event_header.sampling_interval)),
+                'snd': fix_null(float(odfobj.event_header.sounding)),
+                'dob': fix_null(float(odfobj.event_header.depth_off_bottom)),
+                'stn': odfobj.event_header.station_name,
                 'setnum': set_number,
                 'resprg': '',
                 'dflag': '',

@@ -26,7 +26,7 @@ def general_cal_comments_to_oracle(general_cal_header: GeneralCalHeader,
     with connection.cursor() as cursor:
 
         # Loop through the General_Cal_Header.General_Cal_Equation.
-        calibration_comments = general_cal_header.get_calibration_comments()
+        calibration_comments = general_cal_header.calibration_comments
 
         # Check to see if the GENERAL_CAL_HEADER contains any CALIBRATION_COMMENTS.
         if calibration_comments is None:
