@@ -2,6 +2,7 @@ from odf_toolbox import BaseHeader
 from odf_toolbox import odfutils
 from typing import NoReturn
 from pydantic import BaseModel
+from icecream import ic
 
 class HistoryHeader(BaseModel, BaseHeader):
     """ A class to represent a History Header in an ODF object. """
@@ -56,6 +57,13 @@ class HistoryHeader(BaseModel, BaseHeader):
         process = process.strip("' ")
         self._processes.append(process)
 
+    def find_process(self, search_string: str) -> int:
+        found_strings = []
+        for i, process in enumerate(self.processes):
+            if search_string in process:
+                found_strings.append(i + 1)
+        return found_strings
+
     def populate_object(self, history_fields: list) -> NoReturn:
         assert isinstance(history_fields, list), "Input argument 'history_fields' must be a list."      
         for header_line in history_fields:
@@ -88,13 +96,19 @@ def main():
     print(history.print_object())
     history_fields = ["CREATION_DATE = '01-jun-2021 00:00:00.00'",
                     "PROCESS = First process",
+                    "PROCESS = Second process",
+                    "PROCESS = Blank process",
+                    "PROCESS = Fourth process",
                     "PROCESS = Last process"]
     history.populate_object(history_fields)
     print(history.print_object())
     history.log_history_message('process', history.processes[1], 'Bad Cast')
     history.set_process('Bad Cast', 2)
     print(history.print_object())
-
+    ic(history.find_process('Bad Cast'))
+    ic(history.find_process('Blank'))
+    ic(history.find_process('process'))
+    
     for log_entry in BaseHeader.shared_log_list:
         print(log_entry)
     print()

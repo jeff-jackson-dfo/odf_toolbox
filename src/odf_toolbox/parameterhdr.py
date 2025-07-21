@@ -204,6 +204,17 @@ class ParameterHeader(BaseModel, BaseHeader):
         assert isinstance(value, int), "Input argument 'value' must be a integer."
         self._number_null = value
 
+    @staticmethod
+    def is_float_and_int(value) -> bool:
+        try:
+            # Attempt to convert the string to a float
+            f = float(value)
+            # Check if the float is an integer (i.e., has no fractional part)
+            return f.is_integer()
+        except ValueError:
+            # If conversion to float fails, it's not a valid number (int or float)
+            return False
+
     def populate_object(self, parameter_fields: list) -> NoReturn:
         assert isinstance(parameter_fields, list), "Input argument 'parameter_fields' must be a list."
         for header_line in parameter_fields:
@@ -249,7 +260,10 @@ class ParameterHeader(BaseModel, BaseHeader):
                             else:
                                 self._minimum_value = BaseHeader.SYTM_NULL_VALUE
                         elif self._type == 'INTE':
-                            self._minimum_value = int(value)
+                            if self.is_float_and_int(value):
+                                self._minimum_value = int(float(value))
+                            else:
+                                raise ValueError(f"Invalid integer value: {value}")
                         elif (self._type == 'SING') | (self._type == 'DOUB'):
                             self._minimum_value = float(value)
                         else:
@@ -261,7 +275,10 @@ class ParameterHeader(BaseModel, BaseHeader):
                             else:
                                 self._maximum_value = BaseHeader.SYTM_NULL_VALUE
                         elif self._type == 'INTE':
-                            self._maximum_value = int(value)
+                            if self.is_float_and_int(value):
+                                self._maximum_value = int(float(value))
+                            else:
+                                raise ValueError(f"Invalid integer value: {value}")
                         elif (self._type == 'SING') | (self._type == 'DOUB'):
                             self._maximum_value = float(value)
                         else:
